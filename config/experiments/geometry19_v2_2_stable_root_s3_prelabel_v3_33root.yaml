@@ -1,0 +1,158 @@
+protocol_version: geometry19_v2_2_stable_root_s3_prelabel_v3_33root
+status: preregistered_after_v2_failure_before_v3_generation
+stage: S3_v3_33root_independent_prelabel_coordinate_generation
+scope_definition: bilateral_perturbable_stable_root_subdomain_only
+formal_use_allowed: false
+deployment_allowed: false
+
+inputs:
+  v2_implementation:
+    path: src/ai/geometry19_v2_2_stable_root_s3_prelabel_v2.py
+    sha256: ceb205110ad97ab83c92d7a1256840f83d2ec1619566ab99515eb230b193ee07
+    access: hash_only
+  v2_failure_summary:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/audits/S3_v2_Prelabel_Coordinate_Summary.json
+    sha256: eba9554e3ae759e7ec9f9def55083ef219fb9c6be4f3cfc1a63049b167e83925
+    required_status: STABLE_ROOT_S3_V2_PRELABEL_COORDINATE_LOCK_FAIL
+  v1_ledger:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/fresh_evaluation/S3_Prelabel_Coordinates.jsonl
+    sha256: 7b642cd65a0fa44b55d09d6dad05d7a75306aefcd68e4054f3a51cb98f523956
+    access: design_hash_exclusion_only
+  v2_ledger:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/fresh_evaluation_v2/S3_v2_Prelabel_Coordinates.jsonl
+    sha256: 1c75997e5653e0ab5114bc3ef60764f20c381f55be83fcf17fa1551388f258d6
+    access: design_hash_exclusion_only
+  stable_root_registry:
+    path: data/validation/v2_2_stable_root_conditional_surrogate_v1/audits/stable_root_registry.jsonl
+    sha256: eedbc02591bc7b6b044071ecf0d1754d648b4ad9210114887b314e1b964352ad
+  design_schema:
+    path: config/physics/geometry19_schema_v1.yaml
+    sha256: cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28
+  development_dataset:
+    path: data/validation/v2_2_known_manifold_root_discovery_v1/development_dataset.jsonl
+    sha256: cde2c3f6a0cebc91a437f45b7aae5d2ebfe2b8adff952942d05efaae09297134
+    access: design_hash_exclusion_only
+  sealed_confirmation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+    sha256: a3051cae177d1c9735699ef4b50675f41f5f0ffd7d954b3a233f5ebf1ea8b1fd
+    access: sha256_only_no_parse
+  s2_model_manifest:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/models/S2_Model_Manifest.json
+    sha256: c1da78af5395718c855df9e32df31a4ad3763238b3d746b8374dafd0dcf8358b
+    access: sha256_only_no_parse
+
+scope:
+  selection_rule: selected_pairs_per_root_equals_48_in_frozen_S3_v2_summary
+  selected_root_count: 33
+  selected_root_ids:
+    - 1fb9813071a35d36b8fd5d14a248986a84c58ae26a4843373054f734d21c0fdd
+    - 22bd2571da9d6a1f00b070543ec31cfc924bdac5c3712fd13be6f116179cd74a
+    - 2361d3c1f28af85cc50709408ff70dad182a64e5c05c5ec8f88015d2c9e28b14
+    - 348d3475dcc3f4df0a790873d18efd71b25254e0849c2ed9825f080588138b2e
+    - 369855d2ba3da0605a1d957886668a898e8ff1e80e507f3950acf86b641e8374
+    - 3c07722b780cb8293536c48d3df552bfffbf611dca2033379f314590b5815bce
+    - 4cb10f6935baf51117f3cdbabf4ec2840ea23713994e76b3d8140538fd5d05f4
+    - 50e503800bd5cfb7d3fdb4f6e3aab1dfeaea5e10b8dd72d904cb25bb4f210955
+    - 51eb4807184fe000b651106385ea7bfe3c44dcf0a2c01447cbd3d3646690bead
+    - 66dd5f70008e2787f27b3d1443c07870ae8b9a83791a25262b22fb922f30050e
+    - 6a1c74bbb1bc89aeaf46e44bc6aa476176e3ddb95d26f56267a126e4507c9d30
+    - 6f2ba7e5f8f8d3185e57b225c2300ef75c68ab08c615c0c972f1a903732fc0b5
+    - 7711bc8d952458c221b69b437cfc1c223bcad870e3a8d6069d3e0a17d01dd761
+    - 7fa0d26aa0f6198dd017123041b28d90c1aa0c421eb3e972b1af8e8131810739
+    - 82aa07eaa6d36f878e70a64a58a7e9d4df78e8ee432a519eb45cdd11c95c5270
+    - 84cf283fa0a663307e0b7ba94e5cd12e816ee8a9853c82fbc60dbdf1b20472ba
+    - 8a7aea7842f51a8b89c61a6cb2532ed1b15a146115d7970e0654d0b38f164a93
+    - a66e86698e6380ef6ac620bb627dfdaa8671ab42e734dbc66553a6f9f77b7b03
+    - a7e464b18fe7a3920efb1cf595bcee008a04dda029eecea5d2b1f12ea4a23259
+    - afeaa2ed543959796f96333019a1012c06f2b69e54e9cc5fc5cac1724abf69ab
+    - bd248f547950ef630b48ef868d388d1013795f62f8ef498b9ef20957df042b45
+    - bf146bc01399b89de208ab5b0f01d5c4a784ebc40346191b7f8000fef4631aa2
+    - c1427e4293fb2f2ba0204b092726fff95bf45dd887bb9f5df81ad2cdb8fa24d0
+    - c561995601a8d9443f3e65e927d006d43e487414c0cd7e8e9bb5848feafa1e5b
+    - c74cbc7378be1910adb9e8cccb79de9ce6782ac7621b29451c2d658f1fff2694
+    - c80912a938510c256beb5516fb1814d3e3f7cd621f01ed6b688cac161377ef5e
+    - c976543f0e2ba555383ddb2137ae7406c20a4a5f2aaa42b241fd8641819f1e0f
+    - d72c1662333edbcc6ef61cee11b4f39ed0bd8c63eec192a2cef63aeb3604d17e
+    - e93d28a84d537a70b7823c2ffa7cb0a3f227d64441daab0a3a8ef890d6f15ee8
+    - ea58cd2ac39f91e3f390a39f46670aa4b4e4d55d579617022ba62551df194e3d
+    - ed70ba1143c2bca037d8375ba47288afa4fe9dfd5be2a740bff5f282407dce83
+    - f61e40c195bb9dbf4d6986e1473dfbc76432ac858fc123abb89e49032be137e1
+    - fa32f9db99bbf3a49a72353b6977bd663cb44154786016e0de6b13b5d3f767bd
+  excluded_root_count: 5
+  excluded_status: BOUNDARY_ROOT_OUT_OF_SCOPE
+  excluded_root_ids:
+    - 0f1789c687cc57c4331d260a46fe5346b38af557b4c22855e1b0e4223a3411b6
+    - 33d946e5fcb50130900f92bbbcc81c4c23838d11a4c7d56d6c4f2ac7f9d02367
+    - 9b30ef52e3b9233d564dc1ca1a79dfa1b42a1e991fe39252b976f37babde6cbb
+    - 9be484f4ad884e1735f3c0a15f24130bb1a2aa44a8cf5f84f86f9a4ba867034e
+    - a2f40fb0a908bd8af184bb8c34ffde252c42b57e247dde3313b84092f51bcedc
+  claims_forbidden:
+    - coverage_of_original_38_stable_roots
+    - coverage_of_all_78_development_roots
+    - unknown_manifold_generalization
+    - boundary_root_accuracy
+
+directions:
+  family: fresh_deterministic_sobol_mixed
+  primary_count: 48
+  primary_seed: 20260917
+  primary_generation: random_base2_m6_take_first_48
+  reserve_count: 256
+  reserve_seed: 20260918
+  reserve_generation: random_base2_m8_take_all_256
+  transform: two_u_minus_one_then_unit_l2_normalize
+  shell_assignment: even_index_to_0_50_odd_index_to_0_90
+  no_v1_or_v2_direction_reuse: true
+
+boundary_aware_scaling:
+  proposal_space: schema_range_normalized
+  desired_step: support_radius_p95_times_shell_fraction
+  shell_fractions: [0.5, 0.9]
+  safety_factor_eta: 0.95
+  minimum_actual_to_desired_ratio: 0.25
+  clipping_allowed: false
+  preserve_positive_negative_pair: true
+  integer_variables_rounded_with_numpy_rint: true
+
+selection:
+  target_selected_pairs_per_root: 48
+  target_selected_pairs_per_shell: 24
+  final_prelabel_rows_per_root: 96
+  final_prelabel_rows_total: 3168
+  consider_primary_then_reserve_within_each_shell: true
+  pair_acceptance_requires:
+    - both_designs_inside_schema
+    - both_design_hashes_distinct_within_pair
+    - neither_design_hash_in_development
+    - neither_design_hash_in_S3_v1_or_v2
+    - neither_design_hash_previously_selected_in_v3
+    - actual_to_desired_step_ratio_at_least_0_25
+  rejected_screening_pairs_recorded: true
+  no_performance_adaptation: true
+
+authorization:
+  coordinate_generation_authorized_now: true
+  physics_labeling_authorized_only_if_coordinate_gate_passes: true
+  physics_labeling_executed_now: false
+  model_prediction_authorized: false
+  inverse_design_authorized: false
+  original_local_chart_P4_authorized: false
+
+artifacts:
+  runtime_root: data/validation/v2_2_stable_root_forward_fresh_eval_v1
+  scope_registry: audits/S3_v3_33root_Scope_Registry.json
+  screening_ledger: fresh_evaluation_v3_33root/S3_v3_Direction_Screening.jsonl
+  final_prelabel_ledger: fresh_evaluation_v3_33root/S3_v3_Prelabel_Coordinates.jsonl
+  direction_matrix: fresh_evaluation_v3_33root/S3_v3_Direction_Matrix.npz
+  summary: audits/S3_v3_33root_Prelabel_Coordinate_Summary.json
+  report: audits/S3_v3_33root_Prelabel_Coordinate_Report.md
+
+statuses:
+  pass: STABLE_ROOT_S3_V3_33ROOT_PRELABEL_COORDINATE_LOCK_PASS
+  fail: STABLE_ROOT_S3_V3_33ROOT_PRELABEL_COORDINATE_LOCK_FAIL
+
+limitations:
+  - the_33_root_scope_was_selected_after_observing_S3_v2_coordinate_results
+  - this_is_a_redefined_restricted_domain_not_a_rescue_of_the_38_root_gate
+  - fresh_coordinates_do_not_remove_root_selection_bias
+  - coordinate_success_does_not_imply_V2_2_physics_validity_or_surrogate_accuracy

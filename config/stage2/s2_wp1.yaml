@@ -1,0 +1,58 @@
+version: s2_wp1_target_matrix_and_baseline_v1
+baseline_manifest: config/stage2/active10d_baseline_v1.yaml
+
+target_suite:
+  csv: data/generator_active10d_100k/targets/target_suite_active10d_v1.csv
+  sha256: 3d373ecbdc6cf88c046108edb8cdbbca071394fc1556cfa92499f049f47461dd
+
+selection:
+  method: standardized_farthest_point
+  condition_columns: [thrust_N, tsfc_kg_N_s, total_mass_kg]
+  frozen_end_to_end_ids: config/stage2/s2_wp1_end_to_end_targets_v1.yaml
+  end_to_end_counts:
+    ID: 20
+    Interpolation: 20
+  result_columns_forbidden: true
+
+seeds:
+  training: [42, 43]
+  optimizer: [42, 43]
+  generator_only_base: 20250811
+  end_to_end_generator_offset: 20250771
+
+model_sets:
+  - training_seed: 42
+    models:
+      - model_id: cvae
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/cvae/seed_42/best.pt
+      - model_id: nflows
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/nflows/seed_42/best.pt
+      - model_id: cinn
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/cinn/seed_42/best.pt
+      - model_id: cfm
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/cfm/seed_42/best.pt
+  - training_seed: 43
+    models:
+      - model_id: cvae
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/cvae/seed_43/best.pt
+      - model_id: nflows
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/nflows/seed_43/best.pt
+      - model_id: cinn
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/cinn/seed_43/best.pt
+      - model_id: cfm
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/cfm/seed_43/best.pt
+
+generator_only:
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  metrics_config: config/generator_active10d_metrics.yaml
+  sample_count: 256
+  device: cuda
+
+end_to_end:
+  base_run_config: config/inverse_design/runs/target_directed_active10d_template.yaml
+
+output:
+  directory: data/inverse_design/stage2/s2_wp1_baseline_v1
+  refuse_overwrite: true

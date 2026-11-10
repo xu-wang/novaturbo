@@ -1,0 +1,48 @@
+protocol_version: wp19_23_reranker_confirmation_v1
+work_package: WP19-23-RERANKER-CONFIRMATION
+status: locked_evaluation_only
+formal_use_allowed: false
+pipeline_mutation_allowed: false
+integration_policy: forbidden_until_explicit_user_confirmation
+
+source:
+  regression_dataset: data/generated/wp19_21_development_dataset_98304_v1/regression_converged.jsonl
+  source_campaign: seed_20260831
+  prior_target_suite: data/inverse_design/wp19_23_generator_core_oracle_v1/target_suite.jsonl
+  target_count: 128
+  pool_size: 256
+  pool_seeds: [20260908, 20260909, 20260910]
+
+inverse_protocol: config/physics/wp19_23_inverse_closure_v1.yaml
+baseline_model_root: data/inverse_design/wp19_22_gate_k_hit_aligned_surrogate_v1/models/s0_legacy_mse
+performance_model_root: data/inverse_design/wp19_22_performance_surrogate_v2_ablation/formal/models/performance3_log
+forward_model_seeds: [42, 43, 44]
+reranker_config: config/experiments/wp19_23_independent_reranker_v1.yaml
+reranker_runtime: data/inverse_design/wp19_23_independent_reranker_v1/formal
+
+ranking_budgets: [8, 16, 32, 64, 128, 256]
+statistics:
+  cluster_bootstrap_replicates: 10000
+  bootstrap_seed: 20260908
+  confidence_level: 0.95
+
+decision:
+  primary_comparator: performance3_log
+  minimum_recall_at_32_absolute_gain: 0.05
+  require_recall_at_64_non_degradation: true
+  require_cluster_ci_lower_bound_nonnegative: true
+  pipeline_action_for_any_outcome: none
+
+protected_pipeline_files:
+  - config/physics/wp19_23_inverse_closure_v1.yaml
+  - scripts/run_wp19_23_pipeline.py
+  - src/ai/geometry19_pipeline.py
+
+artifacts:
+  runtime_root: data/inverse_design/wp19_23_reranker_confirmation_v1
+  target_suite: frozen_target_suite.jsonl
+  candidate_library: frozen_candidate_library.jsonl
+  candidate_ledger: frozen_candidate_ledger.jsonl
+  freeze_manifest: freeze_manifest.json
+  summary: summary.json
+  report: Reranker_Confirmation_Report.md

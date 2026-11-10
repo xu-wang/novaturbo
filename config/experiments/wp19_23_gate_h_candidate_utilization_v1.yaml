@@ -1,0 +1,45 @@
+protocol_version: wp19_23_gate_h_candidate_utilization_v1
+work_package: WP19-23-Gate-H
+status: development_no_retraining_audit
+formal_use_allowed: false
+model_variant: bounded-sigmoid
+device: cuda:0
+budgets:
+  raw_candidates_per_target_per_mode: 256
+  maximum_true_physics_per_target_per_arm: 32
+  downstream_refinement_or_nsga2: excluded
+arms:
+  - h0_strict_direct
+  - h1_projected_direct
+  - h2_projected_union
+  - h3_tolerance_ranked_diverse_union
+targets:
+  - sample_id: 90738
+    target_type: ID
+    expected_status: KNOWN_FEASIBLE
+    thrust_N: 20.955041899992697
+    tsfc_kg_N_s: 0.00011838375149465028
+    mass_kg: 4.679671626543618
+  - sample_id: 90837
+    target_type: ID
+    expected_status: KNOWN_FEASIBLE
+    thrust_N: 50.13863869444162
+    tsfc_kg_N_s: 0.00011614630867591481
+    mass_kg: 2.1156278749285624
+  - sample_id: 92149
+    target_type: ID
+    expected_status: KNOWN_FEASIBLE
+    thrust_N: 90.65457721367832
+    tsfc_kg_N_s: 0.00005080073146479519
+    mass_kg: 2.215459699458305
+  - sample_id: 92231
+    target_type: ID
+    expected_status: KNOWN_FEASIBLE
+    thrust_N: 169.23418951967648
+    tsfc_kg_N_s: 0.000035284841418524566
+    mass_kg: 1.7129864897096319
+artifacts:
+  runtime_root: data/inverse_design/wp19_23_gate_h_candidate_utilization_v1
+  summary: gate_h_summary.json
+  report: Gate_H_summary.md
+  manifest: gate_h_manifest.json

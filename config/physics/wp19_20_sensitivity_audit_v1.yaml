@@ -1,0 +1,13 @@
+protocol_version: wp19_20_sensitivity_audit_v1
+work_package: WP19-20
+design_schema: config/physics/geometry19_schema_v1.yaml
+doe_ledger: data/generated/wp19_19_permissive_doe_v1/results/samples.jsonl
+constraint_profile: pipeline_debug_v1
+mesh_quality: preview_mesh
+oat_fraction_of_range: 0.05
+workers: 4
+artifacts:
+  mesh_storage_root: exports/geometry19
+  visualization_root: results/visualization/wp19_20_sensitivity_audit_20260825
+  summary_json: results/physics/wp19_20_sensitivity_audit_v1.json
+  report_markdown: docs/physics/WP19_20_SENSITIVITY_AUDIT_20260825.md

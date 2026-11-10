@@ -1,0 +1,47 @@
+map_id: synthetic_subsonic_inlet_v1
+map_version: 1.0.0
+component_type: inlet
+formal_use_allowed: false
+source:
+  type: synthetic_interface_test
+  reference: NovaTurbo V2.2-C1 inlet implementation fixture
+  license: project_internal_synthetic
+  validation_status: trends_and_software_contract_only
+coordinates:
+  - name: flight_mach
+    definition: ambient flight Mach number
+    unit: dimensionless
+  - name: capture_area_ratio
+    definition: effective inducer-eye area divided by inducer-tip disk area
+    unit: dimensionless
+outputs:
+  - name: total_pressure_recovery
+    definition: inlet-exit total pressure divided by freestream total pressure
+    unit: dimensionless
+  - name: discharge_coefficient
+    definition: effective inlet choked capacity coefficient
+    unit: dimensionless
+boundaries:
+  - name: minimum_capture_area_ratio
+    definition: lower validated capture-area ratio indexed by flight Mach
+    unit: dimensionless
+  - name: maximum_capture_area_ratio
+    definition: upper validated capture-area ratio indexed by flight Mach
+    unit: dimensionless
+reference_state:
+  temperature_K: 288.15
+  pressure_Pa: 101325.0
+  capture_area_ratio_design: 0.75
+  total_or_static: static_to_total
+  mass_flow_basis: air_only
+  area_definition: effective_inducer_eye_over_tip_disk
+  diameter_definition: compressor_inducer_tip_diameter
+interpolation: {method: bilinear_v1, boundary_method: linear_v1}
+domain_policy: {diagnostic_extrapolation_limit: 0.08}
+uncertainty:
+  total_pressure_recovery: 0.01
+  discharge_coefficient: 0.015
+applicability:
+  geometry_family: subsonic_bellmouth_or_short_nacelle_proxy
+  scaling_basis: flight_mach_and_capture_area_ratio
+  excluded_uses: [formal_acceptance, production_training_data, certification]

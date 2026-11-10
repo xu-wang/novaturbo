@@ -1,0 +1,51 @@
+protocol_version: wp19_23_direct_dflow_equal_budget_campaign_v1
+work_package: WP19-23-Gate-G
+status: frozen_development_comparison
+formal_use_allowed: false
+target_source:
+  dataset: data/generated/wp19_21_development_dataset_98304_v1/regression_converged.jsonl
+  campaign_id: seed_20260831
+  split: held_out_test
+  selection: thrust_quantiles_0.15_0.40_0.65_0.90
+model_variant: bounded-sigmoid
+sampling_modes: [direct, dflow]
+device: cuda:0
+budgets:
+  raw_candidates_per_target_per_mode: 128
+  source_seed: 20260817
+  true_physics_rule: common_minimum_n_keep_power_of_two
+  downstream_refinement_or_nsga2: excluded_from_generation_mode_comparison
+targets:
+  - sample_id: 90738
+    target_type: ID
+    expected_status: KNOWN_FEASIBLE
+    thrust_N: 20.955041899992697
+    tsfc_kg_N_s: 0.00011838375149465028
+    mass_kg: 4.679671626543618
+  - sample_id: 90837
+    target_type: ID
+    expected_status: KNOWN_FEASIBLE
+    thrust_N: 50.13863869444162
+    tsfc_kg_N_s: 0.00011614630867591481
+    mass_kg: 2.1156278749285624
+  - sample_id: 92149
+    target_type: ID
+    expected_status: KNOWN_FEASIBLE
+    thrust_N: 90.65457721367832
+    tsfc_kg_N_s: 0.00005080073146479519
+    mass_kg: 2.215459699458305
+  - sample_id: 92231
+    target_type: ID
+    expected_status: KNOWN_FEASIBLE
+    thrust_N: 169.23418951967648
+    tsfc_kg_N_s: 0.000035284841418524566
+    mass_kg: 1.7129864897096319
+decision_policy:
+  development_gate_g: descriptive_equal_budget_evidence
+  formal_gate: deferred_pending_external_calibration_and_engineering_decisions
+  default_model_replacement: deferred_no_automatic_replacement
+artifacts:
+  runtime_root: data/inverse_design/wp19_23_gate_g_campaign_v1
+  summary: campaign_summary.json
+  report: Gate_G_summary.md
+  manifest: campaign_manifest.json

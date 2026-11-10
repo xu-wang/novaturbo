@@ -1,0 +1,17 @@
+version: geometry22_v3_local_center_audit_v1
+scope: local_center_coordinate_relabel_development_only
+source_anchor_registry:
+  path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/audits/S3_v4_Medoid_Anchor_Registry.jsonl
+  sha256: ff151789ca38e04d06ba7cfea479727531974eb0b341393412f659852d11de2f
+  expected_rows: 33
+new_coordinates: explicit_v3_schema_reference_values
+v3_evaluation: frozen_development_runtime
+diagnostic_partition:
+  path: config/physics/geometry19_constraint_profile_pipeline_debug_v1.yaml
+  sha256: 5b5d916ae60bdd80fb0a64e0af514206100d4aff2612d8d0261989b1695fa8f3
+  status: borrowed_v2_2_partition_for_v3_software_diagnostic_only
+center_status_rule: numerical_and_domain_diagnostic_pass
+training_allowed: false
+formal_use_allowed: false
+deployment_allowed: false
+output_root: data/validation/v3_22d_local_center_audit_v1

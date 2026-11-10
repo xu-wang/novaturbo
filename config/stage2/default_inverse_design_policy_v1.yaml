@@ -1,0 +1,73 @@
+policy_id: default_inverse_design_policy_v1
+status: superseded_legacy_reference
+effective_date: '2026-08-14'
+
+superseded_by:
+  effective_date: '2026-08-17'
+  config: config/inverse_design/default.yaml
+  script: scripts/run_inverse_design.py
+  documentation: 完整高精度逆设计默认策略说明.md
+
+purpose: >-
+  Define the operational default independently from the G3 research claim.
+  The G3 failure limits superiority claims but does not route production back
+  to nflows.
+
+supersedes_operational_interpretation:
+  document: docs/S2-WP6-G3方法验证正式报告.md
+  section: 4
+  preserved: [g3_statistics, g3_failed_gate]
+  corrected: deployment_default
+
+generator:
+  model_id: cfm
+  architecture: GPU-Sinkhorn-CFM-4-FiLM-Residual
+  training_seed: 43
+  checkpoint: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_43/best.pt
+
+candidate_protocol:
+  name: v2_1_fixed_raw
+  N_raw: 128
+  reject: [non_finite, out_of_bounds, duplicate]
+  keep_rule: 'N_keep = 0 if N_valid = 0 else 2^floor(log2(N_valid))'
+  refill: false
+
+delivery_chain:
+  - action: direct_real_0d
+    stop_when: minimum_hit_count_reached
+  - action: active10d_surrogate_gradient
+    run_when: direct_missed_and_forward_valid_candidate_exists
+    acceptance: real_0d_error_strictly_improves
+    stop_when: minimum_hit_count_reached
+  - action: warm_start_nsga2
+    run_when: gradient_still_misses
+    stop_when: budget_exhausted_or_completed
+
+runtime_routing:
+  enabled: false
+  fallback_generator: null
+  nflows_role: research_accuracy_baseline_only
+
+legacy_execution:
+  config: config/inverse_design/legacy/cfm4_default_v1.yaml
+  policy: config/inverse_design/policies/default_delivery_v1.yaml
+  generator: config/inverse_design/generators/cfm4_sinkhorn_seed43_v1.yaml
+  script: scripts/run_inverse_design_cfm4_legacy.py
+  target_argument: --target-config
+  documentation: docs/NovaTurbo默认逆设计交付策略.md
+  physical_gpu: 6
+  logical_device: cuda:0
+
+legacy_reproduction:
+  config: config/stage2/s2_wp5_cfm_default.yaml
+  script: scripts/run_stage2_wp5_cfm.py
+
+evidence:
+  cfm_default_freeze: config/stage2/s2_wp5_cfm_default_freeze_v2.yaml
+  g3_result_freeze: config/stage2/s2_wp6_freeze_v1.yaml
+  g3_passed: false
+  interpretation: >-
+    CFM did not beat frozen nflows on ordinary-target error, but retained
+    materially higher physical-valid coverage, non-collapsed diversity, and
+    difficult-target refinement access. These are the operational reasons for
+    keeping the CFM enhancement chain as default.

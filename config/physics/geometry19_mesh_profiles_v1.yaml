@@ -1,0 +1,25 @@
+profile_version: geometry19_mesh_profiles_v1
+description: Two-level Geometry19 solid and TPMS mesh generation profiles.
+
+qualities:
+  preview_mesh:
+    circumferential_segments: 24
+    lattice_voxels_per_cell: 3
+  export_mesh:
+    circumferential_segments: 72
+    lattice_voxels_per_cell: 7
+
+diagnostics:
+  degenerate_face_area_tolerance_mm2: 1.0e-10
+  axial_bounds_tolerance_mm: 0.05
+  interface_tolerance_mm: 0.05
+  expected_watertight_components:
+    - inlet
+    - compressor
+    - combustor
+    - turbine
+    - nozzle
+    - shaft
+    - casing
+    - transitions
+

@@ -1,0 +1,54 @@
+version: baseline_v1
+run_name: baseline_v1
+output_root: baseline_results
+
+dataset:
+  n_samples: 10000
+  seed: 42
+
+surrogate:
+  seed: 42
+  split_seed: 42
+  hidden_layers: [128, 256, 256, 128, 64]
+  activation: relu
+  dropout: 0.1
+  batch_norm: true
+  batch_size: 256
+  learning_rate: 0.001
+  weight_decay: 0.00001
+  epochs: 200
+  patience: 20
+  lr_scheduler: true
+  val_split: 0.15
+  test_split: 0.10
+
+optimizer:
+  seed: 42
+  population_size: 100
+  n_generations: 200
+  crossover_rate: 0.9
+  mutation_rate: 0.1
+  mutation_scale: 0.1
+  tournament_size: 3
+  objectives:
+    - thrust_N
+    - tsfc_kg_N_s
+    - total_mass_kg
+    - thrust_to_weight
+  maximize: [true, false, false, true]
+  min_thrust_N: 30.0
+  max_tsfc: 0.00005
+  max_mass_kg: 3.0
+  use_surrogate: false
+  surrogate_model_path: null
+
+reproducibility:
+  repeats: 2
+  deterministic_torch: true
+  relative_tolerance: 0.000001
+  absolute_tolerance: 0.00000001
+
+metrics:
+  hypervolume_sobol_power: 17
+  normalized_reference_point: [1.1, 1.1, 1.1, 1.1]
+

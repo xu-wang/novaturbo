@@ -1,0 +1,123 @@
+baseline_id: s2_wp5_cfm_default_freeze_v2
+manifest_version: stage2_wp5_cfm_default_freeze_manifest_v2
+immutable: true
+frozen_utc: '2026-08-13T04:30:00Z'
+
+scope:
+  stage: S2-WP5-post-freeze
+  status: completed_and_frozen
+  statement: >-
+    Bounded nflows/cINN variants failed the joint ordinary-accuracy and
+    extreme-target gate. The default delivery chain is therefore CFM-4 seed43,
+    fixed N_raw=128 rejection/power-of-two trimming, direct 0D acceptance,
+    budgeted design-gradient rescue, and NSGA-II only if gradient rescue misses.
+
+code:
+  source_commit: 6a9dfc1ff628199a4e60cfe2ad13c5362ee1a650
+  source_commit_policy: must_be_ancestor_of_current_head
+  branch_at_execution: nflo/Clnn有界完善
+
+preserved_v1:
+  manifest: config/stage2/s2_wp5_freeze_v1.yaml
+  default_config_sha256: 0a2f7e066aeca6362c36d71e1e80cc24afb2ea98cae5c7dbb67df62b582422ca
+  implementation_sha256: f25478dbb470627dc3cad55289ed96bee0969f5a2526c0feddd33a2e41ebc28b
+
+candidate_contract:
+  protocol: v2_1_fixed_raw
+  raw_candidates: 128
+  reject_before_0d: [non_finite, out_of_bounds, duplicate]
+  keep_rule: 'N_keep = 0 if N_valid = 0 else 2^floor(log2(N_valid))'
+  refill: false
+
+model_selection:
+  selection_targets: 39
+  extreme_target_excluded_during_selection: true
+  selected_model: cfm
+  selected_architecture: GPU-Sinkhorn-CFM-4
+  selected_training_seed: 43
+  ordinary_valid_rate: 0.733373
+  ordinary_direct_hit_rate: 1.0
+  ordinary_direct_median_J: 0.000623
+  rejected_training_seed_42_valid_rate: 0.726763
+  rejected_training_seed_42_direct_median_J: 0.000794
+
+default_chain:
+  generator: cfm_seed43
+  actions: [direct, design_gradient, nsga2]
+  stop_after_direct_hit: true
+  stop_after_gradient_hit: true
+  nsga2_only_after_previous_miss: true
+  latent_repair_enabled: false
+
+acceptance_runs:
+  ordinary:
+    target_id: 5a0c200a08733f8d38e870b98b503c3944b3b6ee5d56540a443cc168f62437a4
+    N_raw: 128
+    N_valid: 111
+    N_keep: 64
+    direct_hit_count: 63
+    executed_actions: []
+    total_0d: 64
+  extreme:
+    target_id: b668dfbed5da6d9771c73e87cb419f1f01528229642ff19642aa5e53073e6047
+    N_raw: 128
+    N_valid: 83
+    N_keep: 64
+    direct_hit_count: 0
+    executed_actions: [design_gradient, nsga2]
+    final_hit_count: 1
+    final_best_J: 0.003317746059821345
+    gradient_0d: 24
+    nsga2_0d: 640
+    total_0d: 728
+
+artifacts:
+  - category: default_configuration
+    path: config/stage2/s2_wp5_cfm_default.yaml
+    bytes: 2337
+    sha256: 9474f72e5e2c8c6ff6903c25617745c16667e91eb81a049a46745626eaf351ef
+  - category: extreme_configuration
+    path: config/experiments/bounded_flows/extreme_cfm_default.yaml
+    bytes: 2128
+    sha256: 7cfda24bac87c44d0d053030aa23802d3b0b45971e612f0343c0123f2e990bd2
+  - category: smoke_configuration
+    path: config/stage2/s2_wp5_smoke.yaml
+    bytes: 2133
+    sha256: 2f617a98047827ad2a1da7ff80f95c4d62cb841f3ddcb1bad574f623ef6b2794
+  - category: default_entrypoint
+    path: scripts/run_stage2_wp5_cfm.py
+    bytes: 952
+    sha256: 71d08099c5768ba5cf4b4a94d78a88d938a8957c9e35707c109d7390b98413fd
+  - category: generator_checkpoint
+    path: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_43/best.pt
+    bytes: 1685355
+    sha256: f9dfefc3597e9df1cd2e1a0db2522c9b15f3ea3653072ab4686190fd38c0b664
+  - category: gradient_surrogate
+    path: data/inverse_design/stage2/s2_wp3_consistency_repair_v2/forward_surrogate.pt
+    bytes: 418841
+    sha256: dd87006e9f0b5d3bb691b6386075bebd914805e1c650da943facf2f9b82e0878
+  - category: ordinary_manifest
+    path: data/inverse_design/stage2/bounded_flows/cfm_default_ordinary_frozen_v2/manifest.yaml
+    bytes: 1388
+    sha256: b39367d6812a5d3b7f92d94645119544c7a53a3a65fd92aa5473598092036f5a
+  - category: ordinary_generation_metrics
+    path: data/inverse_design/stage2/bounded_flows/cfm_default_ordinary_frozen_v2/generation/metrics.json
+    bytes: 357
+    sha256: 0acb40ad9183c60a8d9613f735c4985079e434000e2ebba1d229bd91e5381bc5
+  - category: ordinary_decision
+    path: data/inverse_design/stage2/bounded_flows/cfm_default_ordinary_frozen_v2/delivery/decision.json
+    bytes: 451
+    sha256: a16fce3e6d16c64c39e7a6ce2db17f42a437b208a1a84a77203545c4a302e8a0
+  - category: extreme_manifest
+    path: data/inverse_design/stage2/bounded_flows/cfm_default_extreme_frozen_v2/manifest.yaml
+    bytes: 1422
+    sha256: f1e97c4b64b4b1de14e25487c15d569f77f7dc6053c0d67d61cd7184189ecfae
+  - category: extreme_generation_metrics
+    path: data/inverse_design/stage2/bounded_flows/cfm_default_extreme_frozen_v2/generation/metrics.json
+    bytes: 355
+    sha256: a9fcd077a45e20d9c9bfeea918bc288d4e9ccfaf4acebca874ec69030b1f9bd8
+  - category: extreme_decision
+    path: data/inverse_design/stage2/bounded_flows/cfm_default_extreme_frozen_v2/delivery/decision.json
+    bytes: 488
+    sha256: 7879b5520893f7d7d0cd2588c1ca0cf5cfa0fe5ad10d964e2327c4f5134db860
+

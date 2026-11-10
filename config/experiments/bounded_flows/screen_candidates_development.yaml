@@ -1,0 +1,33 @@
+version: bounded_flows_candidate_screen_v1
+
+data:
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  metrics_config: config/generator_active10d_metrics.yaml
+
+targets:
+  suite_csv: data/generator_active10d_100k/targets/target_suite_active10d_v1.csv
+  frozen_ids: config/stage2/s2_wp1_end_to_end_targets_v1.yaml
+  extreme_holdout_target_id: b668dfbed5da6d9771c73e87cb419f1f01528229642ff19642aa5e53073e6047
+  maximum_targets_per_type: null
+
+support: {neighbor_count: 5, quantile: 0.99}
+
+arms:
+  - {arm_id: original_nflows_seed42, model: nflows, training_seed: 42, checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/nflows/seed_42/best.pt}
+  - {arm_id: bounded_old_nflows_seed42, model: nflows, training_seed: 42, checkpoint_path: data/generator_models/s2_wp2_bounded10d_full_gpu6_v1/nflows/seed_42/best.pt}
+  - {arm_id: margin_nflows_seed42, model: nflows, training_seed: 42, checkpoint_path: data/generator_models/stage2/bounded_flows/screen_margin_seed42_v1/nflows/seed_42/best.pt}
+  - {arm_id: softclip3_nflows_seed42, model: nflows, training_seed: 42, checkpoint_path: data/generator_models/stage2/bounded_flows/screen_softclip3_seed42_v1/nflows/seed_42/best.pt}
+  - {arm_id: softclip5_nflows_seed42, model: nflows, training_seed: 42, checkpoint_path: data/generator_models/stage2/bounded_flows/screen_softclip5_seed42_v1/nflows/seed_42/best.pt}
+  - {arm_id: original_cinn_seed42, model: cinn, training_seed: 42, checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/cinn/seed_42/best.pt}
+  - {arm_id: bounded_old_cinn_seed42, model: cinn, training_seed: 42, checkpoint_path: data/generator_models/s2_wp2_bounded10d_full_gpu6_v1/cinn/seed_42/best.pt}
+  - {arm_id: margin_cinn_seed42, model: cinn, training_seed: 42, checkpoint_path: data/generator_models/stage2/bounded_flows/screen_margin_seed42_v1/cinn/seed_42/best.pt}
+  - {arm_id: softclip3_cinn_seed42, model: cinn, training_seed: 42, checkpoint_path: data/generator_models/stage2/bounded_flows/screen_softclip3_seed42_v1/cinn/seed_42/best.pt}
+  - {arm_id: softclip5_cinn_seed42, model: cinn, training_seed: 42, checkpoint_path: data/generator_models/stage2/bounded_flows/screen_softclip5_seed42_v1/cinn/seed_42/best.pt}
+
+runtime: {device: cuda, n_raw: 128, sample_seed_base: 20260813}
+
+output:
+  development_directory: data/inverse_design/stage2/bounded_flows/candidate_screen_development_v1
+  extreme_directory: data/inverse_design/stage2/bounded_flows/candidate_screen_extreme_forbidden

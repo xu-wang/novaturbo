@@ -1,0 +1,37 @@
+protocol_version: wp19_9_single_point_validation_v1
+physics_spec_version: geometry19_closed_v2_1
+design_schema: config/physics/geometry19_schema_v1.yaml
+calibration_pack: config/physics/geometry19_calibration_bootstrap_v1.yaml
+purpose: >-
+  Deterministic WP19-9 gate for station completeness, conservation, nozzle
+  state consistency, and converged-versus-feasible result semantics. This is
+  not a calibration or formal-data-generation authorization.
+
+tolerances:
+  combustor_energy_abs_W: 1.0e-8
+  shaft_power_abs_W: 1.0e-8
+  nozzle_temperature_abs_K: 1.0e-9
+  nozzle_pressure_abs_Pa: 1.0e-6
+  nozzle_velocity_abs_m_s: 1.0e-9
+  choked_mach_abs: 1.0e-12
+
+cases:
+  - id: reference_ground_subsonic
+    description: Frozen reference geometry at static sea-level conditions.
+    design_overrides: {}
+    environment: {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 0.0}
+    expected: {converged: true, nozzle_choked: false, feasible: false}
+
+  - id: reference_flight_choked
+    description: Frozen reference geometry at a flight condition that chokes the nozzle.
+    design_overrides: {}
+    environment: {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 1.5}
+    expected: {converged: true, nozzle_choked: true, feasible: false}
+
+  - id: lattice_cell_upper_boundary
+    description: >-
+      Manufacturing-coordinate boundary case; thermodynamic matching remains
+      closed while formal manufacturing feasibility is evaluated separately.
+    design_overrides: {lattice_cell_size_m: 0.014}
+    environment: {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 0.0}
+    expected: {converged: true, nozzle_choked: false, feasible: false}

@@ -1,0 +1,56 @@
+protocol_version: wp19_23_generator_core_oracle_v1
+status: development_generator_analysis
+formal_use_allowed: false
+
+data:
+  regression_dataset: data/generated/wp19_21_development_dataset_98304_v1/regression_converged.jsonl
+  full_dataset: data/generated/wp19_21_development_dataset_98304_v1/dataset.jsonl
+  train_campaigns: [seed_20260826, seed_20260827, seed_20260828, seed_20260829]
+  validation_campaign: seed_20260830
+  held_out_campaign: seed_20260831
+  target_counts:
+    train_diagnostic: 12
+    development: 24
+    locked_held_out: 36
+  historical_targets: config/experiments/wp19_23_gate_h_candidate_utilization_v1.yaml
+
+models:
+  - arm_id: g0_unbounded
+    checkpoint: data/generator_models/geometry19/wp19_23_cfm4_gpu_sinkhorn_seed43_v1/baseline/best.pt
+  - arm_id: g1_bounded_sigmoid
+    checkpoint: data/generator_models/geometry19/wp19_23_cfm4_bounded_sigmoid_seed43_v1/baseline/best.pt
+
+sampling:
+  mode: direct
+  maximum_raw_candidates: 512
+  nested_prefixes: [16, 32, 64, 128, 256, 512]
+  source_seeds: [20260817, 20260902, 20260903]
+  discrete_absolute_tolerance_count: 0.25
+  refill_allowed: false
+  projection_allowed: false
+
+controls:
+  condition_knn: true
+  doe_direct_campaign: seed_20260829
+
+execution:
+  device: cuda:0
+  physics_workers: 16
+  physics_chunksize: 16
+
+development_thresholds:
+  oracle_hit_256: 0.75
+  oracle_hit_512: 0.85
+  median_best_true_rho_256: 1.0
+  p90_best_true_rho_256: 2.0
+  stable_target_fraction: 0.70
+  median_strict_hit_density_256: 0.01
+
+artifacts:
+  runtime_root: data/inverse_design/wp19_23_generator_core_oracle_v1
+  report: Generator_Core_Report.md
+  summary: generator_core_summary.json
+  target_suite: target_suite.jsonl
+  candidate_ledger: candidate_ledger.jsonl
+  physics_ledger: physics_ledger.jsonl
+

@@ -1,0 +1,20 @@
+version: geometry22_v3_local_candidate_dataset_v1
+scope: software_regression_candidates_no_training
+sources:
+  base:
+    path: data/validation/v3_22d_local_training_data_v1
+    manifest_sha256: cb606d85039ff158b4c0065841515990336c83ee4d719bad2f5dec148ca18602
+    coordinates_sha256: 313277742adb898f174365c07ec0f8f31053947f24b61c3f6507bbf44edfd8e2
+    labels_sha256: d243994f7f7465ba11c74d73d3f82e578ff049d33bc456af92d3722b95a68b3a
+  development_supplement:
+    path: data/validation/v3_22d_local_training_data_dev_supplement_v1
+    manifest_sha256: 6c5ee0203d3109071d599c2bb24282c20f087b2350c777a41f6962d425aabb95
+    coordinates_sha256: 23d6ddb3d1f8c9282fd91203a6e04958d96775047c854b264261717d201b486a
+    labels_sha256: 4bad99e1515fe6c39a29600c5e4e4637a4cd61d0923102c965336fa57b75ff00
+candidate_rule: converged_finite_three_performance_and_borrowed_diagnostic_domain
+split_rule: frozen_l2_center_split_no_reassignment
+required_combined_coverage_gate: true
+training_allowed: false
+formal_use_allowed: false
+deployment_allowed: false
+output_root: data/validation/v3_22d_local_candidate_dataset_v1

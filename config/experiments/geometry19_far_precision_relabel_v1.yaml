@@ -1,0 +1,131 @@
+protocol_version: geometry19_far_precision_relabel_v1
+status: protocol_defined_implementation_and_execution_lock_pending
+scope: known_33_root_development_labels_only
+authorization:
+  protocol_definition: true
+  physical_regression_execution: false
+  full_population_relabel_execution: false
+  default_physics_change: false
+  training: false
+  inverse_design: false
+  confirmation_content_access: false
+inputs:
+  diagnostic_summary:
+    path: data/validation/v2_2_g0c_far_precision_diagnostic_v1/Summary.json
+    sha256: 7969dc762eff0a38a7e9343f12ec359c0e4e316c248fec7115f6768f93ceadd1
+  diagnostic_complete_manifest:
+    path: data/validation/v2_2_g0c_far_precision_diagnostic_v1/Complete_Manifest.json
+    sha256: 16cad4d878fb25dac0dcd7074228794f0ee16c3e0c6df4a75cfd27a8485f4a0f
+  coordinates:
+    path: data/validation/v2_2_performance_gated_local_cfm_v1/training_coordinates/g0b_v1/Prelabel_Coordinates.jsonl
+    sha256: db57319cd4b4a0d2a039e37ad3612e584a271e47f44e8029995afc31a0c347a1
+  splits:
+    path: data/validation/v2_2_performance_gated_local_cfm_v1/training_coordinates/g0b_v1/Pair_Split_Registry.jsonl
+    sha256: 331d4d7749d7902421e18ce6a818e3d00c4f9de3c0bd921e1370787ce4743374
+  original_labels:
+    path: data/validation/v2_2_performance_gated_local_cfm_v1/training_physics/g0c_v1/Sealed_Evaluations.jsonl
+    sha256: d7baa82b9323926c4b1f04876e30d7a45ab1ba9be7681b65ae9a1b4d0df46b4e
+  original_combustor:
+    path: src/physics/combustor_map_enhanced.py
+    sha256: 8456246bceecf0599c3f3984e55dffa9548e17ded9bf4b8d1043d772c91a84bc
+  conservation_thresholds:
+    path: config/physics/geometry19_conservation_tolerances_v1.yaml
+    sha256: 6165e04162cd31b1c41ec085ea4baec926f28656157c2438fcbf189c331af6b7
+  target_domain:
+    path: config/physics/geometry19_v2_2_development_target_domain_v1.yaml
+    sha256: c3905de3d89c8405954d24172cdc614a3c08423595a33216adb1f2fcccc689f4
+candidate:
+  version: geometry19_v2_2_far_precision_v1
+  parent_profile: v2_2_development
+  default_registry_edit: forbidden
+  frozen_source_edit: forbidden
+  architecture: isolated_function_globals_and_explicit_combustor_solver_injection
+  process_global_monkeypatch: forbidden
+  far_parameters: {xtol: 1.0e-15, rtol: 1.0e-15, maxiter: 64}
+  allowed_numerical_delta: combustor_far_xtol_and_rtol_only
+  distinct_backend_model_bundle_context_identities: required
+  source_runtime_environment_hashes_before_execution: required
+regression:
+  stage_r1:
+    population: all_512_diagnostic_root_coordinates_in_frozen_order
+    root_seed_id: 4cb10f6935baf51117f3cdbabf4ec2840ea23713994e76b3d8140538fd5d05f4
+    candidate_calls: 512
+    reference: sealed_diagnostic_B_no_new_B_calls
+    gate: exact_field_equality_except_explicit_version_provenance_and_new_diagnostic_metadata
+  stage_r2:
+    population: other_32_roots_each_of_4_bands_pair_index_1_sign_plus_1
+    coordinate_count: 128
+    selection_uses_performance_or_validity: false
+    original_A_calls: 128
+    candidate_C_calls: 128
+    order: seal_all_A_and_verify_original_labels_before_C
+    gates:
+      original_A_reproduces_frozen_labels_exactly: true
+      no_new_solver_numerical_or_physics_domain_failures: true
+      no_originally_eligible_point_loses_eligibility: true
+      finite_positive_performance_relative_change_maximum: 1.0e-6
+      original_unavailable_performance: report_not_comparable_do_not_impute
+      candidate_missing_performance_when_original_present: fail
+      all_candidate_converged_energy_residuals_absolute_W_maximum: 1.0e-6
+      original_failure_to_candidate_success: report_separately
+  failure_action: seal_and_stop_no_parameter_search_or_full_relabel
+  diagnostic_postselection_not_independent_confirmation: true
+relabel:
+  prerequisite: both_regression_stages_pass_and_separate_execution_authorization
+  coordinates: all_original_16896_in_original_order
+  roots: 33
+  shards: 132
+  rows_per_shard: 128
+  train_rows: 13464
+  validation_rows: 3432
+  evaluate_every_coordinate_with_candidate: true
+  reuse_diagnostic_or_regression_labels: forbidden
+  mixed_physics_versions: forbidden
+  split_reassignment: forbidden
+  adaptive_top_up: forbidden
+  all_rows_retained: true
+  eligibility: original_G0c_rules_and_thresholds_unchanged
+  training_candidate: physics_eligible_and_original_split_train
+  seal_complete_ledger_before_any_aggregate_gate: true
+  gates:
+    each_root_minimum_valid_train: 256
+    each_root_minimum_valid_validation: 64
+    each_root_band_minimum_valid_train: 32
+    each_root_band_minimum_valid_validation: 8
+    new_solver_numerical_or_physics_domain_failures_vs_original: 0
+    originally_eligible_rows_losing_eligibility: 0
+    comparable_performance_relative_change_maximum: 1.0e-6
+    candidate_converged_energy_residuals_absolute_W_maximum: 1.0e-6
+    missing_candidate_performance_when_original_present: fail
+  pass_action: candidate_label_version_qualified_separate_training_protocol_required
+  failure_action: preserve_candidate_ledger_report_failure_stop_no_training
+budget:
+  regression_r1: 512
+  regression_r2_A: 128
+  regression_r2_C: 128
+  full_relabel: 16896
+  maximum_new_whole_engine_calls: 17664
+  prior_diagnostic_1024_calls: excluded_already_completed
+  far_internal_calls: counted_separately_not_whole_engine_calls
+  unregistered_physics_smokes_or_test_calls: forbidden
+execution:
+  worker_policy: sequential_cpu
+  physical_failure_retry: forbidden
+  infrastructure_exception: preserve_partial_stop_explicit_recovery_required
+  completed_shard_resume: verify_all_input_arm_code_runtime_output_hashes_then_skip
+  orphan_or_missing_completed_shard: abort_no_overwrite_or_silent_replay
+  completed_run_resume: verification_only_no_new_physics
+  stop_if_source_or_environment_identity_changes: true
+compatibility:
+  frozen_99_targets: unchanged_not_used_for_label_generation_or_parameter_selection
+  old_surrogates: not_automatically_qualified_for_new_physics
+  old_target_source_designs: no_relabel_in_this_budget
+  before_inverse_closure: separate_target_and_surrogate_cross_version_compatibility_audit
+  training_inputs: three_performance_values_only_no_root_or_medoid_condition
+  root_identity_use: expert_supervision_and_dispatch_only_not_external_condition
+  medoid_use: fixed_coordinate_decoding_only_not_condition
+artifacts:
+  proposed_output_root: data/validation/v2_2_far_precision_relabel_v1
+  required_preexecution: [Protocol_Lock.json, Implementation_Manifest.json, Regression_Registry.jsonl, Coordinate_Registry.jsonl, Runtime_Contract.json]
+  separate_authorizations: [Regression_Execution_Manifest.json, Relabel_Execution_Manifest.json]
+  historical_artifacts: immutable_no_overwrite

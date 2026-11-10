@@ -1,0 +1,33 @@
+validation_id: wp_v2_2_c4_turbine_thermo_validation_v1
+baseline_profile: v2_2_full_component_shadow
+enhanced_profile: v2_2_full_variable_thermo_shadow
+expected_thermo_model_id: geometry19_thermo_variable_property_shadow_v1
+c3_reference_isolation:
+  mass_flow_air_kg_s: 0.26146989825311734
+  thrust_N: 82.56130914211144
+  tsfc_kg_N_s: 6.15063711921825e-05
+  relative_tolerance: 1.0e-12
+hot_side_closure:
+  enthalpy_absolute_tolerance_J_kg: 1.0e-8
+  shaft_power_absolute_tolerance_W: 1.0e-9
+root_sweep:
+  shaft_speed_ratios: [0.90, 0.95, 1.00, 1.05]
+  environments:
+    - {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 0.0}
+    - {temperature_K: 290.0, pressure_Pa: 95000.0, mach: 0.10}
+    - {temperature_K: 300.0, pressure_Pa: 102000.0, mach: 0.15}
+  maximum_consecutive_mass_flow_relative_jump: 0.20
+runtime_benchmark:
+  shaft_speed_ratios: [0.90, 0.95, 1.00, 1.05]
+  warmup_repetitions: 2
+  timed_repetitions: 7
+  max_p50_enhanced_to_baseline_ratio: 2.0
+  max_p95_enhanced_to_baseline_ratio: 2.0
+engineering_blockers:
+  - turbine_map_is_synthetic_software_fixture
+  - thermo_polynomials_are_software_shadow_models
+  - no_independent_hot_side_rig_or_high_fidelity_validation
+  - combustion_product_viscosity_uses_air_sutherland_proxy
+  - no_nominal_conservative_uq_acceptance_contract
+artifacts:
+  default_output_root: data/validation/wp_v2_2_c4_turbine_thermo_v1

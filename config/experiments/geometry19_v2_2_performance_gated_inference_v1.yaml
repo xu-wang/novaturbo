@@ -1,0 +1,114 @@
+protocol_version: geometry19_v2_2_performance_gated_inference_v1
+stage: N1_common_inference_adapter_and_gpu_smoke
+scope: performance_gate_local_cfm_pooled_cfm_and_frozen_s2_scorer
+
+inputs:
+  n0_compatibility:
+    path: data/validation/v2_2_cross_version_compatibility_v1/Compatibility_Summary.json
+    sha256: e28d165bffd0e8df75a7a9df4bbd298e08c6ef79f1cd68ea59b94f129b9aa751
+  training_summary:
+    path: data/validation/v2_2_performance_gated_local_cfm_v1/model_training/g1_g2_v1/Training_Summary.json
+    sha256: be704c70bb2eb4f712683640bb14db677e047d376fb4bb7f99b191cc04a6f6b3
+  training_audit:
+    path: data/validation/v2_2_performance_gated_local_cfm_v1/model_training/g1_g2_v1/Training_Audit.json
+    sha256: 3082f732c1ac53e927d67f3bc2ef8bc5bd93f0ec9cac000ae69fe78a5abf356b
+  training_runtime:
+    path: data/validation/v2_2_performance_gated_local_cfm_v1/model_training/g1_g2_v1/Runtime_Manifest.json
+    sha256: e044bd9d42647ee391d746ec3c97bafc1fac66f01ab0f3195f96b7f9ce4bdfbf
+  condition_transform:
+    path: data/validation/v2_2_performance_gated_local_cfm_v1/training_preparation/g1_g2_v1/Condition_Transform.json
+    sha256: f51c60de33b1b4ae369b819871f5468cc3ace9c40c549245e337c172b8e2f3fb
+  expert_decoders:
+    path: data/validation/v2_2_performance_gated_local_cfm_v1/training_preparation/g1_g2_v1/Expert_Decoders.json
+    sha256: d70bd82e95e6203b89d771272b17364323bd62c40658467242f275b5e18b5080
+  target_registry:
+    path: data/validation/v2_2_performance_gated_local_cfm_v1/targets/Target_Registry.jsonl
+    sha256: 4f4b18931d8aa59eed61ea142739c1559302d03c2770ef3572cc360c27d4a859
+  schema:
+    path: config/physics/geometry19_schema_v1.yaml
+    sha256: cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28
+  s2_model_manifest:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/models/S2_Model_Manifest.json
+    sha256: c1da78af5395718c855df9e32df31a4ad3763238b3d746b8374dafd0dcf8358b
+  s2_oracle_local_ridge:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/models/s2/stable_38_oracle_root_local_ridge.npz
+    sha256: 7b047285416c07471a8a65d1a95c1155b80a0c100ccbd4c6a8a0f7abf7051d16
+  far_precision_runtime:
+    path: data/validation/v2_2_far_precision_relabel_v1/Runtime_Contract.json
+    sha256: 98828eb7d5b547c9f79450d5a5482183499254273cfbbdaa0b73f704562112b8
+
+physics:
+  model_version: geometry19_v2_2_far_precision_v1
+  context_sha256: 49e9b09a047e096f59bd65132fcfaef5b8dc363d563d2be638247e7eaf55eb72
+  bundle_sha256: 2ecf2664a024ccc7ce7bad33d0ccf755eb72d1131fe01b773dff9a64b71ee5be
+  evaluation_in_N1: forbidden
+
+models:
+  training_seeds: [42, 43, 44]
+  checkpoints:
+    42:
+      gate: {path: data/validation/v2_2_performance_gated_local_cfm_v1/model_training/g1_g2_v1/seed42/gate/best_epoch_0284.pt, sha256: 7f37ec38768d5355750c56483d6e1e3dd72531a78bb76b2c971b7e9f86020c55}
+      local_cfm: {path: data/validation/v2_2_performance_gated_local_cfm_v1/model_training/g1_g2_v1/seed42/local_cfm/best_epoch_0396.pt, sha256: 276a81bd3fd7214fc2a2b5d01d5351706d9a701622c44a4577f99ec6c852ff3a}
+      pooled_cfm: {path: data/validation/v2_2_performance_gated_local_cfm_v1/model_training/g1_g2_v1/seed42/pooled_cfm/best_epoch_0385.pt, sha256: b1591b9a84f4a7d81a1a41510eaedaf4ef490e5998543d22d7225ddd3dc89d27}
+    43:
+      gate: {path: data/validation/v2_2_performance_gated_local_cfm_v1/model_training/g1_g2_v1/seed43/gate/best_epoch_0296.pt, sha256: 065274e4dab713e1661fa0d2b6849136ad4bf68f496ef2c3e1b2337418b94935}
+      local_cfm: {path: data/validation/v2_2_performance_gated_local_cfm_v1/model_training/g1_g2_v1/seed43/local_cfm/best_epoch_0314.pt, sha256: 4dad42eb9d86addb21d605e5bfb27ad4b3aef37aa06b8062bc7847ab2788eb7b}
+      pooled_cfm: {path: data/validation/v2_2_performance_gated_local_cfm_v1/model_training/g1_g2_v1/seed43/pooled_cfm/best_epoch_0400.pt, sha256: 808488b743f9cb825a3590330b3f4b83f3aa1b6b8b81e4fc374cac12805d8bd7}
+    44:
+      gate: {path: data/validation/v2_2_performance_gated_local_cfm_v1/model_training/g1_g2_v1/seed44/gate/best_epoch_0298.pt, sha256: 08f3441ab11097b196811f0b4b38689029f8b8f189e529775b82979a62af0726}
+      local_cfm: {path: data/validation/v2_2_performance_gated_local_cfm_v1/model_training/g1_g2_v1/seed44/local_cfm/best_epoch_0317.pt, sha256: 98bd367c95076b03317929cc612e8753d2993e691b3ba68c7f7c7c4ce64b9658}
+      pooled_cfm: {path: data/validation/v2_2_performance_gated_local_cfm_v1/model_training/g1_g2_v1/seed44/pooled_cfm/best_epoch_0392.pt, sha256: 85d99f21d2a18c82642c9aa10721108b50f78925b05d526f76d8a7435f746590}
+
+inference:
+  condition_fields: [thrust_N, tsfc_kg_N_s, mass_kg]
+  external_fields: [target_id, performance, units]
+  arms: [gated_top1_local_cfm, gated_top2_local_cfm, oracle_source_root_local_cfm, pooled_33_global_cfm]
+  primary_arm: gated_top1_local_cfm
+  diagnostic_arms: [gated_top2_local_cfm, oracle_source_root_local_cfm]
+  comparator: pooled_33_global_cfm
+  raw_candidates_per_task: 256
+  ode: {method: rk4, steps: 32}
+  generation_seed_by_training_seed: {42: 20261001, 43: 20261002, 44: 20261003}
+  per_target_seed_rule: generation_seed_plus_target_index
+  source_rng: numpy_PCG64_float32_standard_normal_256_by_16
+  local_route_source_sharing: exact_same_source_matrix_for_top1_top2_oracle
+  top2_allocation: one_each_then_largest_remainder_254_probability_weighted_root_id_ties
+  local_support_radius: 0.20
+  outside_support: reject_retain_raw_slot_no_projection_no_resampling
+  pooled_support_assignment: matching_integer_tuple_then_minimum_local_distance_then_root_id
+  scorer: frozen_s2_oracle_local_ridge_of_candidate_support_root
+  scorer_target_root_access: false
+  selection: valid_unique_design_hash_then_predicted_rho_then_design_hash
+  physics_slots_per_task: 8
+
+smoke:
+  target_indices: [0]
+  tasks: 12
+  expected_raw_slots: 3072
+  run_all_training_seeds: true
+  run_all_arms: true
+  physical_gpu: 6
+  logical_device: cuda:0
+  require_checkpoint_reload_exact: true
+  require_raw_slot_count_exact: true
+  require_no_physics_calls: true
+  require_no_source_root_in_non_oracle_runtime_input: true
+
+authorization:
+  model_prediction_authorized: true
+  smoke_candidate_generation_authorized: true
+  full_99_target_generation_authorized: false
+  physics_evaluation_authorized: false
+  gradient_enhancement_authorized: false
+  nsga2_authorized: false
+  confirmation_content_access: false
+  formal_use_allowed: false
+  deployment_allowed: false
+
+artifacts:
+  output_root: data/validation/v2_2_performance_gated_local_cfm_v1/inference_adapter/n1_v1
+  candidate_ledger: Smoke_Candidate_Ledger.jsonl
+  selection_ledger: Smoke_Selection_Ledger.jsonl
+  summary: Smoke_Summary.json
+  report: Smoke_Report.md
+  evidence_manifest: Evidence_Manifest.json

@@ -1,0 +1,11 @@
+generator_version: inverse_design_generator_v1
+generator_id: cfm4_sinkhorn_seed43_v1
+
+model:
+  model_id: cfm
+  checkpoint_path: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_43/best.pt
+
+metadata:
+  architecture: GPU-Sinkhorn-CFM-4-FiLM-Residual
+  training_seed: 43
+  role: operational_default

@@ -1,0 +1,15 @@
+version: wp6_validation_v1
+target_config: config/inverse_design/targets/target_001.yaml
+
+run_configs:
+  - config/inverse_design/runs/random.yaml
+  - config/inverse_design/runs/cvae_generator.yaml
+  - config/inverse_design/runs/nflows_hybrid.yaml
+  - config/inverse_design/runs/cinn_hybrid.yaml
+  - config/inverse_design/runs/cfm_hybrid.yaml
+
+reproducibility_run_config: config/inverse_design/runs/cvae_generator.yaml
+
+output:
+  directory: data/inverse_design/wp6_g2_gpu6_final
+  refuse_overwrite: true

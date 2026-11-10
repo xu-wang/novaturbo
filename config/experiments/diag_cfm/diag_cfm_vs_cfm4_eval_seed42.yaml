@@ -1,0 +1,25 @@
+version: diag_cfm_vs_cfm4_eval_seed42_v1
+metrics_config: config/generator_active10d_metrics.yaml
+
+data:
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  target_suite: config/experiments/cfm_arch/cfm_0_generalization_targets.csv
+
+models:
+  diag_cfm: data/generator_models/diag_cfm/diag_cfm_v1_gpu6/diag_cfm/seed_42/best.pt
+  cfm: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_42/best.pt
+
+runtime:
+  device: cuda
+  sample_count: 128
+  sample_seed: 20260817
+  sample_seed_namespace: diag_cfm_vs_cfm4_formal_v1
+  maximum_targets_per_type: null
+  sampling: {policy: v2_1_fixed_raw}
+  generator_overrides: {ode_method: rk4, ode_steps: 32}
+
+output:
+  directory: data/inverse_design/diag_cfm/diag_cfm_vs_cfm4_eval_seed42_v1
+  refuse_overwrite: true

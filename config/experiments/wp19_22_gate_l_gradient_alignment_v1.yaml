@@ -1,0 +1,58 @@
+protocol_version: wp19_22_gate_l_gradient_alignment_v1
+work_package: WP19-22-Gate-L
+status: development_gradient_audit
+formal_use_allowed: false
+gate_k_config: config/experiments/wp19_22_gate_k_hit_aligned_surrogate_v1.yaml
+gate_k2_config: config/experiments/wp19_22_gate_k2_full_closure_v1.yaml
+gate_k2_summary: data/inverse_design/wp19_22_gate_k2_full_closure_v1/gate_k2_summary.json
+trajectory_root: data/inverse_design/wp19_22_gate_k2_full_closure_v1
+device: cuda:0
+audit:
+  minimum_direction_pairs: 32
+  minimum_normalized_direction_norm: 0.000001
+  sign_epsilon: 0.000001
+  trigger:
+    minimum_median_cosine: 0.50
+    minimum_tsfc_sign_accuracy: 0.65
+    minimum_predicted_descent_precision: 0.60
+s4:
+  direction_data:
+    requested_pairs: {train: 256, validation: 64, test: 64}
+    normalized_step: 0.025
+    seed: 20260901
+    workers: 4
+  training:
+    device: cuda:0
+    seed: 43
+    batch_size: 1024
+    direction_batch_size: 64
+    learning_rate: 0.0001
+    weight_decay: 0.00001
+    epochs: 30
+    patience: 6
+    min_delta: 0.000001
+    directional_huber_delta: 1.0
+    directional_cosine_weight: 0.25
+  arms:
+    - {arm_id: s4_gradient_001, gradient_weight: 0.01}
+    - {arm_id: s4_gradient_005, gradient_weight: 0.05}
+  selection:
+    maximum_validation_rho_regression: 0.10
+    minimum_validation_direction_loss_reduction: 0.05
+  closure:
+    gate_i_config: config/experiments/wp19_23_gate_i_hit_alignment_ablation_v1.yaml
+    c_true_physics_budget_per_target: 32
+    maximum_d_true_physics_per_target: 24
+  promotion:
+    minimum_target_hits: 3
+    minimum_predicted_descent_precision: 0.60
+    minimum_tsfc_sign_accuracy: 0.75
+artifacts:
+  runtime_root: data/inverse_design/wp19_22_gate_l_gradient_alignment_v1
+  pairs: direction_pairs.jsonl
+  summary: gate_l_audit_summary.json
+  report: Gate_L_gradient_audit.md
+  manifest: gate_l_manifest.json
+  direction_dataset: s4_direction_dataset.jsonl
+  s4_training_summary: s4_training_summary.json
+  s4_report: Gate_L_S4_report.md

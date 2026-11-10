@@ -1,0 +1,62 @@
+version: diag_cfm_smoke_v1
+lockfile: config/third_party_models.lock.yaml
+
+training_contract:
+  require_full_train_split: false
+  require_full_val_split: false
+  minimum_epochs_completed: 1
+  require_early_stopping: false
+  accepted_termination_reasons: [early_stopping, max_epochs]
+
+data:
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  target_suite: config/experiments/cfm_arch/cfm_0_generalization_targets.csv
+  batch_size: 128
+  num_workers: 0
+  subset_seed: 314159
+  max_train_samples: 512
+  max_val_samples: 256
+
+runtime:
+  seeds: [42]
+  device: cuda
+  epochs: 2
+  minimum_epochs: 1
+  patience: 2
+  min_delta: 1.0e-5
+  gradient_clip_norm: 10.0
+  checkpoint_sample_count: 32
+  lr_scheduler: {enabled: false}
+
+models:
+  diag_cfm:
+    enabled: true
+    architecture_id: DIAG-CFM-V1-SMOKE
+    design_dim: 10
+    condition_dim: 3
+    hidden_dim: 64
+    hidden_layers: 2
+    activation: leaky_relu
+    state_convention: "[z,y]->[x,0]"
+    base_distribution: uniform
+    base_low: -1.0
+    base_high: 1.0
+    ode_method: euler
+    ode_steps: 4
+    ode_rtol: 1.0e-5
+    ode_atol: 1.0e-5
+    self_consistency_diagnostics: true
+    learning_rate: 0.001
+    weight_decay: 0.00001
+    bounded_output: {enabled: false}
+    method_provenance:
+      paper: arXiv:2603.15925v2
+      official_repository: https://github.com/migueldecampos/diagcfm
+      official_commit: d1afc35f325ecc22e0401b931b72b442b50370f2
+      implementation: independent_novaturbo_adapter
+
+output:
+  directory: data/generator_models/diag_cfm/diag_cfm_v1_smoke_gpu6
+  refuse_overwrite: true

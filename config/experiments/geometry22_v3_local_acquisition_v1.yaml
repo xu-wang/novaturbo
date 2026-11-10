@@ -1,0 +1,30 @@
+version: geometry22_v3_local_acquisition_v1
+scope: center_disjoint_local_development_labels_only
+source_contract:
+  path: data/validation/v3_22d_local_data_contract_v1
+  manifest_sha256: e87ab153dc4e424fb91ab44f195c41f28a6123265f8bd4ba508ea37e082cdc29
+  registry_sha256: 583c455c02fbaa96bf442e8252e90416a96ee91676dc59f1e246f2d7e2f0e58f
+source_centers:
+  path: data/validation/v3_22d_local_center_audit_v1
+  centers_sha256: cc48920e511347aa7d36e9b1ea4fc9f5395f77e205074908b1ee616909113c44
+source_pilot:
+  path: data/validation/v3_22d_local_pilot_v1
+  coordinate_sha256: 1737eb595bc10469b2694033ca3984cf72688bcb69e28603c437f37f3953d909
+direction_seed: 20260925
+pair_plan:
+  - {pair_index: 0, radius: 0.02}
+  - {pair_index: 1, radius: 0.02}
+  - {pair_index: 2, radius: 0.05}
+  - {pair_index: 3, radius: 0.05}
+maximum_direction_attempts_per_pair: 4096
+integer_policy: fixed_at_source_center
+split_before_labels: true
+adaptive_top_up: false
+diagnostic_partition:
+  path: config/physics/geometry19_constraint_profile_pipeline_debug_v1.yaml
+  sha256: 5b5d916ae60bdd80fb0a64e0af514206100d4aff2612d8d0261989b1695fa8f3
+  status: borrowed_v2_2_partition_for_v3_software_diagnostic_only
+training_allowed: false
+formal_use_allowed: false
+deployment_allowed: false
+output_root: data/validation/v3_22d_local_acquisition_v1

@@ -1,0 +1,28 @@
+protocol_version: wp19_23_pipeline_vs_cold_nsga2_256_v1
+work_package: WP19-23-enhanced-efficiency-comparison
+status: frozen_development_comparison
+formal_use_allowed: false
+method:
+  model_variant: bounded-sigmoid
+  sampling_mode: dflow
+  gradient_refinement: conditionally_enabled_wp19_23d
+  raw_candidate_count: 256
+  device: cuda:0
+baseline:
+  method: cold_start_nsga2
+  initialization: latin_hypercube_geometry19
+  population_size: 64
+  maximum_v2_1_evaluations: 640
+  seed: 42
+counting:
+  search_calls:
+    project: [WP19-23C.unique_v2_1_evaluations, WP19-23D.true_v2_1_evaluations, WP19-23E.unique_v2_1_evaluations]
+    cold_start: [WP19-23E.unique_v2_1_evaluations]
+  total_calls: search_calls_plus_WP19-23F_v2_1_recalculation
+  saved_calls: cold_start_total_calls_minus_project_total_calls
+targets_from_config: config/experiments/wp19_23_pipeline_vs_cold_nsga2_256_v1.yaml
+artifacts:
+  runtime_root: data/inverse_design/wp19_23_bounded_dflow_gradient_vs_cold_nsga2_256_v1
+  summary: comparison_summary.json
+  report: REPORT.md
+  manifest: comparison_manifest.json

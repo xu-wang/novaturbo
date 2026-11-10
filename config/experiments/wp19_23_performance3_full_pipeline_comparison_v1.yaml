@@ -1,0 +1,62 @@
+protocol_version: wp19_23_performance3_full_pipeline_comparison_v1
+work_package: WP19-23-PERFORMANCE3-FULL-PIPELINE-COMPARISON
+status: locked_evaluation_only
+formal_use_allowed: false
+pipeline_mutation_allowed: false
+integration_policy: forbidden_until_explicit_user_confirmation
+
+target_suite:
+  source: data/inverse_design/wp19_23_e1_performance3_pipeline_ranking_v1/formal/frozen_target_suite.jsonl
+  regions: [dense, mid, sparse]
+  targets_per_region: 8
+  selection_seed: 20260908
+  selection_method: sha256_seed_target_id_ascending
+
+shared_pipeline:
+  generator_variant: bounded-sigmoid
+  generator_checkpoint: data/generator_models/geometry19/wp19_23_cfm4_bounded_sigmoid_seed43_v1/baseline/best.pt
+  sampling_mode: dflow
+  raw_candidate_count: 256
+  source_seed: 20260817
+  candidate_ranking_mode: predicted_rho
+  dflow_target_loss_mode: hit_aligned
+  refinement_target_loss_mode: hit_aligned
+  refinement_true_acceptance_mode: hit_aligned
+  stages: [WP19-23B, WP19-23C, WP19-23D-conditional, WP19-23E-conditional, WP19-23F]
+  device: cuda:0
+
+arms:
+  shared48_s0:
+    model_root: data/inverse_design/wp19_22_gate_k_hit_aligned_surrogate_v1/models/s0_legacy_mse/seed_43
+    output_transform: identity
+    dflow_constraint_loss: enabled
+    dflow_feasibility_loss: enabled
+    refinement_constraint_loss: enabled
+    refinement_feasibility_loss: enabled
+  performance3_log:
+    model_root: data/inverse_design/wp19_22_performance_surrogate_v2_ablation/formal/models/performance3_log/seed_43
+    output_transform: natural_log
+    dflow_constraint_loss: disabled_not_available
+    dflow_feasibility_loss: disabled_v21_is_authority
+    refinement_constraint_loss: disabled_not_available
+    refinement_feasibility_loss: disabled_v21_is_authority
+
+statistics:
+  cluster_bootstrap_replicates: 10000
+  bootstrap_seed: 20260908
+  confidence_level: 0.95
+
+smoke:
+  targets_per_region: 1
+
+artifacts:
+  runtime_root: data/inverse_design/wp19_23_performance3_full_pipeline_comparison_v1
+  selected_target_suite: selected_target_suite.jsonl
+  comparison_ledger: comparison_ledger.jsonl
+  summary: summary.json
+  report: Performance3_Full_Pipeline_Comparison_Report.md
+
+protected_pipeline_files:
+  - config/physics/wp19_23_inverse_closure_v1.yaml
+  - scripts/run_wp19_23_pipeline.py
+  - src/ai/geometry19_pipeline.py

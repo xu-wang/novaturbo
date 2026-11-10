@@ -1,0 +1,145 @@
+baseline_id: s2_wp6_g3_freeze_v1
+manifest_version: stage2_wp6_g3_freeze_manifest_v1
+immutable: true
+frozen_utc: '2026-08-13T10:55:00Z'
+
+scope:
+  stage: S2-WP6
+  status: completed_and_frozen_g3_failed
+  statement: >-
+    The full G3 v2 matrix completed. CFM improves physical-valid coverage,
+    fixed-K diversity and performance relative to Screened Random, but its
+    ordinary-target error is stably worse than the frozen nflows Generator in
+    both training seeds. G3 therefore fails without post-hoc retuning.
+
+code:
+  source_commit: 24c33711cfda3f2e32765cdb2cb9e62d6de52d10
+  source_commit_policy: must_be_ancestor_of_current_head
+  branch_at_execution: main
+
+protocol:
+  raw_candidates: 128
+  candidate_protocol: v2_1_fixed_raw
+  refill: false
+  training_seeds: [42, 43]
+  optimizer_seeds: [42, 43]
+  bootstrap_replicates: 5000
+  failures_retained: true
+
+formal_matrix:
+  generator_only_targets: 280
+  generator_only_runs: 1120
+  search_baseline_targets: 40
+  search_baseline_runs: 480
+  automatic_delivery_targets: 40
+  automatic_delivery_runs: 320
+  generator_only_models: [nflows, cfm]
+  search_methods: [random, screened_random, nflows]
+  delivery_models: [nflows, cfm]
+
+decision:
+  g3_passed: false
+  primary_method: cfm
+  frozen_generator: nflows
+  required_random_baseline: screened_random
+  advantage_vs_screened_random: true
+  advantage_vs_frozen_generator: false
+  ordinary_median_log10_error_ratio: 0.4299694668113019
+  ordinary_error_ratio_ci: [0.40495507788106044, 0.46026018923822853]
+  ordinary_valid_rate_delta: 0.271171875
+  ordinary_valid_rate_delta_ci: [0.26410107421875, 0.278203125]
+  ordinary_diversity_ratio: 1.1144457006631254
+  ordinary_diversity_ratio_ci: [1.1064105842707157, 1.122422426318709]
+  infeasible_false_accept_rate: 0.0
+  ordinary_accuracy_primary_model: nflows
+  complementary_high_validity_model: cfm
+
+artifacts:
+  - category: formal_configuration
+    path: config/stage2/s2_wp6_g3_v2.yaml
+    bytes: 2452
+    sha256: dd8355d3a09b66f990fd47659b73e190d9e0f1ae4a227032e89c73849c05344b
+  - category: formal_entrypoint
+    path: scripts/run_stage2_wp6.py
+    bytes: 319
+    sha256: db7369ac401d8db9b1b26946a5a0121340b0adc56a545b554a6570e3c5882077
+  - category: orchestration_and_statistics
+    path: src/ai/stage2_wp6.py
+    bytes: 42762
+    sha256: 8e7bb1feff1f5b88ec10407affee55b1d707da5dfc5638f3b210224e835618df
+  - category: zero_candidate_pipeline_fix
+    path: src/ai/inverse_design.py
+    bytes: 65742
+    sha256: 00aaaa82920dfadb0ab13f7092a763c2d86758300916ace85a263f8ed800b9a1
+  - category: zero_candidate_aggregation_fix
+    path: src/ai/target_benchmark.py
+    bytes: 19285
+    sha256: 9945f3949e3670490e481a0c01336001d83e7f5ed5b9792d44c9d3f5021cd6e6
+  - category: formal_report
+    path: docs/S2-WP6-G3方法验证正式报告.md
+    bytes: 7682
+    sha256: 9600018feb1904543db1ab21907190de4c2547cf34208376f1ffa465c9a851a0
+  - category: formal_manifest
+    path: data/inverse_design/stage2/s2_wp6_g3_v2/manifest.yaml
+    bytes: 1241
+    sha256: 15666fb24bc2005e2ef35debe6bcb719ac80abf187e87056ade065b6d5be9ea6
+  - category: generator_only_target_summary
+    path: data/inverse_design/stage2/s2_wp6_g3_v2/generator_only_target_summary.csv
+    bytes: 688984
+    sha256: 172a2f5adbeb8746ee31a5d0f322e059de57caf0f3b6ce187d60efe941726e24
+  - category: generator_only_summary
+    path: data/inverse_design/stage2/s2_wp6_g3_v2/generator_only_summary.csv
+    bytes: 1098
+    sha256: abc439447eae1a0ab529c7756be790bdd59ed531d0a7fde11cdfba95f4aee913
+  - category: generator_only_paired
+    path: data/inverse_design/stage2/s2_wp6_g3_v2/generator_only_paired.csv
+    bytes: 672794
+    sha256: bbf26a21a72358df0fab5a6ff86de35ea4a65606dc8514dc0816aa76f93b11b2
+  - category: search_baseline_metrics
+    path: data/inverse_design/stage2/s2_wp6_g3_v2/end_to_end/benchmark/run_metrics.csv
+    bytes: 223618
+    sha256: dea577efa172530d31e6cb28a5555d775a0c9312840527108efba83af55f4497
+  - category: delivery_target_summary
+    path: data/inverse_design/stage2/s2_wp6_g3_v2/end_to_end/delivery_target_summary.csv
+    bytes: 184090
+    sha256: 03f0b23f2541d677a392d376bfda61d8530c2e0dad98094db02e27d3224ea643
+  - category: end_to_end_paired
+    path: data/inverse_design/stage2/s2_wp6_g3_v2/end_to_end/paired_comparison.csv
+    bytes: 79409
+    sha256: e9ab49fc1b160f581b88852aa237b60327b873f9486466eb76b65f13d65708aa
+  - category: end_to_end_paired_summary
+    path: data/inverse_design/stage2/s2_wp6_g3_v2/end_to_end/paired_summary.csv
+    bytes: 584
+    sha256: 55f36a27a78654f32d70a5b428fbed436fe3687d895805511055d4f2f0098982
+  - category: machine_gate
+    path: data/inverse_design/stage2/s2_wp6_g3_v2/g3_gate.json
+    bytes: 848
+    sha256: 2a8aee16c4e382cbf44adbdb167f96283a416afd08540fa9bb8f85ae572de634
+  - category: generated_report
+    path: data/inverse_design/stage2/s2_wp6_g3_v2/g3_report.md
+    bytes: 1165
+    sha256: 1f0361cc4c11166bc0938688e5f9b72eeedfea45da5cad75ffde232d2d09022f
+
+semantic_checks:
+  - kind: csv
+    path: data/inverse_design/stage2/s2_wp6_g3_v2/generator_only_target_summary.csv
+    row_count: 1120
+    value_counts:
+      model: {nflows: 560, cfm: 560}
+      training_seed: {'42': 560, '43': 560}
+      target_type: {ID: 400, Interpolation: 400, OOD-feasible-unknown: 160, Infeasible: 160}
+  - kind: csv
+    path: data/inverse_design/stage2/s2_wp6_g3_v2/end_to_end/benchmark/run_metrics.csv
+    row_count: 480
+    value_counts:
+      method: {random: 160, screened_random: 160, nflows: 160}
+      training_seed: {'42': 240, '43': 240}
+      optimizer_seed: {'42': 240, '43': 240}
+  - kind: csv
+    path: data/inverse_design/stage2/s2_wp6_g3_v2/end_to_end/delivery_target_summary.csv
+    row_count: 320
+    value_counts:
+      model: {nflows: 160, cfm: 160}
+      training_seed: {'42': 160, '43': 160}
+      optimizer_seed: {'42': 160, '43': 160}
+      target_type: {ID: 160, Interpolation: 160}

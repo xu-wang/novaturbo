@@ -1,0 +1,69 @@
+dataset_version: geometry19_v2_2_bridge_root_expansion_v3
+status: development_only_local_manifold_root_expansion
+profile: v2_2_development
+purpose: discover_independent_development_roots_along_local_performance_nullspace
+formal_use_allowed: false
+
+frozen_split:
+  manifest_path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/manifest.json
+  manifest_sha256: 46ecfb167d6a204dff3de2889028297ea915995feb3d8a8afe11ac19a8fa13cd
+  train:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/train.jsonl
+    sha256: 81713f27934aeb406d8fba87c6f05625eff2b8212e5319d36b180a55d3eb8fcf
+  validation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/validation.jsonl
+    sha256: ddc102939055a4890d8ac622e9747c5cac1823cbd6ffb82664edc453c713f11f
+  confirmation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+    sha256: a3051cae177d1c9735699ef4b50675f41f5f0ffd7d954b3a233f5ebf1ea8b1fd
+
+sampling:
+  method: development_local_jacobian_nullspace_root_discovery_v3
+  candidate_strategy: local_jacobian_nullspace
+  random_seed: 20260917
+  segments: [low_mass_low_to_mid, low_mass_mid_to_high]
+  bridge_root_count_per_segment: 12
+  directions_per_parent: 8
+  nullspace_step_l2: [0.14, 0.18, 0.22, 0.26]
+  predicted_performance_drift_penalty: 0.50
+  minimum_l2_to_existing: 0.10
+  minimum_l2_between_bridges: 0.10
+  target_accepted_rows_per_root: 32
+  minimum_observations_for_projection: 16
+  maximum_observations_per_root: 96
+  ridge: 0.001
+  inverse_ridge: 0.01
+  discrete_step_probability: 0.04
+  rounds:
+    - samples_per_active_root: 64
+      trust_radius_fraction: 0.060
+      perturbation_radius_fraction: 0.0025
+      step_gain: 0.95
+    - samples_per_active_root: 64
+      trust_radius_fraction: 0.050
+      perturbation_radius_fraction: 0.0020
+      step_gain: 1.00
+    - samples_per_active_root: 64
+      trust_radius_fraction: 0.035
+      perturbation_radius_fraction: 0.0015
+      step_gain: 1.00
+
+coverage_gate:
+  minimum_qualified_bridge_roots_per_segment: 8
+  minimum_accepted_rows_per_bridge_root: 24
+  minimum_bridge_reference_p95_reduction_fraction: 0.10
+
+development_folds:
+  grouping_key: root_seed_id
+  fold_count: 5
+  distance_strata: 3
+  minimum_validation_roots_per_target_segment: 3
+  selection_metric: development_multi_fold_worst_root_rho_p95
+
+limitations:
+  - confirmation_is_hash_locked_and_excluded_from_all_development_operations
+  - failed_geometric_midpoint_v1_and_performance_matched_v2_are_retained_as_negative_evidence
+  - roots_are_development_manifold_discoveries_not_fresh_confirmation_roots
+  - local_jacobian_is_proposal_only_and_all_labels_use_unified_v2_2_physics
+  - simplified_19d_software_labels_only
+  - no_real_geometry_or_engineering_feasibility_claim

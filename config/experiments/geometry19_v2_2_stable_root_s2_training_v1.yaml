@@ -1,0 +1,130 @@
+protocol_version: geometry19_v2_2_stable_root_s2_training_v1
+status: preregistered_before_S2_model_fitting
+stage: S2_train_select_reload_and_hash_forward_models
+formal_use_allowed: false
+deployment_allowed: false
+
+inputs:
+  parent_forward_protocol:
+    path: config/experiments/geometry19_v2_2_stable_root_forward_fresh_eval_v1.yaml
+    sha256: 0ebe4537162334dd5548fb7354bb7967f9bce2fc52a967ef21ffc69f93603be7
+  parent_protocol_lock:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/audits/S2_S3_Protocol_Lock.json
+    sha256: 9e6af457c1e5dc6716a420c7e3e2dd25c7099e2b4b0d05f14e4138531cf26a90
+    required_status: STABLE_ROOT_S2_S3_PROTOCOL_LOCK_PASS
+  stable_root_registry:
+    path: data/validation/v2_2_stable_root_conditional_surrogate_v1/audits/stable_root_registry.jsonl
+    sha256: eedbc02591bc7b6b044071ecf0d1754d648b4ad9210114887b314e1b964352ad
+  design_schema:
+    path: config/physics/geometry19_schema_v1.yaml
+    sha256: cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28
+  target_domain:
+    path: config/physics/geometry19_v2_2_development_target_domain_v1.yaml
+    sha256: c3905de3d89c8405954d24172cdc614a3c08423595a33216adb1f2fcccc689f4
+  development_dataset:
+    path: data/validation/v2_2_known_manifold_root_discovery_v1/development_dataset.jsonl
+    sha256: cde2c3f6a0cebc91a437f45b7aae5d2ebfe2b8adff952942d05efaae09297134
+  sealed_confirmation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+    sha256: a3051cae177d1c9735699ef4b50675f41f5f0ffd7d954b3a233f5ebf1ea8b1fd
+    access: sha256_only_no_parse
+
+coordinates:
+  input_order: frozen_geometry19_schema_index_order
+  input_transform: schema_range_normalized
+  output_order: [thrust_N, tsfc_kg_N_s, mass_kg]
+  output_transform: natural_log
+  rho: maximum_axis_absolute_relative_error_divided_by_target_relative_tolerance
+
+inner_selection:
+  folds: 4
+  assignment: sort_unique_design_hashes_within_each_stable_root_then_index_modulo_4
+  validation_population: stable_38_rows_only
+  support_rejection_used_for_selection: false
+  all_78_comparator_training_population: all_nonvalidation_rows_including_nonstable_roots
+  stable_arm_training_population: stable_nonvalidation_rows_only
+  parent_seed_id_overlap_is_known_limitation: true
+  fresh_evaluation_visible: false
+  primary_metric: worst_stable_root_rho_p95
+  aggregation: concatenate_all_four_OOF_folds_then_compute_root_metrics
+  tie_breakers:
+    - low_mass_low_to_mid_worst_root_rho_p95
+    - low_mass_mid_to_high_worst_root_rho_p95
+    - alpha
+    - deterministic_arm_id
+
+ridge:
+  implementation: sklearn.linear_model.Ridge
+  solver: svd
+  fit_intercept: true
+  alpha_candidates: [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0]
+  sample_weight: total_weight_equal_per_root_and_global_mean_weight_one
+  local_models_use_one_globally_selected_alpha_per_arm: true
+  residual_base_and_root_residual_use_same_candidate_alpha: true
+  coefficients_stored_as: compressed_npz_float64
+  exact_array_reload_required: true
+  exact_prediction_reload_required: true
+
+arms:
+  - id: all_78_global_root_balanced_ridge
+    family: global_ridge
+    routing: none
+  - id: stable_38_pooled_root_balanced_ridge
+    family: global_ridge
+    routing: none
+  - id: stable_38_nearest_root_local_ridge
+    family: per_root_ridge
+    routing: nearest_frozen_normalized_design_center
+  - id: stable_38_oracle_root_local_ridge
+    family: per_root_ridge
+    routing: source_root_id
+    diagnostic_only: true
+  - id: stable_38_global_plus_root_residual_ridge
+    family: stable_global_plus_per_root_residual_ridge
+    routing: source_root_id
+    anchored_mode_only: true
+
+final_fit:
+  all_78_comparator_rows: 4529
+  stable_arm_rows: 2935
+  stable_roots: 38
+  select_alpha_before_final_fit: true
+  fresh_evaluation_used: false
+
+model_manifest_gate:
+  require_all_5_arms: true
+  require_inner_metrics_for_all_alphas: true
+  require_exact_reload: true
+  require_all_coefficients_finite: true
+  require_all_development_predictions_finite_positive: true
+  require_confirmation_content_unread: true
+  require_no_fresh_coordinate_or_label_artifact: true
+
+regression_authorization:
+  command: pytest -q --junitxml=S2_Full_Regression.xml
+  minimum_tests: 784
+  failures: 0
+  errors: 0
+  junit_hash_required: true
+  s3_authorized_only_after_junit_and_manifest_hash_lock: true
+
+artifacts:
+  runtime_root: data/validation/v2_2_stable_root_forward_fresh_eval_v1
+  model_directory: models/s2
+  inner_selection: audits/S2_Inner_Selection.json
+  model_manifest: models/S2_Model_Manifest.json
+  training_report: audits/S2_Forward_Model_Training_Report.md
+  regression_junit: audits/S2_Full_Regression.xml
+  regression_authorization: audits/S2_Regression_Authorization.json
+
+statuses:
+  model_lock_pass: STABLE_ROOT_S2_MODEL_MANIFEST_LOCK_PASS
+  model_lock_fail: STABLE_ROOT_S2_MODEL_MANIFEST_LOCK_FAIL
+  regression_authorized: STABLE_ROOT_S2_REGRESSION_PASS_S3_AUTHORIZED
+
+limitations:
+  - inner_design_hash_folds_may_split_shared_parent_seed_lineage
+  - inner_scores_are_model_selection_diagnostics_not_final_accuracy_evidence
+  - oracle_and_residual_arms_require_known_root_identity
+  - no_fresh_S3_data_is_generated_or_read_during_S2
+  - no_inverse_design_or_original_P4_authorization

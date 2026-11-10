@@ -1,0 +1,92 @@
+protocol_version: geometry19_v2_2_stable_root_conditional_surrogate_v1
+status: preregistered_after_p3_failure_before_stable_root_implementation
+stage: S0_S1_stable_root_registry_and_support_audit
+scope: known_anchor_stable_root_conditional_forward_surrogate
+formal_use_allowed: false
+deployment_allowed: false
+default_pipeline_modified: false
+
+inputs:
+  design_schema:
+    path: config/physics/geometry19_schema_v1.yaml
+    sha256: cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28
+  development_dataset:
+    path: data/validation/v2_2_known_manifold_root_discovery_v1/development_dataset.jsonl
+    sha256: cde2c3f6a0cebc91a437f45b7aae5d2ebfe2b8adff952942d05efaae09297134
+  development_folds:
+    path: data/validation/v2_2_known_manifold_root_discovery_v1/development_root_folds.json
+    sha256: facc23ac72e85dda7da5723e480b58e4b9dcf95dbe8d531482371938bc48599a
+  root_inventory:
+    path: data/validation/v2_2_local_chart_moe_v1/audits/root_inventory.jsonl
+    sha256: 2f4af06dd7c37903c1a4924779b23218e7034c82b97ccb1ecbb424f6adc0b64c
+  p2_jacobian_summary:
+    path: data/validation/v2_2_local_chart_moe_v1/audits/jacobian_stability_summary.json
+    sha256: 66be51da8776d47a468522d1eadad5ab23a3c7e11d129a2c7e5a459ab2842f72
+  p3_chart_summary:
+    path: data/validation/v2_2_local_chart_moe_v1/audits/chart_identification_summary.json
+    sha256: b5b4556eab3ce1ba3fbb7a27666f21dfa83fa204cafe4e019e30a2a9d17d5f22
+    required_status: LOCAL_CHART_MOE_P3_CHART_IDENTIFICATION_UNSTABLE
+  sealed_confirmation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+    sha256: a3051cae177d1c9735699ef4b50675f41f5f0ffd7d954b3a233f5ebf1ea8b1fd
+    access: sha256_only_no_parse
+
+stable_root_selection:
+  source: p2_root_reliability
+  rule: reliable_estimates_equals_training_fold_estimates_equals_4
+  expected_stable_roots: 38
+  expected_always_unreliable_roots: 32
+  expected_mixed_roots: 8
+  expected_stable_rows: 2935
+  post_selection_from_full_development: true
+  existing_outer_fold_scores_reusable_as_fresh_evidence: false
+  fresh_evaluation_required_before_accuracy_claim: true
+
+root_semantics:
+  root_is: provenance_group_and_sampled_neighborhood_around_feasible_engine_seed
+  root_is_not: proven_distinct_manifold_or_physical_regime
+  jacobian_stable_means: estimator_repeatable_under_current_sampling_scale_and_method
+  jacobian_stable_does_not_mean: real_engine_physics_is_inherently_stable
+
+support_audit:
+  design_coordinates: schema_range_normalized
+  center: root_inventory_design_center
+  anchored_radius: per_root_p95_l2_distance_of_development_rows_to_center
+  blind_acceptance: inside_any_stable_root_p95_sphere
+  negative_challenge: always_unreliable_root_development_rows
+  mixed_roots: excluded_diagnostic_only
+  stable_acceptance_minimum: 0.80
+  always_unreliable_false_acceptance_maximum: 0.20
+  minimum_rows_per_stable_root: 24
+  minimum_effective_rank_per_stable_root: 6
+  sphere_overlap_rule: center_distance_le_sum_of_radii
+
+next_stage_contract:
+  anchored_mode_may_authorize_S2: true
+  blind_mode_is_separate_gate: true
+  generate_fresh_data_now: false
+  train_forward_surrogate_now: false
+  train_inverse_model_now: false
+  unlock_original_P4: false
+
+artifacts:
+  runtime_root: data/validation/v2_2_stable_root_conditional_surrogate_v1
+  input_lock: audits/S0_Input_Lock.json
+  stable_root_registry: audits/stable_root_registry.jsonl
+  support_audit: audits/S1_Stable_Support_Audit.json
+  summary: audits/stable_root_support_summary.json
+  report: audits/S0_S1_Stable_Root_Support_Report.md
+
+statuses:
+  anchored_and_blind_pass: STABLE_ROOT_S1_ANCHORED_AND_BLIND_SUPPORT_PASS
+  anchored_only_pass: STABLE_ROOT_S1_ANCHORED_PASS_BLIND_SUPPORT_NOT_IDENTIFIABLE
+  audit_fail: STABLE_ROOT_S1_SUPPORT_AUDIT_FAIL
+
+limitations:
+  - simplified_19d_v2_2_software_labels_only
+  - stable_set_was_selected_after_observing_full_development_jacobian_diagnostics
+  - thirty_seven_of_thirty_eight_stable_roots_are_pre_root_discovery_sources
+  - current_support_rates_are_development_feasibility_diagnostics_not_accuracy_evidence
+  - no_unknown_root_or_all_78_root_accuracy_claim
+  - no_model_training_or_fresh_evaluation_in_S0_S1
+  - no_real_geometry_engineering_formal_or_deployment_claim

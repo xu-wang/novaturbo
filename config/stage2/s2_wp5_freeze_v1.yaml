@@ -1,0 +1,141 @@
+baseline_id: s2_wp5_freeze_v1
+manifest_version: stage2_wp5_freeze_manifest_v1
+immutable: true
+frozen_utc: '2026-08-13T02:30:00Z'
+
+scope:
+  stage: S2-WP5
+  status: completed_and_frozen
+  statement: >-
+    This manifest freezes the revised generator direct-delivery, budgeted
+    gradient rescue and optional multi-objective NSGA-II experiment matrix.
+    Failed zero-valid-candidate runs are retained and are not refilled.
+
+code:
+  source_commit: e85addc
+  source_commit_policy: must_be_ancestor_of_current_head
+  branch_at_execution: main
+
+candidate_contract:
+  protocol: v2_1_fixed_raw
+  raw_candidates: 128
+  reject_before_0d: [non_finite, out_of_bounds, duplicate]
+  keep_rule: 'N_keep = 0 if N_valid = 0 else 2^floor(log2(N_valid))'
+  refill: false
+
+formal_matrix:
+  frozen_targets: 40
+  target_types: {ID: 20, Interpolation: 20}
+  models: [nflows, cinn, cfm]
+  training_seeds: [42, 43]
+  auto_delivery_runs: 240
+  multiobjective_runs: 48
+  total_runs: 288
+  completed_runs: 288
+  successful_delivery_runs: 284
+  failed_delivery_runs: 4
+  total_0d_evaluations: 46018
+
+decision:
+  direct_hit_runs: 234
+  final_hit_runs: 235
+  direct_delivery_is_default: true
+  latent_repair_activation_runs: 0
+  design_gradient_activation_runs: 2
+  nsga2_rescue_activation_runs: 2
+  multiobjective_nsga2_runs: 48
+  multiobjective_target_error_win_rate: 0.5625
+  multiobjective_mass_win_rate: 0.8125
+  primary_accuracy_model: nflows
+  complementary_high_validity_model: cfm
+
+artifacts:
+  - category: implementation_configuration
+    path: config/stage2/s2_wp5.yaml
+    bytes: 2117
+    sha256: 0a2f7e066aeca6362c36d71e1e80cc24afb2ea98cae5c7dbb67df62b582422ca
+  - category: formal_matrix_configuration
+    path: config/stage2/s2_wp5_matrix.yaml
+    bytes: 1715
+    sha256: 869da1e0bd67d7eeca2a7100562238c3fb3fab7b9f5687f21635262a1f20dd5e
+  - category: formal_matrix_entrypoint
+    path: scripts/run_stage2_wp5_matrix.py
+    bytes: 374
+    sha256: 7898dde3c4112a7e4f37acd08e1f40b217687152787f847d4d026046fc5d9d0b
+  - category: direct_delivery_implementation
+    path: src/ai/stage2_wp5.py
+    bytes: 35634
+    sha256: f25478dbb470627dc3cad55289ed96bee0969f5a2526c0feddd33a2e41ebc28b
+  - category: matrix_aggregation_implementation
+    path: src/ai/stage2_wp5_matrix.py
+    bytes: 19688
+    sha256: 141c016f3e9d3dc576148df4b4550e99a5cd62100c95d2fd02f7da4e58115207
+  - category: formal_manifest
+    path: data/inverse_design/stage2/s2_wp5_formal_matrix_v1/manifest.yaml
+    bytes: 1185
+    sha256: 3452027d193775c87e7fab85fc195516f3a095b17d33145153dda6f8d1b01611
+  - category: run_matrix
+    path: data/inverse_design/stage2/s2_wp5_formal_matrix_v1/run_matrix.csv
+    bytes: 66177
+    sha256: 1471573f71c39d1c48c0e933279acbb612cac6dbbc3d0fea7bf7e79f6e4a2559
+  - category: target_summary
+    path: data/inverse_design/stage2/s2_wp5_formal_matrix_v1/target_summary.csv
+    bytes: 161937
+    sha256: 780717acbf19f512252cfa3b1b0ca0dd0f8605c7ddedd93e72acf6cc5ddab603
+  - category: aggregate_summary
+    path: data/inverse_design/stage2/s2_wp5_formal_matrix_v1/aggregate_summary.csv
+    bytes: 2252
+    sha256: 3745cc4463c5be3595ac056111e0d7a681caef10d7d93129be9f17ed28865bae
+  - category: failure_ledger
+    path: data/inverse_design/stage2/s2_wp5_formal_matrix_v1/failure_ledger.csv
+    bytes: 3141
+    sha256: fe3a6fd48f263ebbcaeea7f7eb80956f567f5d45176f0b96913d33a5545dfe4b
+  - category: functional_gate
+    path: data/inverse_design/stage2/s2_wp5_formal_matrix_v1/functional_gate.json
+    bytes: 332
+    sha256: 2f1149fc50dd5658c18f09f7b63f36d90adb8e417939d8ec1051e29dcf3e650a
+  - category: formal_report
+    path: docs/S2-WP5正式实验结果与冻结报告.md
+    bytes: 5809
+    sha256: 05b960bac210edacea22b18e9463dae0ee2021ceb9666e68bb800c39173660e6
+
+semantic_checks:
+  - kind: csv
+    path: data/inverse_design/stage2/s2_wp5_formal_matrix_v1/run_matrix.csv
+    row_count: 288
+    value_counts:
+      arm:
+        auto_delivery: 240
+        multiobjective_refinement: 48
+      model:
+        nflows: 96
+        cinn: 96
+        cfm: 96
+      training_seed:
+        '42': 144
+        '43': 144
+      target_type:
+        ID: 144
+        Interpolation: 144
+  - kind: csv
+    path: data/inverse_design/stage2/s2_wp5_formal_matrix_v1/target_summary.csv
+    row_count: 288
+    value_counts:
+      arm:
+        auto_delivery: 240
+        multiobjective_refinement: 48
+      model:
+        nflows: 96
+        cinn: 96
+        cfm: 96
+  - kind: csv
+    path: data/inverse_design/stage2/s2_wp5_formal_matrix_v1/failure_ledger.csv
+    row_count: 4
+    value_counts:
+      arm:
+        auto_delivery: 4
+      model:
+        nflows: 2
+        cinn: 2
+      target_type:
+        Interpolation: 4

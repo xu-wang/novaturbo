@@ -1,0 +1,42 @@
+version: geometry22_v3_local_training_data_v1
+scope: software_development_data_acquisition_no_training
+source_contract:
+  path: data/validation/v3_22d_local_data_contract_v1
+  manifest_sha256: e87ab153dc4e424fb91ab44f195c41f28a6123265f8bd4ba508ea37e082cdc29
+  registry_sha256: 583c455c02fbaa96bf442e8252e90416a96ee91676dc59f1e246f2d7e2f0e58f
+source_centers:
+  path: data/validation/v3_22d_local_center_audit_v1/centers.jsonl
+  sha256: cc48920e511347aa7d36e9b1ea4fc9f5395f77e205074908b1ee616909113c44
+excluded_coordinates:
+  - {path: data/validation/v3_22d_local_pilot_v1/coordinates.jsonl, sha256: 1737eb595bc10469b2694033ca3984cf72688bcb69e28603c437f37f3953d909}
+  - {path: data/validation/v3_22d_local_acquisition_v1/coordinates.jsonl, sha256: bcd39cf28beea4468c4d281ab2e3f828f300e51d08a80b8eec5a2acf07ef49ba}
+coordinate_plan:
+  centers: 33
+  bands: [[0.0, 0.02], [0.02, 0.04], [0.04, 0.06], [0.06, 0.08]]
+  pairs_per_center_band: 64
+  rows_per_center: 512
+  total_rows: 16896
+  normalized_distance: euclidean_l2_over_19_continuous_22d_schema_coordinates
+  direction_method: scrambled_sobol_19_signed_axes_plus_radial_axis
+  primary_seed: 20260926
+  reserve_seed: 20260927
+  sobol_pool_base2_exponent: 13
+  pool_rows_per_band: 2048
+  maximum_attempts_per_band: 4096
+  pair_policy: positive_negative_symmetric_no_clipping_or_shrinking
+  integer_policy: fixed_at_source_center
+  geometric_screen: v2_2_analytic_geometry_checks_applied_to_22d_projection
+  split: inherit_frozen_l2_center_split_before_labels
+  adaptive_top_up: false
+physics:
+  diagnostic_partition_path: config/physics/geometry19_constraint_profile_pipeline_debug_v1.yaml
+  diagnostic_partition_sha256: 5b5d916ae60bdd80fb0a64e0af514206100d4aff2612d8d0261989b1695fa8f3
+  software_candidate: converged_finite_three_performance_and_borrowed_diagnostic_domain
+  shard_rows: 128
+  minimum_candidate_per_center_band: 80
+  minimum_candidate_per_center: 384
+  adaptive_top_up: false
+training_allowed: false
+formal_use_allowed: false
+deployment_allowed: false
+output_root: data/validation/v3_22d_local_training_data_v1

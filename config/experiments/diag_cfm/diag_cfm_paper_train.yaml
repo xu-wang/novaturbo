@@ -1,0 +1,71 @@
+version: diag_cfm_paper_gasturbine_train_v1
+lockfile: config/third_party_models.lock.yaml
+
+training_contract:
+  require_full_train_split: true
+  require_full_val_split: true
+  minimum_epochs_completed: 20
+  require_early_stopping: false
+  accepted_termination_reasons: [max_epochs]
+
+data:
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  target_suite: config/experiments/cfm_arch/cfm_0_generalization_targets.csv
+  batch_size: 5000
+  num_workers: 0
+  subset_seed: 314159
+  max_train_samples: null
+  max_val_samples: null
+
+runtime:
+  seeds: [42, 43]
+  device: cuda
+  epochs: 20
+  minimum_epochs: 20
+  patience: 20
+  min_delta: 0.0
+  gradient_clip_norm: 0.0
+  checkpoint_sample_count: 128
+  lr_scheduler: {enabled: false}
+
+models:
+  diag_cfm:
+    enabled: true
+    architecture_id: DIAG-CFM-V2-PAPER-GASTURBINE-MLP
+    design_dim: 10
+    condition_dim: 3
+    hidden_dim: 1024
+    hidden_layers: 4
+    activation: leaky_relu
+    state_convention: "[z,y]->[x,0]"
+    base_distribution: uniform
+    base_low: 0.0
+    base_high: 1.0
+    state_scaling:
+      design: zero_one
+      condition: zero_one
+      condition_input_min: [-2.434751762618827, -2.711765621818321, -3.6263404512247392]
+      condition_input_max: [2.967806003329994, 17.28895328121256, 3.011576455375015]
+      statistics_source: train_split_exact_min_max
+    ode_method: euler
+    ode_steps: 30
+    ode_rtol: 1.0e-5
+    ode_atol: 1.0e-5
+    self_consistency_diagnostics: true
+    learning_rate: 0.001
+    weight_decay: 0.0
+    bounded_output: {enabled: false}
+    method_provenance:
+      paper: arXiv:2603.15925v2 Appendix F.1/F.3
+      official_repository: https://github.com/migueldecampos/diagcfm
+      official_commit: d1afc35f325ecc22e0401b931b72b442b50370f2
+      paper_mapping: gas_turbine_combustor
+      paper_parameters: {hidden_width: 1024, hidden_layers: 4, batch_size: 5000, epochs: 20, learning_rate: 0.001, solver: euler_30}
+      adaptation: NovaTurbo P=10 L=3; train-split min/max maps existing normalized data to paper [0,1] state space
+      total_parameters: 3177485
+
+output:
+  directory: data/generator_models/diag_cfm/diag_cfm_paper_gasturbine_v1_gpu6
+  refuse_overwrite: true

@@ -1,0 +1,88 @@
+schema_version: generator_active10d_v1
+description: "Active inverse problem: [F, TSFC, Mass] -> ten physically active variables"
+
+design_variables:
+  - name: compressor_pressure_ratio
+    engine_input: compressor_pressure_ratio
+    dtype: float64
+    unit: dimensionless
+    bounds: [2.0, 5.0]
+  - name: compressor_efficiency
+    engine_input: compressor_isentropic_efficiency
+    dtype: float64
+    unit: dimensionless
+    bounds: [0.70, 0.85]
+  - name: turbine_inlet_temp_K
+    engine_input: combustor_exit_temperature_K
+    dtype: float64
+    unit: K
+    bounds: [800.0, 1200.0]
+  - name: turbine_efficiency
+    engine_input: turbine_isentropic_efficiency
+    dtype: float64
+    unit: dimensionless
+    bounds: [0.75, 0.88]
+  - name: mass_flow_kg_s
+    engine_input: mass_flow_air_kg_s
+    dtype: float64
+    unit: kg/s
+    bounds: [0.08, 0.30]
+  - name: compressor_diameter_mm
+    dtype: float64
+    unit: mm
+    bounds: [60.0, 150.0]
+  - name: combustor_length_mm
+    dtype: float64
+    unit: mm
+    bounds: [50.0, 150.0]
+  - name: combustor_outer_diameter_mm
+    dtype: float64
+    unit: mm
+    bounds: [80.0, 160.0]
+  - name: nozzle_exit_diameter_mm
+    dtype: float64
+    unit: mm
+    bounds: [30.0, 80.0]
+  - name: lattice_density
+    dtype: float64
+    unit: fraction
+    bounds: [0.15, 0.55]
+
+conditions:
+  - name: thrust_N
+    result_field: thrust_N
+    dtype: float64
+    unit: N
+    transform: identity
+    normalization: standard
+  - name: tsfc_kg_N_s
+    result_field: tsfc_kg_N_s
+    dtype: float64
+    unit: kg/(N*s)
+    transform: natural_log
+    transform_domain: positive
+    normalization: standard
+  - name: total_mass_kg
+    result_field: total_mass_kg
+    dtype: float64
+    unit: kg
+    transform: natural_log
+    transform_domain: positive
+    normalization: standard
+
+quality_fields:
+  - source_is_valid
+  - is_valid
+  - n_warnings
+  - failure_code
+
+identifier_fields:
+  - sample_id
+  - dataset_version
+  - source_file
+  - source_row
+  - split
+
+normalization:
+  design_method: physical_bounds_to_minus_one_plus_one
+  condition_statistics_source: train_split_only

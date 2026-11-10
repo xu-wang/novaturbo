@@ -1,0 +1,13 @@
+coordinates:
+  corrected_speed_ratio: [0.60, 0.80, 1.00, 1.20, 1.40]
+  corrected_mass_flux_ratio: [0.60, 0.80, 1.00, 1.20, 1.40]
+outputs:
+  total_to_total_efficiency:
+    - [0.58, 0.62, 0.65, 0.63, 0.59]
+    - [0.60, 0.65, 0.68, 0.66, 0.61]
+    - [0.61, 0.66, 0.69, 0.67, 0.62]
+    - [0.60, 0.65, 0.68, 0.66, 0.61]
+    - [0.58, 0.63, 0.66, 0.64, 0.59]
+boundaries:
+  minimum_corrected_mass_flux_ratio: [0.66, 0.64, 0.62, 0.60, 0.58]
+  maximum_corrected_mass_flux_ratio: [1.22, 1.27, 1.32, 1.36, 1.39]

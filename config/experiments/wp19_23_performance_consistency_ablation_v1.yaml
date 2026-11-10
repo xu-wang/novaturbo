@@ -1,0 +1,51 @@
+protocol_version: wp19_23_performance_consistency_ablation_v1
+formal_use_allowed: false
+
+data:
+  regression_dataset: data/generated/wp19_21_development_dataset_98304_v1/regression_converged.jsonl
+  existing_target_suite: data/inverse_design/wp19_23_generator_core_oracle_v1/target_suite.jsonl
+  prior_confirmation_targets: data/inverse_design/wp19_23_c_checkpoint_selection_v1/new_locked_confirmation_targets.jsonl
+  train_campaigns: [seed_20260826, seed_20260827, seed_20260828, seed_20260829]
+  validation_campaign: seed_20260830
+  held_out_campaign: seed_20260831
+
+arms:
+  - arm_id: g0_frozen_fm
+    weight: 0.0
+    checkpoint: data/generator_models/geometry19/wp19_23_cfm4_bounded_sigmoid_seed43_v1/baseline/best.pt
+  - arm_id: g1_perf_001
+    weight: 0.01
+    weights_root: data/generator_models/geometry19/wp19_23_performance_consistency_weak_v1/baseline
+  - arm_id: g2_perf_005
+    weight: 0.05
+    weights_root: data/generator_models/geometry19/wp19_23_performance_consistency_medium_v1/baseline
+  - arm_id: g3_perf_010
+    weight: 0.10
+    weights_root: data/generator_models/geometry19/wp19_23_performance_consistency_strong_v1/baseline
+
+checkpoint_selection:
+  development_target_count: 12
+  source_seeds: [20260817]
+  candidates: 128
+  snapshot_epochs: [50, 100, 150, 200, 250, 300, 350, 400]
+
+confirmation:
+  target_count: 24
+  source_seeds: [20260817, 20260902, 20260903]
+  candidates: 512
+  discrete_projection: unconditional_nearest_integer
+
+execution:
+  device: cuda:0
+  physics_workers: 16
+  physics_chunksize: 32
+
+gates:
+  minimum_hit_rate_gain: 0.10
+  minimum_median_rho_reduction_fraction: 0.20
+  require_p90_no_regression: true
+  require_net_positive_paired_hits: true
+
+artifacts:
+  runtime_root: data/inverse_design/wp19_23_performance_consistency_ablation_v1
+  report: docs/physics/WP19_23_PERFORMANCE_CONSISTENCY_ABLATION_20260903.md

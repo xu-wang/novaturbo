@@ -14,6 +14,7 @@ The lattice is generated in cylindrical annular regions (matching engine
 component geometries) and exported as STL meshes via marching cubes.
 """
 
+import math
 import numpy as np
 from dataclasses import dataclass, field
 from typing import Tuple, Optional, List
@@ -36,6 +37,10 @@ class LatticeParams:
 
     # Wall thickness of lattice struts
     wall_thickness: float = 0.3     # Iso-level threshold (0.1-0.5, higher = thicker)
+
+    # Solid skins retained around combustor lattice infill
+    combustor_inner_skin_mm: float = 0.5
+    combustor_outer_skin_mm: float = 0.5
 
     # Resolution (voxels per unit cell)
     resolution: int = 20            # Higher = smoother but slower
@@ -132,7 +137,14 @@ def generate_annular_lattice(region: AnnularRegion,
 
     # Evaluate TPMS in slab space (perfectly Cartesian → clean topology)
     scale = 2 * np.pi / params.cell_size_mm
-    field = evaluate_tpms(U * scale, V * scale, W * scale, params.tpms_type)
+    raw_field = evaluate_tpms(U * scale, V * scale, W * scale, params.tpms_type)
+    wall_threshold = float(params.wall_thickness)
+    if not math.isfinite(wall_threshold) or not 0.0 < wall_threshold < 1.5:
+        raise ValueError("TPMS wall_thickness must be finite and in (0, 1.5)")
+    # A sheet lattice is the finite region around the TPMS zero surface.  The
+    # legacy implementation marched f=0 directly, so wall_thickness and hence
+    # Geometry19 relative density had no geometric effect.
+    field = np.abs(raw_field) - wall_threshold
 
     spacing = (
         (circumference + overlap) / (nu - 1),
@@ -202,8 +214,8 @@ def generate_combustor_lattice(combustor_params=None,
         z_end_mm=z_offset + combustor_params.length_mm,
         r_inner_mm=combustor_params.inner_diameter_mm / 2.0 + combustor_params.liner_thickness_mm,
         r_outer_mm=combustor_params.outer_diameter_mm / 2.0 - combustor_params.casing_thickness_mm,
-        inner_wall_mm=0.5,
-        outer_wall_mm=0.5,
+        inner_wall_mm=lattice_params.combustor_inner_skin_mm,
+        outer_wall_mm=lattice_params.combustor_outer_skin_mm,
     )
 
     all_verts = []

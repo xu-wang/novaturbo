@@ -1,0 +1,60 @@
+version: target_directed_active10d_run_v1
+run_id: target_directed_template
+mode: generator
+
+model:
+  model_id: nflows
+  checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/nflows/seed_42/best.pt
+
+data:
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  dataset_version: generator_active10d_expanded100k_v1
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  normalizer_version: generator_active10d_v1_train_79945
+  normalizer_sha256: 9bf25fe526a395beadf4057012e67a5823d88757c11457346ec36c21a2a1b68b
+  metrics_config: config/generator_active10d_metrics.yaml
+
+seeds:
+  generator: 20250813
+  optimizer: 42
+  background: 42
+
+generation:
+  n_generated: 256
+
+selection:
+  strategy: physics_error_topk
+  selected_count: 40
+
+population:
+  generator_ratio: 1.0
+  background_method: random
+  duplicate_tolerance: 1.0e-9
+  preference:
+    enabled: false
+
+optimizer:
+  seed: 42
+  population_size: 40
+  n_generations: 15
+  crossover_rate: 0.9
+  mutation_rate: 0.1
+  mutation_scale: 0.1
+  tournament_size: 3
+  objectives:
+    - target_weighted_relative_error
+  maximize: [false]
+  min_thrust_N: 0.0
+  max_tsfc: 1.0
+  max_mass_kg: 10.0
+  use_surrogate: false
+  surrogate_model_path: null
+  warm_start_out_of_bounds_policy: reject
+
+runtime:
+  device: cuda
+
+output:
+  root: data/inverse_design/target_directed_active10d/runs
+  refuse_overwrite: true

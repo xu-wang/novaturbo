@@ -1,0 +1,48 @@
+version: s2_wp5_formal_matrix_v1
+template: config/stage2/s2_wp5.yaml
+
+targets:
+  suite_csv: data/generator_active10d_100k/targets/target_suite_active10d_v1.csv
+  frozen_ids: config/stage2/s2_wp1_end_to_end_targets_v1.yaml
+  tolerance_profile: round_trip_metrics_v1
+
+model_sets:
+  - training_seed: 42
+    models:
+      - model_id: nflows
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/nflows/seed_42/best.pt
+      - model_id: cinn
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/cinn/seed_42/best.pt
+      - model_id: cfm
+        checkpoint_path: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_42/best.pt
+  - training_seed: 43
+    models:
+      - model_id: nflows
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/nflows/seed_43/best.pt
+      - model_id: cinn
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/cinn/seed_43/best.pt
+      - model_id: cfm
+        checkpoint_path: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_43/best.pt
+
+arms:
+  auto_delivery:
+    mode: generator_auto_refinement
+    minimum_hit_count: 1
+    maximum_delivered_candidates: 10
+    extra_engineering_objectives: false
+  multiobjective_refinement:
+    mode: generator_auto_refinement
+    targets_per_type: 4
+    minimum_hit_count: 1
+    maximum_delivered_candidates: 10
+    extra_engineering_objectives: true
+    nsga2_objectives: [target_weighted_relative_error, total_mass_kg]
+    nsga2_maximize: [false, false]
+
+runtime:
+  device: cuda
+  sample_seed_base: 20260813
+
+output:
+  directory: data/inverse_design/stage2/s2_wp5_formal_matrix_v1
+  refuse_overwrite: true

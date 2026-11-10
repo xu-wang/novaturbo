@@ -1,0 +1,30 @@
+version: s2_wp2_bounded10d_matched_seed_v1
+baseline_manifest: config/stage2/active10d_baseline_v1.yaml
+reference_training_config: config/generator_active10d_wp3_full.yaml
+smoke_training_config: config/stage2/s2_wp2_bounded_smoke.yaml
+full_training_config: config/stage2/s2_wp2_bounded_full.yaml
+wp1_output: data/inverse_design/stage2/s2_wp1_baseline_v1
+
+bounded_contract:
+  enabled: true
+  kind: atanh_tanh
+  epsilon: 1.0e-6
+  input_tolerance: 1.0e-6
+  saturation_threshold: 0.99
+  maximum_output_out_of_bounds_rate: 0.0
+  maximum_ordinary_error_regression: 0.05
+  minimum_diversity_retention: 0.90
+
+evaluation:
+  metrics_config: config/generator_active10d_metrics.yaml
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  target_suite: data/generator_active10d_100k/targets/target_suite_active10d_v1.csv
+  sample_count: 256
+  sample_seed_base: 20250811
+  device: cuda
+
+output:
+  directory: data/inverse_design/stage2/s2_wp2_bounded10d_matched_seed_v1
+  refuse_overwrite: true

@@ -8,7 +8,11 @@ for the Three.js-based 3D viewer frontend.
 import os
 import sys
 import json
+import hashlib
+import math
+import subprocess
 import threading
+import uuid
 from datetime import datetime
 from flask import Flask, render_template, send_from_directory, jsonify, request
 from flask_cors import CORS
@@ -23,6 +27,23 @@ CORS(app)
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STL_DIR = os.path.join(PROJECT_ROOT, 'exports', 'stl')
+GEOMETRY19_STORE_ROOT = os.path.join(PROJECT_ROOT, 'exports', 'geometry19')
+GEOMETRY19_PIPELINE_RESULT_ROOT = os.environ.get(
+    'NOVATURBO_GEOMETRY19_PIPELINE_RESULT_ROOT'
+)
+GEOMETRY19_MESH_QUALITIES = {'preview_mesh', 'export_mesh'}
+GEOMETRY19_JOBS = {}
+GEOMETRY19_JOB_LOCK = threading.Lock()
+GEOMETRY19_JOB_ROOT = os.path.join(PROJECT_ROOT, 'data', 'inverse_design', 'ui_v2_2_jobs')
+GEOMETRY22_RESULTS_ROOT = os.environ.get('NOVATURBO_GEOMETRY22_RESULTS_ROOT', os.path.join(
+    PROJECT_ROOT, 'data', 'validation', 'v3_22d_final_holdout_v1', 'cases'))
+GEOMETRY22_PREVIEW_ROOT = os.environ.get('NOVATURBO_GEOMETRY22_PREVIEW_ROOT', os.path.join(
+    PROJECT_ROOT, 'exports', 'geometry22_preview'))
+GEOMETRY22_JOB_ROOT = os.environ.get('NOVATURBO_GEOMETRY22_JOB_ROOT', os.path.join(
+    PROJECT_ROOT, 'data', 'inverse_design', 'ui_v3_jobs'))
+GEOMETRY22_JOB_SERVICES = {}
+GEOMETRY22_JOB_SERVICE_LOCK = threading.Lock()
+
 USER_LEARNING_DIR = os.path.join(PROJECT_ROOT, 'data', 'user_learning')
 UI_VARIANTS_CSV = os.path.join(USER_LEARNING_DIR, 'ui_variants.csv')
 UI_TRAIN_DATASET_CSV = os.path.join(USER_LEARNING_DIR, 'dataset_ui_augmented.csv')
@@ -430,6 +451,593 @@ def get_components():
                 'order': meta['order'],
             })
     return jsonify(available)
+
+
+def _geometry19_store():
+    from src.visualization import Geometry19DesignStore
+
+    storage_root = app.config.get(
+        'GEOMETRY19_STORE_ROOT', GEOMETRY19_STORE_ROOT
+    )
+    return Geometry19DesignStore(PROJECT_ROOT, storage_root)
+
+
+def _sha256_path(path):
+    digest = hashlib.sha256()
+    with open(path, 'rb') as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b''):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _completed_geometry19_pipeline_result(quality='preview_mesh', runtime_root=None):
+    """Load and verify one configured, completed pipeline result read-only."""
+    if quality not in GEOMETRY19_MESH_QUALITIES:
+        raise ValueError('Unsupported mesh quality')
+    configured = runtime_root or app.config.get(
+        'GEOMETRY19_PIPELINE_RESULT_ROOT', GEOMETRY19_PIPELINE_RESULT_ROOT
+    )
+    if not configured:
+        raise FileNotFoundError('No completed Geometry19 pipeline result is configured')
+    runtime = os.path.realpath(configured)
+    complete_path = os.path.join(runtime, 'Complete_Manifest.json')
+    summary_path = os.path.join(runtime, 'Pipeline_Summary.json')
+    if not os.path.isfile(complete_path) or not os.path.isfile(summary_path):
+        raise FileNotFoundError('Configured pipeline result is incomplete')
+    with open(complete_path, encoding='utf-8') as stream:
+        complete = json.load(stream)
+    for relative, expected in complete.get('files', {}).items():
+        candidate = os.path.realpath(os.path.join(runtime, relative))
+        if os.path.commonpath([runtime, candidate]) != runtime:
+            raise ValueError('Pipeline manifest path escapes runtime root')
+        if not os.path.isfile(candidate) or _sha256_path(candidate) != expected:
+            raise ValueError('Pipeline runtime integrity check failed')
+    with open(summary_path, encoding='utf-8') as stream:
+        summary = json.load(stream)
+    asset = summary.get('mesh_assets', {}).get(quality)
+    if not asset:
+        raise FileNotFoundError(f'Completed pipeline has no {quality} asset')
+    manifest_path = os.path.realpath(asset['manifest_path'])
+    if not os.path.isfile(manifest_path):
+        raise FileNotFoundError('Pipeline mesh manifest is missing')
+    if _sha256_path(manifest_path) != asset['manifest_sha256']:
+        raise ValueError('Pipeline mesh manifest integrity check failed')
+    with open(manifest_path, encoding='utf-8') as stream:
+        mesh_manifest = json.load(stream)
+    if mesh_manifest.get('design_id') != asset.get('design_id'):
+        raise ValueError('Pipeline mesh design identity changed')
+    component_urls = {}
+    for name, component in mesh_manifest.get('components', {}).items():
+        component_path = os.path.realpath(
+            os.path.join(os.path.dirname(manifest_path), component['filename'])
+        )
+        if os.path.dirname(component_path) != os.path.dirname(manifest_path):
+            raise ValueError('Pipeline component path escapes mesh directory')
+        if not os.path.isfile(component_path) or _sha256_path(component_path) != component['sha256']:
+            raise ValueError('Pipeline mesh component integrity check failed')
+        component_urls[name] = (
+            f"/geometry19-pipeline-files/{asset['design_id']}/{quality}/"
+            f"{component['filename']}?h={component['sha256']}"
+        )
+    design_path = os.path.join(
+        summary['paths']['design_storage'], asset['design_id'], 'geometry19.json'
+    )
+    delivered_geometry_path = os.path.join(
+        runtime, 'core', 'runtime', 'Delivery_Geometry.json'
+    )
+    diagnostics_path = os.path.join(os.path.dirname(manifest_path), 'mesh_diagnostics.json')
+    ledger_path = os.path.join(runtime, 'core', 'F', 'ledger.jsonl')
+    with open(design_path, encoding='utf-8') as stream:
+        design = json.load(stream)
+    with open(delivered_geometry_path, encoding='utf-8') as stream:
+        delivered_geometry = json.load(stream)
+    if design.get('geometry19') != delivered_geometry:
+        raise ValueError('Pipeline design-store Geometry19 mapping changed')
+    with open(diagnostics_path, encoding='utf-8') as stream:
+        diagnostics = json.load(stream)
+    with open(ledger_path, encoding='utf-8') as stream:
+        ledger = [json.loads(line) for line in stream if line.strip()]
+    if not ledger:
+        raise ValueError('Pipeline F ledger is empty')
+    evaluation = ledger[-1]['evaluation']
+    return {
+        'model': summary['model'],
+        'status': summary['status'],
+        'formal_use_allowed': summary['formal_use_allowed'],
+        'target_id': summary['target_id'],
+        'source_design_hash': asset['source_design_hash'],
+        'design_id': asset['design_id'],
+        'geometry19': design['geometry19'],
+        'physics': {'performance': evaluation['performance']},
+        'solver': {
+            'converged': evaluation['solver_converged'],
+            'iterations': evaluation['solver_iterations'],
+            'flow_residual': evaluation['conservation']['normalized_flow'],
+        },
+        'constraints': evaluation['constraint_assessment'],
+        'mesh_quality': quality,
+        'mesh_diagnostics': diagnostics,
+        'component_urls': component_urls,
+        'geometry_hash': mesh_manifest['solid_geometry_hash'],
+        'lattice_hash': mesh_manifest['lattice_hash'],
+        'calibration_hash': mesh_manifest['calibration_hash'],
+    }, os.path.dirname(manifest_path), mesh_manifest
+
+
+def _v22_job_snapshot(job_id):
+    if len(job_id) != 32 or any(char not in '0123456789abcdef' for char in job_id):
+        return None
+    with GEOMETRY19_JOB_LOCK:
+        job = GEOMETRY19_JOBS.get(job_id)
+        if job:
+            return dict(job)
+    path = os.path.join(app.config.get('GEOMETRY19_JOB_ROOT', GEOMETRY19_JOB_ROOT), job_id, 'job.json')
+    try:
+        with open(path, encoding='utf-8') as stream:
+            job = json.load(stream)
+    except (OSError, ValueError, TypeError):
+        return None
+    expected_root = os.path.realpath(os.path.dirname(path))
+    if not isinstance(job, dict) or job.get('job_id') != job_id or os.path.realpath(
+        str(job.get('output_root', ''))
+    ) != os.path.join(expected_root, 'run'):
+        return None
+    if job.get('state') in {'queued', 'running', 'interrupted', 'complete'}:
+        if os.path.isfile(os.path.join(job['output_root'], 'Complete_Manifest.json')):
+            try:
+                _completed_geometry19_pipeline_result('preview_mesh', job['output_root'])
+                job['state'] = 'complete'
+                job.pop('error', None)
+            except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError):
+                job['state'] = 'failed'
+                job['error'] = 'The saved V2.2 result failed integrity verification'
+        else:
+            job['state'] = 'interrupted'
+            job['error'] = 'The server restarted before the V2.2 task completed'
+        _save_v22_job(job)
+    return job
+
+
+def _save_v22_job(job):
+    directory = os.path.dirname(job['output_root'])
+    os.makedirs(directory, exist_ok=True)
+    path = os.path.join(directory, 'job.json')
+    temporary = os.path.join(directory, f'.job-{uuid.uuid4().hex}.tmp')
+    try:
+        with open(temporary, 'w', encoding='utf-8') as stream:
+            json.dump(job, stream, sort_keys=True)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+
+
+def _run_v22_ui_job(job_id, target):
+    with GEOMETRY19_JOB_LOCK:
+        job = GEOMETRY19_JOBS[job_id]
+        job['state'] = 'running'
+        _save_v22_job(job)
+        output = job['output_root']
+        storage = job['storage_root']
+    try:
+        # A separate process binds physical GPU 6 before PyTorch is imported.
+        script = os.path.join(PROJECT_ROOT, 'scripts', 'run_wp19_23_pipeline.py')
+        command = [sys.executable, script, '--model', 'model V2.2',
+                   '--thrust-N', str(target['thrust_N']),
+                   '--tsfc-kg-N-s', str(target['tsfc_kg_N_s']),
+                   '--mass-kg', str(target['mass_kg']),
+                   '--device', 'cuda:0', '--output-root', output,
+                   '--storage-root', storage, '--export-mesh']
+        environment = dict(os.environ, CUDA_DEVICE_ORDER='PCI_BUS_ID', CUDA_VISIBLE_DEVICES='6')
+        result = subprocess.run(command, cwd=PROJECT_ROOT, env=environment,
+                                capture_output=True, text=True, check=False)
+        if result.returncode:
+            raise RuntimeError((result.stderr or result.stdout).strip()[-1000:] or 'V2.2 pipeline failed')
+        with open(os.path.join(output, 'Pipeline_Summary.json'), encoding='utf-8') as stream:
+            summary = json.load(stream)
+        if not summary.get('delivered_design_ids'):
+            raise RuntimeError('V2.2 completed without a delivered design')
+        _completed_geometry19_pipeline_result('preview_mesh', output)
+        with GEOMETRY19_JOB_LOCK:
+            GEOMETRY19_JOBS[job_id]['state'] = 'complete'
+            _save_v22_job(GEOMETRY19_JOBS[job_id])
+    except Exception as exc:
+        with GEOMETRY19_JOB_LOCK:
+            GEOMETRY19_JOBS[job_id]['state'] = 'failed'
+            GEOMETRY19_JOBS[job_id]['error'] = str(exc)
+            _save_v22_job(GEOMETRY19_JOBS[job_id])
+
+
+def _geometry19_request():
+    from src.physics import Environment
+    from src.visualization import Geometry19ServiceError
+
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        raise Geometry19ServiceError('JSON request must be an object')
+    canonical = set(_geometry19_store().schema_payload()['canonical_names'])
+    if 'geometry19' in payload:
+        design_payload = payload['geometry19']
+        controls = set(payload) - {'geometry19'}
+    else:
+        design_payload = {name: payload[name] for name in canonical if name in payload}
+        controls = set(payload) - canonical
+    allowed_controls = {'environment', 'constraint_profile', 'mesh_quality'}
+    unknown = sorted(controls - allowed_controls)
+    if unknown:
+        raise Geometry19ServiceError(f'Unknown request fields: {unknown}')
+    design = _geometry19_store().parse_design(design_payload)
+    environment_payload = payload.get('environment', {})
+    if not isinstance(environment_payload, dict):
+        raise Geometry19ServiceError('environment must be an object')
+    try:
+        environment = Environment(**environment_payload)
+    except TypeError as exc:
+        raise Geometry19ServiceError(str(exc)) from exc
+    return (
+        design,
+        environment,
+        payload.get('constraint_profile', 'pipeline_debug_v1'),
+        payload.get('mesh_quality', 'preview_mesh'),
+    )
+
+
+@app.route('/api/geometry19/schema')
+def geometry19_schema():
+    try:
+        return jsonify(_geometry19_store().schema_payload())
+    except Exception as exc:
+        return jsonify({'error': str(exc)}), 500
+
+
+@app.route('/api/geometry22/schema')
+def geometry22_schema():
+    """Expose 22D development fields for read-only V3 results."""
+    from src.physics.geometry22_design import geometry22_schema_metadata
+
+    try:
+        return jsonify(geometry22_schema_metadata())
+    except (OSError, ValueError) as exc:
+        return jsonify({'error': str(exc)}), 500
+
+
+@app.route('/api/geometry22/evaluate', methods=['POST'])
+def geometry22_evaluate():
+    """Evaluate one user-edited 22D design with the V3 development runtime."""
+    from src.visualization.geometry22_direct_evaluation import evaluate_geometry22_design
+
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict) or set(payload) != {'geometry22'}:
+        return jsonify({'error': 'Provide only a geometry22 design object'}), 400
+    try:
+        return jsonify(evaluate_geometry22_design(PROJECT_ROOT, payload['geometry22']))
+    except (ValueError, TypeError) as exc:
+        return jsonify({'error': str(exc)}), 400
+
+
+def _geometry22_mesh_store():
+    from src.visualization.geometry22_mesh import Geometry22MeshStore
+    root = app.config.get('GEOMETRY22_PREVIEW_ROOT', GEOMETRY22_PREVIEW_ROOT)
+    return Geometry22MeshStore(PROJECT_ROOT, os.path.join(root, 'mesh22'))
+
+
+@app.route('/api/geometry22/mesh', methods=['POST'])
+def geometry22_mesh():
+    """Generate a development visualization mesh for one complete 22D design."""
+    from src.physics.geometry22_design import Geometry22Design
+    from src.visualization.geometry22_mesh import Geometry22MeshError
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict) or set(payload) != {'geometry22'}:
+        return jsonify({'error': 'Provide only a geometry22 design object'}), 400
+    try:
+        design = Geometry22Design.from_mapping(payload['geometry22'])
+        store = _geometry22_mesh_store()
+        manifest, _ = store.publish(design)
+        return jsonify(store.response(manifest, '/geometry22-mesh-files'))
+    except Geometry22MeshError as exc:
+        return jsonify({'error': str(exc)}), 409
+    except (ValueError, TypeError) as exc:
+        return jsonify({'error': str(exc)}), 400
+    except (OSError, RuntimeError) as exc:
+        return jsonify({'error': str(exc)}), 409
+
+
+@app.route('/geometry22-mesh-files/<mesh_id>/<path:filename>')
+def geometry22_mesh_file(mesh_id, filename):
+    try:
+        manifest, directory = _geometry22_mesh_store().get(mesh_id)
+        if filename not in {component['filename'] for component in manifest['components'].values()}:
+            return jsonify({'error': 'Unknown V3 mesh component'}), 404
+        return send_from_directory(str(directory), filename)
+    except FileNotFoundError as exc:
+        return jsonify({'error': str(exc)}), 404
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        return jsonify({'error': str(exc)}), 409
+
+
+def _geometry22_jobs():
+    from src.visualization.geometry22_jobs import Geometry22Jobs
+    root = app.config.get('GEOMETRY22_JOB_ROOT', GEOMETRY22_JOB_ROOT)
+    previews = app.config.get('GEOMETRY22_PREVIEW_ROOT', GEOMETRY22_PREVIEW_ROOT)
+    key = (os.path.realpath(root), os.path.realpath(previews))
+    with GEOMETRY22_JOB_SERVICE_LOCK:
+        if key not in GEOMETRY22_JOB_SERVICES:
+            GEOMETRY22_JOB_SERVICES[key] = Geometry22Jobs(PROJECT_ROOT, root, previews)
+        return GEOMETRY22_JOB_SERVICES[key]
+
+
+@app.route('/api/geometry22/jobs', methods=['GET', 'POST'])
+def geometry22_jobs():
+    from src.visualization.geometry22_results import Geometry22ResultError
+    try:
+        service = _geometry22_jobs()
+        if request.method == 'GET':
+            return jsonify({'jobs': service.list_jobs()})
+        with GEOMETRY19_JOB_LOCK:
+            if any(j['state'] in {'queued', 'running'} for j in GEOMETRY19_JOBS.values()):
+                return jsonify({'error': 'A V2.2 job is already running on GPU 6'}), 409
+            return jsonify(service.submit(request.get_json(silent=True))), 202
+    except Geometry22ResultError as exc:
+        return jsonify({'error': str(exc)}), 409
+    except (ValueError, TypeError) as exc:
+        return jsonify({'error': str(exc)}), 400
+
+
+@app.route('/api/geometry22/jobs/<job_id>')
+@app.route('/api/geometry22/jobs/<job_id>/result')
+@app.route('/api/geometry22/jobs/<job_id>/preview', methods=['POST'])
+def geometry22_job(job_id):
+    try:
+        service = _geometry22_jobs()
+        if request.path.endswith('/preview'):
+            service.result(job_id)
+            payload, _, _ = service.results.preview(job_id, generate=True)
+            payload['job_id'] = job_id
+            payload['component_urls'] = {n: u.replace('/geometry22-preview-files/', '/geometry22-job-preview-files/')
+                                         for n, u in payload['component_urls'].items()}
+            return jsonify(payload)
+        if request.path.endswith('/result'):
+            return jsonify(service.result(job_id))
+        return jsonify(service.snapshot(job_id))
+    except FileNotFoundError as exc:
+        return jsonify({'error': str(exc)}), 404
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        return jsonify({'error': str(exc)}), 409
+
+
+@app.route('/geometry22-job-preview-files/<job_id>/<preview_id>/<path:filename>')
+def geometry22_job_preview_file(job_id, preview_id, filename):
+    try:
+        service = _geometry22_jobs()
+        service.result(job_id)
+        _, directory, manifest = service.results.preview(job_id, expected_preview_id=preview_id)
+        if filename not in {c['filename'] for c in manifest['components'].values()}:
+            return jsonify({'error': 'Unknown V3 preview file'}), 404
+        return send_from_directory(str(directory), filename)
+    except FileNotFoundError as exc:
+        return jsonify({'error': str(exc)}), 404
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        return jsonify({'error': str(exc)}), 409
+
+
+def _geometry22_results():
+    from src.visualization.geometry22_results import Geometry22Results
+    return Geometry22Results(PROJECT_ROOT,
+        app.config.get('GEOMETRY22_RESULTS_ROOT', GEOMETRY22_RESULTS_ROOT),
+        app.config.get('GEOMETRY22_PREVIEW_ROOT', GEOMETRY22_PREVIEW_ROOT))
+
+
+@app.route('/api/geometry22/results')
+def geometry22_result_list():
+    return jsonify({'results': _geometry22_results().list_results()})
+
+
+@app.route('/api/geometry22/results/<result_id>')
+def geometry22_result(result_id):
+    try:
+        return jsonify(_geometry22_results().result(result_id))
+    except FileNotFoundError as exc:
+        return jsonify({'error': str(exc)}), 404
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        return jsonify({'error': str(exc)}), 409
+
+
+@app.route('/api/geometry22/results/<result_id>/preview', methods=['POST'])
+def geometry22_result_preview(result_id):
+    try:
+        data, _directory, _manifest = _geometry22_results().preview(result_id, generate=True)
+        return jsonify(data)
+    except FileNotFoundError as exc:
+        return jsonify({'error': str(exc)}), 404
+    except (OSError, ValueError, KeyError, TypeError, RuntimeError) as exc:
+        return jsonify({'error': str(exc)}), 409
+
+
+@app.route('/geometry22-preview-files/<result_id>/<preview_id>/<path:filename>')
+def geometry22_result_file(result_id, preview_id, filename):
+    try:
+        _payload, directory, manifest = _geometry22_results().preview(result_id, expected_preview_id=preview_id)
+        if filename not in {c['filename'] for c in manifest['components'].values()}:
+            raise FileNotFoundError('Unknown V3 preview component')
+        return send_from_directory(directory, filename)
+    except FileNotFoundError as exc:
+        return jsonify({'error': str(exc)}), 404
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        return jsonify({'error': str(exc)}), 409
+
+
+@app.route('/api/geometry19/solve', methods=['POST'])
+def geometry19_solve():
+    from src.visualization import Geometry19ServiceError
+
+    try:
+        design, environment, profile, _quality = _geometry19_request()
+        return jsonify(_geometry19_store().solve(design, environment, profile))
+    except Geometry19ServiceError as exc:
+        return jsonify({'error': str(exc)}), 400
+
+
+@app.route('/api/geometry19/regenerate', methods=['POST'])
+def geometry19_regenerate():
+    from src.visualization import Geometry19ServiceError
+
+    try:
+        design, environment, profile, quality = _geometry19_request()
+        return jsonify(
+            _geometry19_store().regenerate(
+                design, quality, environment, profile
+            )
+        )
+    except Geometry19ServiceError as exc:
+        return jsonify({'error': str(exc)}), 400
+
+
+@app.route('/api/geometry19/design/<design_id>')
+def geometry19_design(design_id):
+    from src.visualization import Geometry19ServiceError
+
+    try:
+        return jsonify(_geometry19_store().get_design(design_id))
+    except Geometry19ServiceError as exc:
+        return jsonify({'error': str(exc)}), 404
+
+
+@app.route('/api/geometry19/components/<design_id>')
+def geometry19_components(design_id):
+    from src.visualization import Geometry19ServiceError
+
+    try:
+        quality = request.args.get('quality', 'preview_mesh')
+        return jsonify(_geometry19_store().get_components(design_id, quality))
+    except Geometry19ServiceError as exc:
+        return jsonify({'error': str(exc)}), 404
+
+
+@app.route('/api/geometry19/pipeline-result')
+def geometry19_pipeline_result():
+    try:
+        payload, _directory, _manifest = _completed_geometry19_pipeline_result(
+            request.args.get('quality', 'preview_mesh')
+        )
+        return jsonify(payload)
+    except FileNotFoundError as exc:
+        return jsonify({'error': str(exc)}), 404
+    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+        return jsonify({'error': str(exc)}), 409
+
+
+@app.route('/api/geometry19/v2-2/jobs', methods=['POST'])
+def geometry19_v22_start_job():
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict) or set(payload) != {'thrust_N', 'tsfc_kg_N_s', 'mass_kg'}:
+        return jsonify({'error': 'Provide thrust_N, tsfc_kg_N_s, and mass_kg'}), 400
+    try:
+        if any(value is None or value == '' or isinstance(value, bool) for value in payload.values()):
+            raise ValueError('Targets must be finite positive numbers')
+        target = {key: float(value) for key, value in payload.items()}
+        if not all(math.isfinite(value) and value > 0 for value in target.values()):
+            raise ValueError('Targets must be finite positive numbers')
+    except (TypeError, ValueError) as exc:
+        return jsonify({'error': str(exc)}), 400
+    with GEOMETRY19_JOB_LOCK:
+        if any(job['state'] in {'queued', 'running'} for job in _geometry22_jobs().list_jobs()):
+            return jsonify({'error': 'A V3 job is already running on GPU 6'}), 409
+        if any(job['state'] in {'queued', 'running'} for job in GEOMETRY19_JOBS.values()):
+            return jsonify({'error': 'A V2.2 job is already running'}), 409
+        job_id = uuid.uuid4().hex
+        root = app.config.get('GEOMETRY19_JOB_ROOT', GEOMETRY19_JOB_ROOT)
+        job = {
+            'job_id': job_id, 'state': 'queued', 'target': target,
+            'output_root': os.path.join(root, job_id, 'run'),
+            'storage_root': os.path.join(root, job_id, 'designs'),
+        }
+        GEOMETRY19_JOBS[job_id] = job
+        _save_v22_job(job)
+    threading.Thread(target=_run_v22_ui_job, args=(job_id, target), daemon=True).start()
+    return jsonify({'job_id': job_id, 'state': 'queued'}), 202
+
+
+@app.route('/api/geometry19/v2-2/jobs/<job_id>')
+def geometry19_v22_job_status(job_id):
+    job = _v22_job_snapshot(job_id)
+    if not job:
+        return jsonify({'error': 'Unknown V2.2 job'}), 404
+    return jsonify({key: job[key] for key in ('job_id', 'state', 'target')}
+                   | ({'error': job['error']} if 'error' in job else {}))
+
+
+@app.route('/api/geometry19/v2-2/jobs/<job_id>/result')
+def geometry19_v22_job_result(job_id):
+    job = _v22_job_snapshot(job_id)
+    if not job:
+        return jsonify({'error': 'Unknown V2.2 job'}), 404
+    if job['state'] != 'complete':
+        return jsonify({'error': f"Job is {job['state']}"}), 409
+    try:
+        payload, _directory, _manifest = _completed_geometry19_pipeline_result(
+            request.args.get('quality', 'preview_mesh'), job['output_root']
+        )
+        payload['component_urls'] = {
+            name: url.replace('/geometry19-pipeline-files/',
+                              f'/geometry19-v22-job-files/{job_id}/', 1)
+            for name, url in payload['component_urls'].items()
+        }
+        return jsonify(payload)
+    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+        return jsonify({'error': str(exc)}), 409
+
+
+@app.route('/geometry19-v22-job-files/<job_id>/<design_id>/<quality>/<path:filename>')
+def geometry19_v22_job_file(job_id, design_id, quality, filename):
+    job = _v22_job_snapshot(job_id)
+    if not job or job['state'] != 'complete':
+        return jsonify({'error': 'Completed V2.2 job not found'}), 404
+    try:
+        payload, directory, manifest = _completed_geometry19_pipeline_result(
+            quality, job['output_root']
+        )
+        if design_id != payload['design_id'] or filename not in {
+            component['filename'] for component in manifest['components'].values()
+        }:
+            raise FileNotFoundError('Unknown job component')
+        return send_from_directory(directory, filename)
+    except FileNotFoundError as exc:
+        return jsonify({'error': str(exc)}), 404
+    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+        return jsonify({'error': str(exc)}), 409
+
+
+@app.route('/geometry19-pipeline-files/<design_id>/<quality>/<path:filename>')
+def geometry19_pipeline_file(design_id, quality, filename):
+    try:
+        payload, directory, manifest = _completed_geometry19_pipeline_result(quality)
+        if design_id != payload['design_id']:
+            raise FileNotFoundError('Unknown pipeline design_id')
+        allowed = {
+            component['filename'] for component in manifest.get('components', {}).values()
+        }
+        if filename not in allowed:
+            raise FileNotFoundError('Unknown pipeline mesh component')
+        return send_from_directory(directory, filename)
+    except FileNotFoundError as exc:
+        return jsonify({'error': str(exc)}), 404
+    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+        return jsonify({'error': str(exc)}), 409
+
+
+@app.route('/geometry19-files/<design_id>/<quality>/<path:filename>')
+def geometry19_file(design_id, quality, filename):
+    from src.visualization import Geometry19ServiceError
+
+    try:
+        directory = _geometry19_store().design_directory(design_id) / quality
+        if quality not in GEOMETRY19_MESH_QUALITIES:
+            raise Geometry19ServiceError('Unsupported mesh quality')
+        return send_from_directory(directory, filename)
+    except Geometry19ServiceError as exc:
+        return jsonify({'error': str(exc)}), 404
 
 
 @app.route('/api/engine')

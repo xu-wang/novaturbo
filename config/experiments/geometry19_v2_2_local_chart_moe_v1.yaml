@@ -1,0 +1,188 @@
+protocol_version: geometry19_v2_2_local_chart_moe_v1
+status: preregistered_development_only
+stage: P0_protocol_preregistration_and_input_lock
+profile: local_chart_moe_development
+formal_use_allowed: false
+deployment_allowed: false
+default_pipeline_modified: false
+
+inputs:
+  design_schema:
+    path: config/physics/geometry19_schema_v1.yaml
+    sha256: cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28
+    access: parse_allowed
+  target_domain:
+    path: config/physics/geometry19_v2_2_development_target_domain_v1.yaml
+    sha256: c3905de3d89c8405954d24172cdc614a3c08423595a33216adb1f2fcccc689f4
+    access: parse_allowed
+  development_dataset:
+    path: data/validation/v2_2_known_manifold_root_discovery_v1/development_dataset.jsonl
+    sha256: cde2c3f6a0cebc91a437f45b7aae5d2ebfe2b8adff952942d05efaae09297134
+    access: parse_allowed
+    expected_rows: 4529
+    expected_global_roots: 78
+  development_folds:
+    path: data/validation/v2_2_known_manifold_root_discovery_v1/development_root_folds.json
+    sha256: facc23ac72e85dda7da5723e480b58e4b9dcf95dbe8d531482371938bc48599a
+    access: parse_allowed
+    expected_fold_count: 5
+    grouping_key: root_seed_id
+  observed_ablation_summary:
+    path: data/validation/v2_2_known_manifold_ablation_v1/summary.json
+    sha256: 77b2a1c9d3dd0828b3910125d772d8964465c774b6cbbb18707984956e83b73c
+    access: parse_allowed
+  observed_oof_predictions:
+    path: data/validation/v2_2_known_manifold_ablation_v1/cross_validation_predictions.jsonl
+    sha256: 45ba0d3a19902fd0e47695a22497f6bd9dd2b312c53bcfa03c277f340ebaeb97
+    access: development_benchmark_only
+  observed_support_model:
+    path: data/validation/v2_2_known_manifold_ablation_v1/known_manifold_support.json
+    sha256: 1749def92e9b77a10b7d00f2f647e1b9db859292c3e23a8f8350238f4d3790e6
+    access: no_change_comparator_only
+  sealed_confirmation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+    sha256: a3051cae177d1c9735699ef4b50675f41f5f0ffd7d954b3a233f5ebf1ea8b1fd
+    access: sha256_only_no_parse
+    confirmation_content_read: false
+    confirmation_reuse_allowed: false
+
+target_segments: [low_mass_low_to_mid, low_mass_mid_to_high]
+
+outer_evaluation:
+  fold_count: 5
+  fold_assignment_frozen: true
+  regrouping_allowed: false
+  expected_validation_roots_per_target_segment_per_fold: 8
+  primary_metric: maximum_across_folds_worst_root_rho_p95
+  secondary_metrics:
+    - maximum_across_folds_root_rho_p95_p95
+    - low_mass_low_to_mid_root_rho_p95
+    - low_mass_mid_to_high_root_rho_p95
+    - row_rho_p95_diagnostic_only
+  support_rejection_used_for_primary_metric: false
+
+inner_selection:
+  method: GroupKFold
+  grouping_key: root_seed_id
+  fold_count: 4
+  primary_metric: maximum_across_inner_folds_worst_root_rho_p95
+  tie_breakers:
+    - maximum_across_inner_folds_root_rho_p95_p95
+    - low_mass_low_to_mid_root_rho_p95
+    - routing_regret
+    - model_complexity
+    - deterministic_variant_id
+  outer_validation_visible_during_selection: false
+
+local_jacobian:
+  design_coordinates: schema_range_normalized
+  performance_coordinates: natural_log_scaled_by_target_tolerance
+  ridge_alpha_candidates: [0.0001, 0.001, 0.01, 0.1]
+  bootstrap_replicates: 50
+  bootstrap_seed: 20260914
+  reliability_gate:
+    minimum_rows: 24
+    minimum_effective_rank: 6
+    minimum_tsfc_gradient_cosine_median: 0.70
+    maximum_frobenius_coefficient_of_variation: 0.50
+  minimum_reliable_training_root_fraction: 0.50
+  unreliable_jacobian_action: retain_center_and_zero_jacobian_distance_weight
+
+charts:
+  candidate_k: [3, 4, 6, 8]
+  clustering: average_linkage_agglomerative
+  minimum_global_roots_per_chart: 5
+  minimum_effective_roots_per_chart: 4.0
+  undersized_chart_action: merge_with_nearest_chart
+  validation_roots_used_for_clustering: false
+  descriptor_components: [normalized_design_center, reliable_local_jacobian, quality_fields]
+
+routing:
+  support_checks: [schema_bounds, nearest_training_root_l2, training_root_pca_residual]
+  outside_status: OUTSIDE_KNOWN_MANIFOLD_SUPPORT
+  family: top2_soft_mahalanobis
+  top_k: 2
+  covariance_shrinkage_candidates: [0.01, 0.05, 0.10]
+  temperature_candidates: [0.25, 0.5, 1.0, 2.0]
+  learned_gate_allowed_in_first_round: false
+
+experts:
+  root_balanced: true
+  performance_transform: natural_log
+  outputs: [thrust_N, tsfc_kg_N_s, mass_kg]
+  ridge_alpha_candidates: [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0]
+  rbf_alpha_candidates: [0.001, 0.01, 0.1, 1.0]
+  rbf_gamma_candidates: [0.1, 0.3, 1.0, 3.0]
+  residual_base: outer_training_fold_global_ridge_only
+
+experiment_arms:
+  - {id: legacy_no_change, routing: none, expert: legacy_mlp}
+  - {id: global_ridge, routing: none, expert: root_balanced_ridge}
+  - {id: nearest_root_local_ridge, routing: nearest_root, expert: neighborhood_ridge}
+  - {id: hard_chart_ridge, routing: top1_chart, expert: chart_ridge}
+  - {id: soft_chart_ridge, routing: top2_soft, expert: chart_ridge}
+  - {id: soft_chart_rbf, routing: top2_soft, expert: chart_kernel_ridge_rbf}
+  - {id: residual_soft_chart_ridge, routing: top2_soft, expert: global_plus_chart_residual_ridge}
+  - {id: oracle_chart_ridge, routing: truth_selected_diagnostic_only, expert: chart_ridge}
+
+training:
+  neural_seeds: [42]
+  physical_gpu: 6
+  process_device: cuda:0
+  allow_cpu_fallback: false
+  deterministic_algorithms: true
+  epochs: 150
+  patience: 20
+  batch_size: 256
+  learning_rate: 0.001
+  weight_decay: 0.00001
+
+gates:
+  artifact:
+    require_all_input_hashes: true
+    require_one_oof_prediction_per_arm_per_row: true
+    require_exact_model_reload: true
+    require_root_fold_exclusivity: true
+    require_confirmation_content_unread: true
+    require_physical_gpu_6_for_neural_training: true
+    require_full_regression_pass: true
+  advancement:
+    minimum_reduction_vs_legacy_no_change: 0.20
+    minimum_reduction_vs_global_ridge: 0.15
+    minimum_reduction_each_target_segment_vs_global_ridge: 0.10
+    maximum_single_fold_regression_vs_global_ridge: 0.10
+    minimum_unseen_target_root_support_acceptance_fraction: 0.80
+    require_boundary_continuity_pass: true
+    require_all_predictions_finite_positive: true
+  readiness:
+    maximum_cross_fold_worst_root_rho_p95: 5.0
+    maximum_low_mass_low_to_mid_root_rho_p95: 5.0
+    maximum_low_mass_mid_to_high_root_rho_p95: 5.0
+    maximum_tsfc_dominant_roots_in_worst_10: 7
+    maximum_oracle_routing_relative_rho_p95_gap: 0.20
+    require_all_selection_and_training_rules_frozen: true
+  continuity:
+    maximum_boundary_top2_expert_difference_scaled_rho_p95: 2.0
+    soft_must_not_worsen_cross_fold_maximum_vs_hard: true
+    require_all_predictions_finite_positive: true
+
+statuses:
+  artifact_fail: LOCAL_CHART_MOE_ARTIFACT_FAIL
+  no_advancement: LOCAL_CHART_MOE_NO_ADVANCEMENT
+  advancement_only: LOCAL_CHART_MOE_ADVANCEMENT_ONLY
+  confirmation_ready: LOCAL_CHART_MOE_CONFIRMATION_READY
+  p0_pass: LOCAL_CHART_MOE_P0_PROTOCOL_LOCK_PASS
+
+artifacts:
+  runtime_root: data/validation/v2_2_local_chart_moe_v1
+  protocol_input_lock: audits/protocol_input_lock.json
+  protocol_input_lock_report: audits/Protocol_Input_Lock_Report.md
+
+limitations:
+  - simplified_19d_v2_2_software_labels_only
+  - local_chart_is_observed_data_support_not_a_proven_manifold
+  - existing_five_fold_results_are_an_observed_development_benchmark
+  - all_model_selection_must_be_nested_inside_outer_training_roots
+  - sealed_confirmation_is_hash_only_and_must_not_be_parsed_or_reused
+  - no_unknown_region_accuracy_claim
+  - no_real_geometry_engineering_formal_or_deployment_claim

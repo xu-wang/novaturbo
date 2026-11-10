@@ -1,0 +1,43 @@
+version: geometry22_v3_extended_gate_l6f_gpu6_v1
+scope: isolated_55_development_center_target_gate_and_local_forward
+old_targets: {path: data/validation/v3_22d_target_route_l6a_v1/target_registry.jsonl, sha256: bd68b5444894f139842d4fa0700e8c2717950ee14c358f5be417e5070049880b}
+old_center_support: {path: data/validation/v3_22d_target_route_l6a_v1/center_support.json, sha256: 4841b3433684b5a4b55c12c0f000382f23e8625c9c7304dcfd97e8d587dbc88f}
+old_development: {path: data/validation/v3_22d_local_candidate_dataset_v1/development_candidates.jsonl, sha256: 3da358aba26eb9bfdbebbdb933cd22946759ebf438574a5f1b3cf3d0fd7a9a4e}
+new_registry: {path: data/validation/v3_22d_new_center_l6d_v1/center_registry.jsonl, sha256: f3c6c53714aa108f6152f8b0f3e480e8d308a565044bccc41ff7d3d5452185a2}
+new_base:
+  root: data/validation/v3_22d_new_center_local_data_l6e_v1
+  complete_manifest_sha256: d2845fa82d155ea703a6b84800a60ba3ec3144f903f425f53e47ce8c66a5a292
+  coordinates_sha256: 4c71b1513c664f4cbdcabe7cbbc70f06e95226fc642e75c62237795bd23af7a4
+  labels_sha256: e4205d31156179e4d9dc35481c12fe0b9c0a39f86a0ffb840df32d5c003bc7b4
+new_supplement:
+  root: data/validation/v3_22d_new_center_local_supplement_l6e_v1
+  complete_manifest_sha256: 4559a61c54a43eec029af4399734a11668cb24375a221b8123f76cb3d7b6f02e
+  coordinates_sha256: 4bf95c220733ca64612cf9edf14b4ca3fd23bf2a84137077291e6d7a2a244a2c
+  labels_sha256: bb30c0d1209b6c156deed07ce6cbe711a49869ba5ec8f225d5212d7ece1babe5
+route_classes: 55
+runtime_input: [thrust_N, tsfc_kg_N_s, mass_kg]
+input_transform: natural_log_equal_center_fit_mean_std
+new_internal_split: source_batch_center_band_pair_modulo_5_zero_for_tuning
+target_support: fit_rows_p95_euclidean_normalized_log_radius
+design_support_radius: 0.08
+gate:
+  architecture: [3, 64, 64, 55]
+  seeds: [42, 43, 44]
+  batch_size: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  maximum_epochs: 180
+  minimum_epochs: 30
+  patience: 25
+  min_delta: 0.00001
+  physical_gpu_index: 6
+  device: cuda:0
+  cublas_workspace_config: ':4096:8'
+local_forward:
+  ridge_alphas: [0.01, 0.1, 1.0, 10.0]
+  selection: minimum_tuning_worst_center_p95_max_abs_log_error_then_overall_p95_then_model_id
+isolated_software_training_authorized: true
+source_records_training_allowed: false
+formal_use_allowed: false
+deployment_allowed: false
+output_root: data/validation/v3_22d_extended_gate_l6f_gpu6_v1

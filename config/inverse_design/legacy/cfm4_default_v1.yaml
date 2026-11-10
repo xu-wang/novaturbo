@@ -1,0 +1,17 @@
+version: inverse_design_default_v1
+composed_version: inverse_design_delivery_cfm4_v1
+
+policy_config: config/inverse_design/policies/default_delivery_v1.yaml
+generator_config: config/inverse_design/generators/cfm4_sinkhorn_seed43_v1.yaml
+
+# Run-specific randomness belongs here, not in the frozen generator identity.
+generation:
+  seed: 20260813
+
+runtime:
+  # With CUDA_VISIBLE_DEVICES=6 this resolves to physical GPU 6 as cuda:0.
+  device: cuda
+
+output:
+  directory: data/inverse_design/runs/default_cfm4_v1
+  refuse_overwrite: true

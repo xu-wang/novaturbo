@@ -1,0 +1,106 @@
+protocol_version: wp19_23_pipeline_vs_cold_nsga2_256_v1
+work_package: WP19-23-efficiency-comparison
+status: frozen_development_comparison
+formal_use_allowed: false
+method:
+  model_variant: baseline
+  sampling_mode: direct
+  raw_candidate_count: 256
+  device: cuda:0
+baseline:
+  method: cold_start_nsga2
+  initialization: latin_hypercube_geometry19
+  population_size: 64
+  maximum_v2_1_evaluations: 640
+  seed: 42
+counting:
+  search_calls:
+    project: [WP19-23C.unique_v2_1_evaluations, WP19-23D.true_v2_1_evaluations, WP19-23E.unique_v2_1_evaluations]
+    cold_start: [WP19-23E.unique_v2_1_evaluations]
+  total_calls: search_calls_plus_WP19-23F_v2_1_recalculation
+  saved_calls: cold_start_total_calls_minus_project_total_calls
+target_source:
+  dataset: data/generated/wp19_21_development_dataset_98304_v1/regression_converged.jsonl
+  held_out_campaign: seed_20260831
+  empirical_support:
+    thrust_N: [2.4026286000064205, 550.0886006704056]
+    tsfc_kg_N_s: [0.00003090865644453191, 0.00040151101701082614]
+    mass_kg: [0.9607068279811731, 4.997794367106145]
+targets:
+  - label: id_low
+    source_kind: dataset_record
+    source_sample_ids: [92163]
+    target_type: ID
+    expected_status: KNOWN_FEASIBLE
+    thrust_N: 31.671511833320046
+    tsfc_kg_N_s: 0.00009935217223507603
+    mass_kg: 1.7724648360118942
+  - label: id_center
+    source_kind: dataset_record
+    source_sample_ids: [95524]
+    target_type: ID
+    expected_status: KNOWN_FEASIBLE
+    thrust_N: 63.142680551823695
+    tsfc_kg_N_s: 0.00006525863182009389
+    mass_kg: 2.247180990749084
+  - label: id_high
+    source_kind: dataset_record
+    source_sample_ids: [92943]
+    target_type: ID
+    expected_status: KNOWN_FEASIBLE
+    thrust_N: 109.48969371415566
+    tsfc_kg_N_s: 0.0000475211450638959
+    mass_kg: 2.8746889370990707
+  - label: interpolation_low_center
+    source_kind: arithmetic_midpoint
+    source_sample_ids: [92163, 95524]
+    target_type: INTERPOLATION
+    expected_status: UNKNOWN
+    thrust_N: 47.40709619257187
+    tsfc_kg_N_s: 0.00008230540202758496
+    mass_kg: 2.009822913380489
+  - label: interpolation_center_high
+    source_kind: arithmetic_midpoint
+    source_sample_ids: [95524, 92943]
+    target_type: INTERPOLATION
+    expected_status: UNKNOWN
+    thrust_N: 86.31618713298968
+    tsfc_kg_N_s: 0.000056389888441994895
+    mass_kg: 2.5609349639240773
+  - label: interpolation_low_high
+    source_kind: arithmetic_midpoint
+    source_sample_ids: [92163, 92943]
+    target_type: INTERPOLATION
+    expected_status: UNKNOWN
+    thrust_N: 70.58060277373785
+    tsfc_kg_N_s: 0.00007343665864948596
+    mass_kg: 2.3235768865554823
+  - label: extrapolation_thrust_high
+    source_kind: held_out_marginal_support_plus_10_percent
+    source_sample_ids: []
+    target_type: OUT_OF_EMPIRICAL_SUPPORT
+    expected_status: EXPECTED_INFEASIBLE
+    thrust_N: 605.0974607374462
+    tsfc_kg_N_s: 0.0000643688319813541
+    mass_kg: 2.278755046801614
+  - label: extrapolation_tsfc_low
+    source_kind: held_out_marginal_support_minus_10_percent
+    source_sample_ids: []
+    target_type: OUT_OF_EMPIRICAL_SUPPORT
+    expected_status: EXPECTED_INFEASIBLE
+    thrust_N: 64.57858907455504
+    tsfc_kg_N_s: 0.00002781779080007872
+    mass_kg: 2.278755046801614
+  - label: extrapolation_mass_high
+    source_kind: held_out_marginal_support_plus_10_percent
+    source_sample_ids: []
+    target_type: OUT_OF_EMPIRICAL_SUPPORT
+    expected_status: EXPECTED_INFEASIBLE
+    thrust_N: 64.57858907455504
+    tsfc_kg_N_s: 0.0000643688319813541
+    mass_kg: 5.49757380381676
+artifacts:
+  runtime_root: data/inverse_design/wp19_23_pipeline_vs_cold_nsga2_256_v1
+  summary: comparison_summary.json
+  report: REPORT.md
+  manifest: comparison_manifest.json

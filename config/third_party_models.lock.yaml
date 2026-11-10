@@ -1,0 +1,89 @@
+lock_version: third_party_models_v1
+frozen_utc: '2026-08-10T00:00:00Z'
+
+models:
+  cvae_reference:
+    repository: https://github.com/AntixK/PyTorch-VAE
+    commit: a6896b944c918dd7030e7d795a8c13e5c6345ec7
+    release: null
+    package: null
+    license: Apache-2.0
+    license_file: third_party/licenses/PyTorch-VAE-Apache-2.0.txt
+    license_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    paper: https://arxiv.org/abs/1312.6114
+    upstream_examples:
+      - models/cvae.py
+      - configs/cvae.yaml
+    core_classes:
+      - models.cvae.ConditionalVAE
+    local_adapter: src/ai/generators/cvae.py
+    install_mode: reference_only
+    allowed_changes: [dimensions, continuous_context, mlp_data_shape, data_loader, normalization, wrapper]
+  nflows:
+    repository: https://github.com/bayesiains/nflows
+    commit: 64b856c081e5f07521b32be99da262e8338fbfe8
+    release: v0.14
+    package: nflows==0.14
+    package_sha256: 6299844a62f9999fcdf2d95cb2d01c091a50136bd17826e303aba646b2d11b55
+    license: MIT
+    license_file: third_party/licenses/nflows-MIT.txt
+    license_sha256: 1e196493dc45091dc7d7175cf0442d3ccb561e31b4053d69db2e144b79fa1c17
+    paper: https://doi.org/10.5281/zenodo.4296287
+    upstream_examples:
+      - examples/conditional_moons.ipynb
+    core_classes:
+      - nflows.flows.base.Flow
+      - nflows.transforms.autoregressive.MaskedAffineAutoregressiveTransform
+    local_adapter: src/ai/generators/nflows_adapter.py
+    install_mode: pinned_dependency
+    allowed_changes: [dimensions, context_wiring, data_loader, normalization, wrapper]
+  freia:
+    repository: https://github.com/VLL-HD/FrEIA
+    commit: 033f6fd6eb4d2ddbc98f746a9ef5f8c619587abe
+    release: v0.2
+    package: FrEIA==0.2
+    license: MIT
+    license_file: third_party/licenses/FrEIA-MIT.txt
+    license_sha256: 97bd8386addc4a4ff3b063a206e574ecab2570e82791d7357c4e2f2b48f99fef
+    paper: https://arxiv.org/abs/1808.04730
+    upstream_examples:
+      - docs/tutorial/sequence_inn.rst
+    core_classes:
+      - FrEIA.framework.SequenceINN
+      - FrEIA.modules.AllInOneBlock
+    local_adapter: src/ai/generators/freia_adapter.py
+    install_mode: pinned_dependency
+    allowed_changes: [dimensions, condition_wiring, subnet_size, data_loader, normalization, wrapper]
+  torchcfm:
+    repository: https://github.com/atong01/conditional-flow-matching
+    commit: 3fd278f9ef2f02e17e107e5769130b6cb44803e2
+    release: 1.0.7
+    package: torchcfm==1.0.7
+    package_sha256: e079138d4c9d5723b2e8a220c323925df1e3367bfdfc34633d7c56970b03a375
+    license: MIT
+    license_file: third_party/licenses/TorchCFM-MIT.txt
+    license_sha256: 1891c36f950c0ce531c35847be46c6ef5b9c2c08ecb30bb01089efb006c04811
+    paper: https://arxiv.org/abs/2302.00482
+    upstream_examples:
+      - examples/notebooks/2D_tutorials/2D_cfm.ipynb
+    core_classes:
+      - torchcfm.conditional_flow_matching.ConditionalFlowMatcher
+    local_adapter: src/ai/generators/torchcfm_adapter.py
+    install_mode: pinned_dependency
+    allowed_changes: [dimensions, continuous_context, velocity_mlp, data_loader, normalization, ode_wrapper]
+
+runtime_dependencies:
+  torchdiffeq:
+    package: torchdiffeq==0.2.5
+    package_sha256: aa1db4bed13bd04952f28a53cdf4336d1ab60417c1d9698d7a239fec1cf2bcf8
+    repository: https://github.com/rtqichen/torchdiffeq
+    license: MIT
+    license_file: third_party/licenses/torchdiffeq-MIT.txt
+    license_sha256: df970ff07a0460f29115f2feddcceb8253f5840a8b35df857884354e3d47753c
+
+excluded_references:
+  meta_flow_matching:
+    repository: https://github.com/facebookresearch/flow_matching
+    license: CC-BY-NC-4.0
+    usage: reference_only_not_a_default_dependency
+    reason: non-commercial restriction requires separate review

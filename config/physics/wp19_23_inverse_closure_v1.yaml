@@ -1,0 +1,261 @@
+protocol_version: wp19_23_inverse_closure_v1
+work_package: WP19-23
+status: performance3_log_bounded_sigmoid_unified_default_development_pipeline
+dataset_tier: development_bootstrap
+formal_use_allowed: false
+
+contracts:
+  target: config/physics/wp19_23_target_contract_v1.yaml
+  design_schema: config/physics/geometry19_schema_v1.yaml
+  calibration_pack: config/physics/geometry19_calibration_bootstrap_v1.yaml
+  acceptance_policy: config/physics/geometry19_acceptance_policy_v1.yaml
+  constraint_profile: config/physics/geometry19_constraint_profile_pipeline_debug_v1.yaml
+  constraint_dominance: config/physics/geometry19_constraint_dominance_v1.yaml
+  operating_point_policy: config/physics/geometry19_operating_point_policy_reference_continuation_v1.yaml
+  conservation_tolerances: config/physics/geometry19_conservation_tolerances_v1.yaml
+
+target_outputs:
+  ordered_names: [thrust_N, tsfc_kg_N_s, mass_kg]
+  units: {thrust_N: N, tsfc_kg_N_s: kg/(N*s), mass_kg: kg}
+  require_finite_positive: true
+
+diagnostic_acceptance:
+  profile: wp19_23_development_diagnostic_v1
+  status: frozen_for_development_comparison_only
+  formal_hit_rate_ready: false
+  formal_policy_override_allowed: false
+  rule: all_required_outputs_within_relative_tolerance
+  aggregate_error_may_compensate_failed_output: false
+  require_solver_converged: true
+  require_numerical_hard_constraints_passed: true
+  unique_root_reporting: separate
+  selected_multiple_reporting: separate_diagnostic
+  relative_tolerances:
+    thrust_N: 0.0274514502151586
+    tsfc_kg_N_s: 0.008573042420144972
+    mass_kg: 0.01170710896944147
+  epsilons:
+    thrust_N: 1.0e-12
+    tsfc_kg_N_s: 1.0e-15
+    mass_kg: 1.0e-15
+  provenance:
+    source: config/inverse_design/baselines/active10d_cfm4_v1_freeze.yaml
+    purpose: reproduce_the_previously_validated_three_axis_comparison
+    geometry19_engineering_threshold_claimed: false
+
+hit_alignment:
+  version: geometry19_hit_alignment_v1
+  enabled: true
+  ordered_outputs: [thrust_N, tsfc_kg_N_s, mass_kg]
+  axis_scale: relative_error_divided_by_acceptance_tolerance
+  hard_metric: rho_max_axis_ratio
+  surrogate_loss: smooth_max_axis_ratio
+  smooth_max_alpha: 12.0
+  candidate_ranking: predicted_rho_ascending_then_candidate_id
+  true_acceptance: lexicographic_failed_axes_rho_sum_constraint
+  legacy_total_true_error: retained_for_reporting_only
+
+models:
+  generator:
+    family: gpu_sinkhorn_cfm
+    architecture: cfm_4_film_residual
+    design_dimension: 19
+    condition_dimension: 3
+    runtime_device: cuda:0
+    physical_gpu: 6
+    integration: {method: rk4, steps: 32}
+    default_variant: bounded-sigmoid
+    variants:
+      baseline:
+        model_tag: novaturbo_geometry19_gpu_sinkhorn_cfm4_film_residual_v1
+        training_seed: 43
+        checkpoint: data/generator_models/geometry19/wp19_23_cfm4_gpu_sinkhorn_seed43_v1/baseline/best.pt
+        normalizer: data/generator_models/geometry19/wp19_23_cfm4_gpu_sinkhorn_seed43_v1/baseline/normalizer.json
+        network_architecture_modified: false
+        implementation_status: WP19_23A_PASS
+      bounded-sigmoid:
+        model_tag: novaturbo_geometry19_gpu_sinkhorn_cfm4_film_residual_bounded_sigmoid_v1
+        training_seed: 43
+        checkpoint: data/generator_models/geometry19/wp19_23_cfm4_bounded_sigmoid_seed43_v1/baseline/best.pt
+        normalizer: data/generator_models/geometry19/wp19_23_cfm4_bounded_sigmoid_seed43_v1/baseline/normalizer.json
+        network_architecture_modified: true
+        implementation_status: WP19_23_BS_CLOSED_LOOP_DEVELOPMENT_PASS
+  forward:
+    default_tag: performance3_log
+    variants:
+      performance3_log:
+        model_tag: novaturbo_geometry19_performance3_log_seed43_v1
+        weights: data/inverse_design/wp19_22_performance_surrogate_v2_ablation/formal/models/performance3_log/seed_43
+        output_transform: natural_log
+        output_contract: performance3_only
+        use_constraint_loss: false
+        use_feasibility_loss: false
+        selection_provenance:
+          experiment: WP19-23-PERFORMANCE3-FULL-PIPELINE-COMPARISON
+          result: 23_of_24_vs_s0_21_of_24
+          search_v2_1_reduction: 0.218
+          approved_as_default: true
+      s0:
+        model_tag: novaturbo_geometry19_forward_gate_k_s0_legacy_mse_seed43_v1
+        weights: data/inverse_design/wp19_22_gate_k_hit_aligned_surrogate_v1/models/s0_legacy_mse/seed_43
+        output_transform: identity
+        output_contract: performance3_plus_constraint_residuals
+        use_constraint_loss: true
+        use_feasibility_loss: true
+        selection_provenance:
+          gate: WP19-22-Gate-K2
+          arm: s0_legacy_mse
+          seed: 43
+          closure_result: 3_of_4_known_reachable_targets
+          retained_as_optional_tag: true
+  feasibility:
+    model_tag: novaturbo_geometry19_feasibility_mlp_5class_v1
+    weights: data/trained_models/geometry19/feasibility_mlp_5class_v1/seed_42/baseline
+    use_as_hard_gate: false
+
+generation:
+  supported_sampling_modes: [direct, dflow]
+  pipeline_sampling_modes: [direct, dflow]
+  default_sampling_mode: dflow
+  source_seed: 20260817
+  source_generation_device: cpu
+  source_transfer_policy: generate_once_then_move_to_runtime_device
+  raw_candidate_count: 256
+  generator_call_count_per_target: 1
+  refill_allowed: false
+  candidate_copy_allowed: false
+  preserve_original_candidate_id: true
+
+dflow:
+  enabled_only_when_sampling_mode_is_dflow: true
+  pipeline_execution: optional_source_guidance_inside_frozen_cfm4
+  reuse_direct_initial_sources: true
+  optimize: source_only
+  freeze_generator: true
+  freeze_forward_surrogate: true
+  maximum_source_displacement_linf: 0.75
+  source_prior_weight: 0.01
+  design_bound_penalty: 5.0
+  learning_rate: 0.01
+  steps: 24
+  checkpoints: [8, 16, 24]
+  gradient_clip_norm: 1.0
+  target_loss_weight: 1.0
+  constraint_loss_weight: 0.1
+  feasibility_loss_weight: 0.1
+  inherited_parameter_status: smoke_initial_requires_geometry19_audit
+  production_acceptance: same_V2_1_rules_as_direct_candidates
+  paired_true_physics_comparison: offline_audit_only
+
+candidate_filter:
+  normalized_bound_tolerance: 0.0
+  discrete_policy: unconditional_nearest_integer
+  discrete_tolerance_status: disabled_unconditional_projection_v2
+  discrete_absolute_tolerance_count: null
+  discrete_tolerance_boundary_inclusive: true
+  discrete_tie_break: numpy_rint_nearest_even
+  order:
+    - non_finite
+    - schema_bounds
+    - discrete_mapping
+    - geometry_mapping
+    - canonical_duplicate
+  failure_codes:
+    non_finite: NON_FINITE_GENERATION
+    schema_bounds: OUT_OF_SCHEMA_BOUNDS
+    discrete_mapping: INVALID_DISCRETE_COORDINATE
+    geometry_mapping: GEOMETRY_MAPPING_FAILED
+    canonical_duplicate: DUPLICATE_CANDIDATE
+  trim_rule: largest_power_of_two_not_above_valid_count
+  constraint_eligible_sort: original_candidate_id_order
+  select_before_physics: predicted_rho_ascending_then_candidate_id
+  surrogate_reranking_before_trim_allowed: true
+
+candidate_generation_artifacts:
+  runtime_root: data/inverse_design/wp19_23_candidate_protocol_v1
+  refuse_overwrite: true
+  required_files: [manifest.json, target.json, raw_candidates.jsonl, candidate_filter_ledger.jsonl, summary.json]
+
+physics_evaluation:
+  model_tag: geometry19_closed_v2_1
+  mass_model: mass_model_v2
+  surrogate_may_accept_candidate: false
+  stop_after_first_stage_with_at_least_one_diagnostic_hit: true
+  candidate_evaluation_count: one_per_kept_candidate
+  dflow_role: optional_generation_network_supplement
+
+refinement:
+  trigger: no_direct_V2_1_diagnostic_hit
+  method: geometry19_surrogate_gradient
+  maximum_candidates: 8
+  checkpoints: [0, 8, 16, 24]
+  trust_region_linf: 0.25
+  inherited_parameter_status: smoke_initial_requires_geometry19_audit
+  discrete_policy: hold_then_enumerate_legal_neighbors_at_checkpoint
+  acceptance: strictly_lower_V2_1_true_error
+
+optimizer:
+  trigger: no_refinement_V2_1_diagnostic_hit
+  method: warm_start_nsga2
+  seed: 42
+  population_size_rule: smallest_power_of_two_not_below_warm_start_count
+  minimum_population_size: 16
+  maximum_population_size: 64
+  cold_start_population_size: 64
+  cold_start_initialization: latin_hypercube_geometry19
+  maximum_generations: 15
+  maximum_physics_evaluations: 640
+  use_surrogate_as_final_fitness: false
+  constraint_dominance: geometry19_constraint_dominance_v1
+  selection_order: failed_axes_then_rho_then_sum_then_constraint_violation
+  early_stop: finish_current_generation_after_first_diagnostic_hit
+  no_hit_status: BEST_APPROXIMATION_NOT_HIT
+  no_valid_cfm_candidate_policy: direct_labeled_cold_start_nsga2
+  no_valid_warm_start_policy: stop_unless_triggered_by_no_valid_cfm_candidate
+
+delivery:
+  maximum_candidates: 5
+  require_V2_1_recalculation: true
+  require_schema_valid: true
+  require_numerical_hard_constraints_passed: true
+  require_preview_mesh_passed: true
+  export_json: true
+  export_stl: on_demand
+  export_mesh_cli_flags: [--export-mesh, --export-stl]
+  export_mesh_quality: export_mesh
+
+artifact_protocol:
+  refuse_overwrite: true
+  runtime_root: data/inverse_design/wp19_23_inverse_closure_v1
+  mesh_storage_root: exports/geometry19
+  summary_json: results/physics/wp19_23_inverse_closure_v1.json
+  report_markdown: docs/physics/WP19_23_INVERSE_CLOSURE_20260827.md
+  pipeline_aggregate_manifest: pipeline_manifest.json
+  required_run_artifacts:
+    - manifest.json
+    - target.json
+    - raw_candidates.jsonl
+    - candidate_filter_ledger.jsonl
+    - physics_forward_ledger.jsonl
+    - candidate_disposition_ledger.jsonl
+    - refinement_ledger.jsonl
+    - nsga2_ledger.jsonl
+    - delivered_candidates.json
+    - summary.json
+    - ui_candidates
+    - pipeline_manifest.json
+  manifest_required_hashes:
+    - target_contract_hash
+    - design_schema_hash
+    - calibration_hash
+    - acceptance_policy_hash
+    - constraint_profile_hash
+    - constraint_dominance_hash
+    - operating_point_policy_hash
+    - generator_checkpoint_hash
+    - generator_normalizer_hash
+    - forward_checkpoint_hash
+    - protocol_hash
+    - code_commit
+  manifest_conditional_hashes:
+    feasibility_checkpoint_hash: required_when_forward_variant_uses_feasibility_loss

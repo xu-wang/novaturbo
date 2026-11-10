@@ -1,0 +1,119 @@
+baseline_version: inverse_design_baseline_v1
+baseline_id: active10d_cfm4_v1
+output_directory: data/inverse_design/baselines/active10d_cfm4_v1
+refuse_overwrite: true
+
+delivery_config: config/inverse_design/legacy/cfm4_default_v1.yaml
+runtime:
+  require_gpu: true
+  physical_gpu: 6
+  logical_device: cuda:0
+
+critical_artifacts:
+  - category: dataset
+    path: data/generator_active10d_100k/generator_active10d_valid.csv
+    sha256: b4784922be044fccff846cacc93cec4133965de0007145fee84545dd60e78637
+  - category: normalizer
+    path: data/generator_active10d_100k/normalizer_active10d.json
+    sha256: 9bf25fe526a395beadf4057012e67a5823d88757c11457346ec36c21a2a1b68b
+  - category: target_suite
+    path: data/generator_active10d_100k/targets/target_suite_active10d_v1.csv
+    sha256: 3d373ecbdc6cf88c046108edb8cdbbca071394fc1556cfa92499f049f47461dd
+  - category: schema
+    path: config/generator_active10d_schema.yaml
+    sha256: e1a9b667ae8479be21be2727f2f2c714d3853fbb291919570054a1cf81c7566c
+  - category: metrics_config
+    path: config/generator_active10d_metrics.yaml
+    sha256: 0d2cf0e76c2b7140649732e8276315d0779c661d531ae7fba2ad61bcde31ef1e
+  - category: cfm_checkpoint
+    path: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_43/best.pt
+    sha256: f9dfefc3597e9df1cd2e1a0db2522c9b15f3ea3653072ab4686190fd38c0b664
+  - category: gradient_surrogate
+    path: data/inverse_design/stage2/s2_wp3_consistency_repair_v2/forward_surrogate.pt
+    sha256: dd87006e9f0b5d3bb691b6386075bebd914805e1c650da943facf2f9b82e0878
+  - category: delivery_config
+    path: config/inverse_design/legacy/cfm4_default_v1.yaml
+    sha256: 0d48c6085fb3fe1f8b1a62208787e077a037f558379b5ad7bd07bee536d3afce
+  - category: delivery_policy
+    path: config/inverse_design/policies/default_delivery_v1.yaml
+    sha256: 7bca3bab597f00b0bc2bf024ec5c7a4004370308e666530161e004c795fcc5b3
+  - category: generator_config
+    path: config/inverse_design/generators/cfm4_sinkhorn_seed43_v1.yaml
+    sha256: 3a18f37be76a91e71f6df548d1d497b4a8b46d59916c415d6c080f182726b83f
+  - category: ordinary_target
+    path: config/inverse_design/targets/examples/default_ordinary.yaml
+    sha256: 6eb23e7536e9b6c22efa80634fe00c770007af1d6cb6674b8d972c4e2b242408
+  - category: extreme_target
+    path: config/inverse_design/targets/frozen/cfm_default_extreme.yaml
+    sha256: ce21d37694594ed242bb088408b605ebd9968877ec9a7879bf0cb87009c82910
+  - category: stable_entrypoint
+    path: scripts/run_inverse_design_cfm4_legacy.py
+    sha256: bf730101149bfbfa3450874666de1d6a1a820ae743692556b6d478c96a53a45f
+  - category: stable_facade
+    path: src/ai/inverse_design_delivery_cfm4_legacy.py
+    sha256: d0a921ed227ffd3c3231f50519338adb7c91fc8982b815db150b316849cf3b6c
+  - category: numerical_core
+    path: src/ai/stage2_wp5.py
+    sha256: f25478dbb470627dc3cad55289ed96bee0969f5a2526c0feddd33a2e41ebc28b
+  - category: candidate_protocol
+    path: src/ai/candidate_protocol.py
+    sha256: 3d419848db903828b8bf82dc6bf5884836f1bbeca9e8cd115767b1f30451036a
+  - category: round_trip_evaluator
+    path: src/ai/round_trip.py
+    sha256: 13637fab2e3fcd46be2ade1a762361a756eb7e0355946f646079ce37967ab620
+  - category: optimizer
+    path: src/ai/optimizer.py
+    sha256: 1c6a59676cbfc91b565d1a9925a88006ccce9e60d30961885af665bc6ee4561a
+  - category: cfm_adapter
+    path: src/ai/generators/torchcfm_adapter.py
+    sha256: 8366c0ad68476df3f1d857636450b7a60f81aabc072159d9ea4bbec2da406986
+  - category: legacy_freeze_manifest
+    path: config/stage2/s2_wp5_cfm_default_freeze_v2.yaml
+    sha256: c0d481ad1c78f82cc2f8898d5f4f50ef547e4a5b1b62ff4cf148328b37081bc5
+
+reference_directories:
+  legacy_ordinary: data/inverse_design/stage2/bounded_flows/cfm_default_ordinary_frozen_v2
+  legacy_extreme: data/inverse_design/stage2/bounded_flows/cfm_default_extreme_frozen_v2
+  generalization_panel: data/inverse_design/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_eval_seed43_v2_1
+
+cases:
+  ordinary:
+    target_config: config/inverse_design/targets/examples/default_ordinary.yaml
+    generation_seed: 20260813
+    legacy_reference: data/inverse_design/stage2/bounded_flows/cfm_default_ordinary_frozen_v2
+    compare_artifacts:
+      - generation/raw_candidates.csv
+      - generation/validation.csv
+      - direct/forward_results.csv
+      - direct/ranked_candidates.csv
+      - delivery/delivered_candidates.csv
+      - delivery/evaluation_cost_ledger.csv
+      - delivery/decision.json
+  extreme:
+    target_config: config/inverse_design/targets/frozen/cfm_default_extreme.yaml
+    generation_seed: 20913717
+    legacy_reference: data/inverse_design/stage2/bounded_flows/cfm_default_extreme_frozen_v2
+    compare_artifacts:
+      - generation/raw_candidates.csv
+      - generation/validation.csv
+      - direct/forward_results.csv
+      - direct/ranked_candidates.csv
+      - gradient/diagnostics.json
+      - gradient/validation_ledger.csv
+      - nsga2/evaluation_ledger.csv
+      - nsga2/pareto.csv
+      - delivery/delivered_candidates.csv
+      - delivery/evaluation_cost_ledger.csv
+      - delivery/decision.json
+
+expected_contract:
+  candidate_protocol: v2_1_fixed_raw
+  n_raw: 128
+  keep_rule: power_of_two_floor
+  refill: false
+  minimum_hit_count: 1
+  maximum_direct_0d_evaluations: 128
+  gradient_maximum_0d_evaluations: 24
+  nsga2_maximum_0d_evaluations: 640
+  maximum_total_0d_evaluations: 792
+  frozen_extreme_total_0d_evaluations: 728

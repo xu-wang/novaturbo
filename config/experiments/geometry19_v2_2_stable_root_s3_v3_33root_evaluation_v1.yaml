@@ -1,0 +1,140 @@
+protocol_version: geometry19_v2_2_stable_root_s3_v3_33root_evaluation_v1
+status: preregistered_after_coordinate_lock_before_physics_labels
+stage: S3_v3_33root_physics_label_seal_then_model_score
+scope_definition: bilateral_perturbable_stable_root_subdomain_only
+formal_use_allowed: false
+deployment_allowed: false
+
+inputs:
+  coordinate_protocol:
+    path: config/experiments/geometry19_v2_2_stable_root_s3_prelabel_v3_33root.yaml
+    sha256: a35b56d32bdda8fb02f95499014d0390aecc7be71cfbca35dc111a07d5201129
+  coordinate_implementation:
+    path: src/ai/geometry19_v2_2_stable_root_s3_prelabel_v3.py
+    sha256: 4d032b3f5e09ff020a2abf2e3762a42eda05d2e4ede3c0cb9d3cac6ac42f951a
+  coordinate_summary:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/audits/S3_v3_33root_Prelabel_Coordinate_Summary.json
+    sha256: 950a3630a0c6d085079080e6469009233eb64ba0f44d4d08fdde2e8e3988703b
+    required_status: STABLE_ROOT_S3_V3_33ROOT_PRELABEL_COORDINATE_LOCK_PASS
+  coordinate_ledger:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/fresh_evaluation_v3_33root/S3_v3_Prelabel_Coordinates.jsonl
+    sha256: 2a5b413f26136f35a994e5d066723dea32c283da6c1e7f4a0c793090d07c2ba3
+  s2_model_manifest:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/models/S2_Model_Manifest.json
+    sha256: c1da78af5395718c855df9e32df31a4ad3763238b3d746b8374dafd0dcf8358b
+    label_stage_access: sha256_only_no_parse
+  stable_root_registry:
+    path: data/validation/v2_2_stable_root_conditional_surrogate_v1/audits/stable_root_registry.jsonl
+    sha256: eedbc02591bc7b6b044071ecf0d1754d648b4ad9210114887b314e1b964352ad
+  design_schema:
+    path: config/physics/geometry19_schema_v1.yaml
+    sha256: cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28
+  target_domain:
+    path: config/physics/geometry19_v2_2_development_target_domain_v1.yaml
+    sha256: c3905de3d89c8405954d24172cdc614a3c08423595a33216adb1f2fcccc689f4
+  sealed_confirmation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+    sha256: a3051cae177d1c9735699ef4b50675f41f5f0ffd7d954b3a233f5ebf1ea8b1fd
+    access: sha256_only_no_parse
+
+execution_order:
+  - verify_all_input_hashes_and_33root_coordinate_pass
+  - evaluate_all_3168_coordinates_with_unified_V2_2
+  - write_hash_and_seal_physics_ledger_before_any_model_prediction
+  - apply_acquisition_gate
+  - only_if_acquisition_passes_open_frozen_model_manifest_and_models
+  - score_all_five_frozen_S2_arms_once_on_common_eligible_rows
+  - apply_accuracy_advancement_and_routing_gates
+
+physics_labeling:
+  pipeline_profile: v2_2_development
+  expected_coordinates: 3168
+  shard_size: 96
+  resume_requires_exact_protocol_coordinate_and_context_hashes: true
+  labeler: unified_geometry19_v2_2_physics_runtime
+  evaluation_eligible_requires:
+    - solver_converged
+    - numerically_valid
+    - physics_domain_valid
+    - finite_positive_three_performance
+    - inside_V2_2_development_target_domain
+  evaluation_rows_may_enter_training: false
+  performance_adaptive_top_up: false
+
+acquisition_gates:
+  exact_roots: 33
+  exact_evaluations: 3168
+  minimum_evaluation_eligible_per_root: 32
+  minimum_evaluation_eligible_fraction_overall: 0.80
+  minimum_evaluation_eligible_fraction_each_source_target_segment: 0.80
+  require_all_coordinate_design_hashes_preserved: true
+  require_no_duplicate_design_hashes: true
+
+scoring:
+  arms:
+    - all_78_global_root_balanced_ridge
+    - stable_38_pooled_root_balanced_ridge
+    - stable_38_nearest_root_local_ridge
+    - stable_38_oracle_root_local_ridge
+    - stable_38_global_plus_root_residual_ridge
+  common_rows: evaluation_eligible_rows_only_identical_for_all_arms
+  nearest_root_routing_candidates: selected_33_roots_only
+  oracle_and_residual_routing: frozen_source_root_id
+  outputs: [thrust_N, tsfc_kg_N_s, mass_kg]
+  output_transform: natural_log
+  rho_definition: max_axis_absolute_relative_error_divided_by_frozen_target_relative_tolerance
+  target_relative_tolerances:
+    thrust_N: 0.0274514502151586
+    tsfc_kg_N_s: 0.008573042420144972
+    mass_kg: 0.01170710896944147
+  report_by:
+    - root_id
+    - frozen_source_root_segment
+    - radius_shell
+    - direction_pool
+
+accuracy_gates:
+  maximum_worst_root_rho_p95: 5.0
+  maximum_each_source_target_segment_worst_root_rho_p95: 5.0
+  comparator_arm: all_78_global_root_balanced_ridge
+  minimum_worst_root_rho_p95_reduction: 0.15
+  minimum_each_source_target_segment_reduction: 0.10
+  maximum_any_source_target_segment_regression: 0.10
+  maximum_nearest_vs_oracle_relative_rho_p95_gap: 0.20
+  require_all_predictions_finite_positive: true
+
+claims:
+  permitted_if_all_gates_pass:
+    - fresh_accuracy_on_selected_33root_bilateral_subdomain
+    - anchored_forward_surrogate_comparison
+    - blind_nearest_root_comparison_inside_selected_33root_support
+  forbidden:
+    - original_38root_accuracy
+    - all_78root_accuracy
+    - excluded_boundary_root_accuracy
+    - unknown_manifold_generalization
+    - inverse_design_readiness
+    - formal_or_deployment_use
+
+artifacts:
+  runtime_root: data/validation/v2_2_stable_root_forward_fresh_eval_v1
+  physics_shards: fresh_evaluation_v3_33root/physics_shards
+  sealed_physics_ledger: fresh_evaluation_v3_33root/S3_v3_Sealed_V2_2_Evaluations.jsonl
+  physics_summary: audits/S3_v3_33root_Physics_Acquisition_Summary.json
+  physics_report: audits/S3_v3_33root_Physics_Acquisition_Report.md
+  future_prediction_ledger: fresh_evaluation_v3_33root/S3_v3_Frozen_Model_Predictions.jsonl
+  future_scoring_summary: audits/S3_v3_33root_Model_Scoring_Summary.json
+  future_scoring_report: audits/S3_v3_33root_Model_Scoring_Report.md
+
+statuses:
+  acquisition_pass: STABLE_ROOT_S3_V3_33ROOT_PHYSICS_ACQUISITION_PASS
+  acquisition_fail: STABLE_ROOT_S3_V3_33ROOT_PHYSICS_ACQUISITION_FAIL
+  model_pass: STABLE_ROOT_S3_V3_33ROOT_FORWARD_SURROGATE_PASS
+  model_no_advancement: STABLE_ROOT_S3_V3_33ROOT_FORWARD_NO_ADVANCEMENT
+  artifact_fail: STABLE_ROOT_S3_V3_33ROOT_ARTIFACT_FAIL
+
+limitations:
+  - the_33root_scope_is_post_selected_from_S3_v2_coordinate_feasibility
+  - fresh_coordinates_prevent_row_reuse_but_do_not_remove_root_selection_bias
+  - five_S2_models_were_trained_before_scope_reduction_and_include_the_five_excluded_roots
+  - V2_2_is_a_simplified_software_model_not_real_engine_validation

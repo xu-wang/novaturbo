@@ -1,0 +1,8 @@
+target_version: wp6_target_v1
+target_id: 0135d13d1ed588e56075c376d7813f1fcac644d70e80784a1e4616ed832c3b71
+target_type: ID
+expected_status: known_feasible
+thrust_N: 108.60226049219764
+tsfc_kg_N_s: 4.134430220874855e-05
+tolerance_profile: round_trip_metrics_v1
+

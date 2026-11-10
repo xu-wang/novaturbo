@@ -1,0 +1,18 @@
+model_id: geometry19_thermo_variable_property_shadow_v1
+formal_use_allowed: false
+reference_temperature_K: 298.15
+valid_temperature_range_K: [180.0, 2200.0]
+gas_constants_J_kg_K: {air: 287.05, gas: 287.05}
+cp_polynomials:
+  # cp = a + b*(T-Tref) + c*(T-Tref)^2, J/(kg*K).
+  air: [1005.0, 0.12, 0.000015]
+  gas: [1075.0, 0.10, 0.000010]
+  gas_far_coefficient: 850.0
+viscosity:
+  reference_Pa_s: 1.716e-5
+  reference_temperature_K: 273.15
+  sutherland_constant_K: 110.4
+source:
+  type: synthetic_interface_test
+  purpose: exercise variable-property and inverse-enthalpy contracts
+  engineering_validation: not_performed

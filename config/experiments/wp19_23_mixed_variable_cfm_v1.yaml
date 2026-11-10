@@ -1,0 +1,137 @@
+protocol_version: wp19_23_mixed_variable_cfm_v1
+status: development_ablation
+formal_use_allowed: false
+
+data:
+  regression_dataset: data/generated/wp19_21_development_dataset_98304_v1/regression_converged.jsonl
+  design_schema: config/physics/geometry19_schema_v1.yaml
+  campaign_split:
+    train: [seed_20260826, seed_20260827, seed_20260828, seed_20260829]
+    validation: [seed_20260830]
+    test: [seed_20260831]
+  condition_transforms:
+    thrust_N: identity
+    tsfc_kg_N_s: natural_log
+    mass_kg: natural_log
+  batch_size: 1024
+  num_workers: 0
+
+training:
+  seed: 43
+  device: cuda:0
+  epochs: 400
+  minimum_epochs: 20
+  patience: 20
+  min_delta: 0.00001
+  gradient_clip_norm: 10.0
+  lr_scheduler: {enabled: true, patience: 7, factor: 0.5, min_lr: 0.000001}
+
+common_model: &common_model
+  architecture: film_residual
+  hidden_dim: 256
+  residual_blocks: 2
+  condition_encoder_dim: 128
+  time_embedding: {enabled: true, type: sinusoidal, dim: 32, max_period: 10000.0, time_scale: 1000.0, trainable_projection: false}
+  matcher: gpu_sinkhorn
+  sinkhorn_cost_normalization: batch_mean
+  sinkhorn_regularization: 0.1
+  sinkhorn_iterations: 50
+  sigma: 0.0
+  ode_method: rk4
+  ode_steps: 32
+  learning_rate: 0.001
+  weight_decay: 0.00001
+
+arms:
+  - arm_id: b_tuple
+    model:
+      <<: *common_model
+      generator_name: geometry19_tuple_cfm
+      model_tag: novaturbo_geometry19_tuple_conditioned_cfm_v1
+      architecture_id: WP19-23-MIXED-B-TUPLE-CFM
+      continuous_bounded_output: {enabled: true, kind: offset_sigmoid, epsilon: 0.0001, input_tolerance: 0.000001, saturation_threshold: 0.99}
+    artifacts:
+      weights_root: data/generator_models/geometry19/wp19_23_mixed_b_tuple_cfm_v1
+      runtime_root: data/inverse_design/wp19_23_mixed_b_tuple_cfm_v1
+  - arm_id: a_gumbel
+    model:
+      <<: *common_model
+      generator_name: geometry19_gumbel_cfm
+      model_tag: novaturbo_geometry19_gumbel_mixed_cfm_v1
+      architecture_id: WP19-23-MIXED-A-GUMBEL-CFM
+      discrete_hidden_dim: 128
+      gumbel_temperature: 0.75
+      discrete_loss_weight: 1.0
+      continuous_bounded_output: {enabled: true, kind: offset_sigmoid, epsilon: 0.0001, input_tolerance: 0.000001, saturation_threshold: 0.99}
+    artifacts:
+      weights_root: data/generator_models/geometry19/wp19_23_mixed_a_gumbel_cfm_v1
+      runtime_root: data/inverse_design/wp19_23_mixed_a_gumbel_cfm_v1
+  - arm_id: c_dequantized
+    model:
+      <<: *common_model
+      generator_name: geometry19_dequantized_cfm
+      model_tag: novaturbo_geometry19_dequantized_cfm_v1
+      architecture_id: WP19-23-MIXED-C-DEQUANTIZED-CFM
+      bounded_output: {enabled: true, kind: offset_sigmoid, epsilon: 0.0001, input_tolerance: 0.000001, saturation_threshold: 0.99}
+    artifacts:
+      weights_root: data/generator_models/geometry19/wp19_23_mixed_c_dequantized_cfm_v1
+      runtime_root: data/inverse_design/wp19_23_mixed_c_dequantized_cfm_v1
+
+smoke:
+  device: cpu
+  epochs: 1
+  minimum_epochs: 1
+  patience: 1
+  maximum_rows_per_split: 256
+  batch_size: 128
+  ode_steps: 2
+
+validation:
+  source_seed: 20260817
+  sample_count: 32
+
+evaluation:
+  protocol_version: wp19_23_mixed_variable_cfm_eval_v1
+  target_suite: data/inverse_design/wp19_23_generator_core_oracle_v1/target_suite.jsonl
+  historical_failure_summary: data/inverse_design/wp19_23_generator_failure_decomposition_v1/generator_failure_decomposition_summary.json
+  held_out_per_region: 4
+  tuple_top_m: 16
+  maximum_raw_candidates: 512
+  nested_prefixes: [64, 128, 256, 512]
+  source_seeds: [20260817, 20260902, 20260903]
+  device: cuda:0
+  physics_workers: 16
+  physics_chunksize: 32
+  smoke_candidates: 32
+  runtime_root: data/inverse_design/wp19_23_mixed_variable_cfm_eval_v1
+
+checkpoint_selection:
+  protocol_version: wp19_23_c_checkpoint_selection_v1
+  snapshot_every: 10
+  development_target_count: 24
+  development_source_seeds: [20260817, 20260902]
+  development_candidates: 128
+  confirmation_target_count: 24
+  confirmation_source_seeds: [20260817, 20260902, 20260903]
+  confirmation_candidates: 512
+  baseline_checkpoint: data/generator_models/geometry19/wp19_23_cfm4_bounded_sigmoid_seed43_v1/baseline/best.pt
+  device: cuda:0
+  physics_workers: 16
+  runtime_root: data/inverse_design/wp19_23_c_checkpoint_selection_v1
+
+candidate_union:
+  protocol_version: wp19_23_baseline_c_equal_budget_union_v1
+  candidates_per_arm: 256
+  runtime_root: data/inverse_design/wp19_23_baseline_c_equal_budget_union_v1
+
+tuple_diagnostic:
+  protocol_version: wp19_23_b_tuple_top_m_diagnostic_v1
+  top_m: [4, 8, 16, 32, 64]
+  reference_top_m: 16
+  fixed_total_candidates: 512
+  source_seeds: [20260817, 20260902, 20260903]
+  minimum_hit_rate_gain: 0.10
+  minimum_median_rho_reduction_fraction: 0.20
+  device: cuda:0
+  physics_workers: 16
+  runtime_root: data/inverse_design/wp19_23_b_tuple_top_m_diagnostic_v1

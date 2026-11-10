@@ -1,0 +1,33 @@
+protocol_version: geometry19_v2_2_corrective_failure_audit_v1
+status: post_hoc_explanation_only
+formal_use_allowed: false
+confirmation_reuse_allowed: false
+
+design_schema: config/physics/geometry19_schema_v1.yaml
+target_domain: config/physics/geometry19_v2_2_development_target_domain_v1.yaml
+target_segments: [low_mass_low_to_mid, low_mass_mid_to_high]
+split_manifest:
+  path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/manifest.json
+  sha256: 46ecfb167d6a204dff3de2889028297ea915995feb3d8a8afe11ac19a8fa13cd
+baseline_summary:
+  path: data/validation/v2_2_forward_surrogate_baseline_v1/formal/summary.json
+  sha256: 4d25a270220e374c7993345f634679b32844dc37e556ccab4275995b41d94aeb
+corrective_summary:
+  path: data/validation/v2_2_low_mass_corrective_retraining_v1/formal/summary.json
+  sha256: 168a42b49933bb429ce73deebeeacd88dd58d85c2311eca173cb653df2f2352f
+split_datasets:
+  train: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/train.jsonl
+  validation: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/validation.jsonl
+  confirmation: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+baseline_model_root: data/validation/v2_2_forward_surrogate_baseline_v1/formal/models/seed_43
+corrective_model_root: data/validation/v2_2_low_mass_corrective_retraining_v1/formal/models/seed_42
+
+artifacts:
+  output_root: data/validation/v2_2_corrective_failure_audit_v1
+  summary: audit_summary.json
+  report: Corrective_Failure_Audit.md
+
+limitations:
+  - exposed_confirmation_is_explanation_only
+  - no_hyperparameter_or_model_selection_from_confirmation
+  - software_v2_2_only

@@ -1,0 +1,138 @@
+protocol_version: geometry19_v2_2_stable_root_s3_prelabel_v2
+status: preregistered_after_v1_coordinate_failure_before_v2_generation
+stage: S3_v2_boundary_aware_prelabel_coordinate_generation
+formal_use_allowed: false
+deployment_allowed: false
+
+inputs:
+  v1_protocol:
+    path: config/experiments/geometry19_v2_2_stable_root_s3_prelabel_v1.yaml
+    sha256: a1cffa217a366bb12c62524a2513f30ccdc62fea18e6db63b94991211da7e682
+  v1_failure_summary:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/audits/S3_Prelabel_Coordinate_Summary.json
+    sha256: 9925f36341539c58afc9cc48be2c6f19adbe9ed2ec7a504f4cdb87577fed7248
+    required_status: STABLE_ROOT_S3_PRELABEL_COORDINATE_LOCK_FAIL
+  v1_ledger:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/fresh_evaluation/S3_Prelabel_Coordinates.jsonl
+    sha256: 7b642cd65a0fa44b55d09d6dad05d7a75306aefcd68e4054f3a51cb98f523956
+    access: hash_only_preserve_failure_evidence
+  s2_model_manifest:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/models/S2_Model_Manifest.json
+    sha256: c1da78af5395718c855df9e32df31a4ad3763238b3d746b8374dafd0dcf8358b
+  s2_regression_authorization:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/audits/S2_Regression_Authorization.json
+    sha256: 2a63288ad46b1f8e03d8e3eb7796ebb22e7309965a999efed90d750320c8cbbf
+    required_status: STABLE_ROOT_S2_REGRESSION_PASS_S3_AUTHORIZED
+  stable_root_registry:
+    path: data/validation/v2_2_stable_root_conditional_surrogate_v1/audits/stable_root_registry.jsonl
+    sha256: eedbc02591bc7b6b044071ecf0d1754d648b4ad9210114887b314e1b964352ad
+  design_schema:
+    path: config/physics/geometry19_schema_v1.yaml
+    sha256: cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28
+  development_dataset:
+    path: data/validation/v2_2_known_manifold_root_discovery_v1/development_dataset.jsonl
+    sha256: cde2c3f6a0cebc91a437f45b7aae5d2ebfe2b8adff952942d05efaae09297134
+    access: design_hash_duplicate_check_only
+  sealed_confirmation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+    sha256: a3051cae177d1c9735699ef4b50675f41f5f0ffd7d954b3a233f5ebf1ea8b1fd
+    access: sha256_only_no_parse
+
+primary_directions:
+  reuse_v1_direction_definition: true
+  axis_directions: 19
+  sobol_directions: 29
+  sobol_seed: 20260915
+  sobol_generation: random_base2_m5_take_first_29
+  shell_0_50_primary_directions: 24
+  shell_0_90_primary_directions: 24
+
+reserve_directions:
+  family: deterministic_sobol_reserve
+  count: 64
+  sobol_seed: 20260916
+  sobol_generation: random_base2_m6_take_all_64
+  transform: two_u_minus_one_then_unit_l2_normalize
+  shell_assignment: even_index_to_0_50_odd_index_to_0_90
+  use_order: ascending_reserve_index_within_shell
+  use_only_to_replace_coordinate_ineligible_primary_pairs: true
+
+boundary_aware_scaling:
+  proposal_space: schema_range_normalized
+  desired_step: support_radius_p95_times_shell_fraction
+  common_two_sided_limit: minimum_over_nonzero_axes_of_min_center_to_lower_and_upper_boundary_divided_by_abs_direction
+  safety_factor_eta: 0.95
+  actual_step: minimum_of_desired_step_and_eta_times_common_two_sided_limit
+  minimum_actual_to_desired_ratio: 0.25
+  reject_pair_if_ratio_below_minimum: true
+  clipping_allowed: false
+  preserve_positive_negative_pair: true
+
+integer_axis_policy:
+  variable_names: [compressor_blade_count, combustor_injector_count, turbine_blade_count]
+  anchor: numpy_rint_of_physical_root_center
+  pair: anchor_plus_one_and_anchor_minus_one
+  require_both_values_within_integer_schema_bounds: true
+  minimum_ratio_gate_applies: false
+  reject_and_use_reserve_if_pair_not_legal_or_unique: true
+  non_integer_directions_round_integer_coordinates_with_numpy_rint: true
+
+selection:
+  target_selected_pairs_per_root: 48
+  target_selected_pairs_per_shell: 24
+  final_prelabel_rows_per_root: 96
+  final_prelabel_rows_total: 3648
+  consider_primary_then_reserve_within_each_shell: true
+  pair_acceptance_requires:
+    - both_designs_inside_schema
+    - both_design_hashes_distinct_within_pair
+    - neither_design_hash_in_development
+    - neither_design_hash_previously_selected_in_v2
+    - non_integer_pair_step_ratio_at_least_0_25
+  rejected_screening_pairs_recorded: true
+  no_performance_adaptation: true
+
+ledger:
+  screening_ledger_contains_all_considered_pairs: true
+  final_ledger_contains_selected_pairs_only: true
+  label_status: NOT_EVALUATED_PRELABEL_ONLY
+  performance_fields_allowed: false
+  physics_fields_allowed: false
+  model_prediction_fields_allowed: false
+
+v2_gate:
+  exact_roots: 38
+  exact_selected_pairs_per_root: 48
+  exact_selected_pairs_per_shell_per_root: 24
+  exact_final_rows: 3648
+  require_all_final_design_hashes_unique: true
+  require_no_final_overlap_with_development: true
+  require_all_final_coordinates_inside_schema: true
+  require_zero_performance_physics_or_prediction_fields: true
+  require_model_files_unopened: true
+  require_confirmation_content_unread: true
+
+authorization:
+  physics_labeling_authorized_only_if_v2_gate_passes: true
+  physics_labeling_executed_now: false
+  model_prediction_authorized: false
+  inverse_design_authorized: false
+  original_local_chart_P4_authorized: false
+
+artifacts:
+  runtime_root: data/validation/v2_2_stable_root_forward_fresh_eval_v1
+  screening_ledger: fresh_evaluation_v2/S3_v2_Direction_Screening.jsonl
+  final_prelabel_ledger: fresh_evaluation_v2/S3_v2_Prelabel_Coordinates.jsonl
+  direction_matrix: fresh_evaluation_v2/S3_v2_Direction_Matrix.npz
+  summary: audits/S3_v2_Prelabel_Coordinate_Summary.json
+  report: audits/S3_v2_Prelabel_Coordinate_Report.md
+
+statuses:
+  pass: STABLE_ROOT_S3_V2_PRELABEL_COORDINATE_LOCK_PASS
+  fail: STABLE_ROOT_S3_V2_PRELABEL_COORDINATE_LOCK_FAIL
+
+limitations:
+  - v2_is_an_adaptive_coordinate_protocol_created_after_observing_v1_bounds_failures
+  - boundary_scaling_changes_realized_step_size_by_root_and_direction
+  - integer_axis_pairs_can_differ_in_normalized_radius_from_float_direction_pairs
+  - coordinate_gate_does_not_imply_V2_2_physics_validity_or_surrogate_accuracy

@@ -1,0 +1,100 @@
+contract_version: geometry19_constraint_dominance_v2_2_c4_v1
+status: v2_2_c4_shadow_integration
+description: >-
+  Constraint-dominance contract for the complete V2.2-C4 five-component map
+  and variable-property shadow backend. Map applicability and enthalpy closure
+  remain present for deterministic ranking even though acceptance treats them
+  as physics-domain hard constraints.
+
+feasibility_rule: physics_acceptable_and_all_frozen_residuals_nonpositive
+infeasible_comparison: lower_total_normalized_violation
+feasible_comparison: three_axis_pareto
+aggregation: capped_positive_part_l1_sum
+hard_failure_penalty: 1000000.0
+normalized_component_cap: 1000.0
+zero_tolerance: 1.0e-12
+
+normalization_scales:
+  thermodynamic:
+    inlet_map_coordinate_domain: 1.0
+    inlet_map_minimum_capture_area: 1.0
+    inlet_map_maximum_capture_area: 1.0
+    inlet_total_enthalpy_closure: 1.0e-8
+    compressor_map_coordinate_domain: 1.0
+    compressor_map_surge_boundary: 1.0
+    compressor_map_choke_boundary: 1.0
+    compressor_tip_mach_max: 1.5
+    compressor_efficiency_min: 0.6
+    combustor_map_coordinate_domain: 1.0
+    combustor_map_lean_stability: 1.0
+    combustor_map_rich_stability: 1.0
+    combustor_primary_residence_time_min: 0.002
+    combustor_injector_capacity: 0.001
+    combustor_injector_pitch_min: 0.015
+    combustor_pressure_loss_fraction_max: 0.08
+    turbine_phi_min: 0.05
+    turbine_phi_max: 0.35
+    turbine_psi_max: 1.8
+    turbine_solidity_min: 0.35
+    turbine_solidity_max: 1.2
+    turbine_mean_radius_mach_max: 0.9
+    turbine_efficiency_min: 0.6
+    turbine_map_coordinate_domain: 1.0
+    turbine_map_minimum_capacity: 1.0
+    turbine_map_maximum_capacity: 1.0
+    nozzle_total_pressure_usable: 101325.0
+    nozzle_map_coordinate_domain: 1.0
+    nozzle_map_minimum_reynolds: 1.0
+    nozzle_map_maximum_reynolds: 1.0
+    nozzle_exit_enthalpy_closure: 1.0e-8
+    whole_engine_flow_match: 1.0e-5
+    positive_thrust: 1.0
+    positive_tsfc: 1.0e-4
+  assembly:
+    diffuser_to_combustor_area: 0.2
+    combustor_to_turbine_outer_diameter: 0.35
+    shaft_clearance: 0.003
+    turbine_to_nozzle: 0.15
+  structural:
+    compressor_tip_speed_limit: 500.0
+    turbine_tip_speed_limit: 500.0
+    compressor_rotating_stress: 1.0
+    turbine_rotating_stress: 1.0
+    combustor_liner_hoop_stress: 1.0
+  thermal:
+    compressor_metal_temperature: 673.0
+    combustor_metal_temperature: 973.0
+    turbine_metal_temperature: 973.0
+    turbine_inlet_temperature_min: 800.0
+    turbine_inlet_temperature_max: 1200.0
+  manufacturing:
+    lattice_relative_density_min: 0.15
+    lattice_relative_density_max: 0.55
+    lattice_cell_size_min: 0.004
+    lattice_cells_across_region_min: 3.0
+    combustor_lattice_skin_thickness_min: 0.0005
+    nozzle_lattice_skin_thickness_min: 0.0005
+
+delivery_ranking:
+  contract_version: geometry19_delivery_ranking_v2_2_c4_v1
+  deduplicate_by: design_hash
+  order:
+    - development_diagnostic_hit_desc
+    - constraint_feasible_desc
+    - total_normalized_constraint_violation_asc
+    - unique_root_desc
+    - total_true_error_asc
+    - maximum_axis_relative_error_asc
+    - normalized_geometry_diversity_desc
+    - evaluation_id_asc
+
+disposition_codes:
+  delivered_hit: DELIVERED_DIAGNOSTIC_HIT
+  delivered_approximation: DELIVERED_BEST_APPROXIMATION
+  invalid_physics: REJECTED_TRUE_PHYSICS_INVALID
+  duplicate_design: REJECTED_DUPLICATE_DESIGN
+  hit_not_selected: NOT_DELIVERED_DELIVERY_LIMIT
+  nonhit_when_hit_exists: NOT_DELIVERED_DIAGNOSTIC_HIT_PREFERRED
+  forwarded_refinement: FORWARDED_TO_REFINEMENT
+  forwarded_nsga2: FORWARDED_TO_NSGA2
+  ranked_below_limit: NOT_DELIVERED_RANKED_BELOW_LIMIT

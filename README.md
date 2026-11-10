@@ -23,9 +23,36 @@
 
 ## What is NovaTurbo?
 
-NovaTurbo AI is an open-source computational engineering system that **autonomously designs micro turbojet engines** for defense-grade VTOL quadcopter drones. Given target specifications (thrust, size, weight, fuel type), it generates optimized, manufacturable engine geometries ready for **metal 3D printing (DMLS/SLM)**.
+NovaTurbo AI is an open-source computational engineering prototype for **micro turbojet engine design**. Given target specifications such as thrust, size, and weight, it explores parameterized engine designs and generates geometries for visualization and further validation.
 
 The system combines **parametric geometry generation**, **Brayton-cycle thermodynamics**, a **PyTorch neural-network surrogate model**, **NSGA-II multi-objective optimization**, and a rich **Three.js web UI** with real-time simulation visualizations.
+
+### V3 22D development status
+
+V3 implementation is paused at code/acceptance baseline `ea1cfc5` while its documentation is consolidated. The explicit development path connects a 22D physics backend, a 55-class target gate, local conditional CFM, D-Flow, continuous refinement, independent recomputation, and web target jobs. New V3 web jobs use `v3_guided_cfm_development`; entering V3 clears the old targets and waits for new input and an explicit run action. The CLI default remains V2.1; selecting V3 without a profile uses the original fixture.
+
+The latest 98-target development check found 95 C hits and 3 natural D activations. D, supplementary E evaluation, and matched sequential evaluation rescued none of those three `NO_FLOW_MATCH` cases. E has no evolutionary search, the 3D view is a 19D projection, and no whole-engine feasible delivery or independent physics validation has been demonstrated in these checks. Formal use and deployment remain disabled.
+
+See [V3 current status, usage, and document index](docs/physics/V3_CURRENT_STATUS.md) and [the expanded check](docs/physics/V3_REFINEMENT_EXPANDED_CHECK_20260927.md) for commands, model/data assets, evidence, and remaining work.
+
+### Default V2.1 inverse-design delivery policy
+
+The current Geometry19 target-directed pipeline uses the bounded 19D CFM-4 and the three-output `performance3_log` surrogate by default:
+
+```text
+target thrust / TSFC / mass
+→ bounded Geometry19 CFM-4 generates 256 candidates
+→ performance3_log guides D-Flow and ranks candidates by predicted hit-aligned rho
+→ nearest-integer projection and deterministic Geometry19 validation
+→ V2.1 evaluates the retained power-of-two candidate set
+→ surrogate-gradient refinement when no true hit exists
+→ warm-start NSGA-II when refinement still has no hit
+→ V2.1 recalculation, preview mesh, and UI delivery
+```
+
+The performance surrogate predicts only thrust, TSFC, and mass; V2.1 remains the authority for legality, constraints, and final hit status. The previous shared 48-output S0 surrogate remains available through `--forward-model-tag s0`. The public Geometry19 entry is `scripts/run_wp19_23_pipeline.py`; see `docs/physics/GEOMETRY19_CURRENT_PIPELINE.md` for the current system overview, `docs/physics/WP19_23_PIPELINE_ENTRYPOINT.md` for implementation rules, and `docs/physics/WP19_23_PERFORMANCE3_FULL_PIPELINE_COMPARISON_20260908.md` for the surrogate comparison.
+
+The earlier active-10D **CFM-4 + Diag-CFM** workflow remains reproducible through `scripts/run_inverse_design.py` and is retained as a historical/parallel baseline. Its evidence and cost accounting remain in `完整高精度逆设计默认策略说明.md`; it is not the Geometry19 default described above.
 
 > 🚀 **We're looking for contributors!** Especially in aerospace propulsion physics, CFD, and additive manufacturing. See [Contributing](#contributing).
 >
@@ -84,12 +111,57 @@ python app.py --ui
 # Open http://localhost:5000 in your browser
 ```
 
+In the Geometry19 workspace, switch **Physics model** to **V2.2 new design**.
+The existing model and metrics clear. Enter target thrust, TSFC, and mass, then
+click **Generate V2.2 design**. The UI starts a new background GPU pipeline
+run in an isolated directory and displays only that run's verified result.
+Use Preview or Export to choose which delivered mesh to display.
+
+The historical read-only completed-result endpoint remains available for
+inspection; it does not control the new-design UI mode. To configure that
+endpoint separately, set:
+
+```bash
+export NOVATURBO_GEOMETRY19_PIPELINE_RESULT_ROOT="$PWD/data/validation/v2_2_pipeline_mesh_delivery_acceptance_v1"
+python app.py --ui
+```
+
+Both the new-job result and the historical read-only endpoint verify the
+pipeline manifest, mesh manifest, and every STL hash before serving components.
+
 ### Run Physics Analysis
 
 ```bash
 python app.py --brayton     # Brayton cycle analysis + material validation
 python app.py --geometry    # Engine geometry summary
 ```
+
+### Run the Geometry19 Inverse-Design Pipeline
+
+The public entry accepts thrust, TSFC, and mass. V2.1 remains the default model:
+
+```bash
+CUDA_VISIBLE_DEVICES=6 conda run -n inverse_design_nova python \
+  scripts/run_wp19_23_pipeline.py \
+  --thrust-N 60.0 --tsfc-kg-N-s 0.000067 --mass-kg 1.77 \
+  --device cuda:0
+```
+
+Select the development-only V2.2 local flow explicitly. Add `--export-mesh` to
+publish both preview and high-resolution component STL files; use
+`--storage-root` to select their hash-isolated design store:
+
+```bash
+CUDA_VISIBLE_DEVICES=6 conda run -n inverse_design_nova python \
+  scripts/run_wp19_23_pipeline.py --model "model V2.2" \
+  --thrust-N 60.0 --tsfc-kg-N-s 0.000067 --mass-kg 1.77 \
+  --device cuda:0 --export-mesh
+```
+
+V2.2 remains `formal_use_allowed=false`. Mesh export does not change the
+physics result or authorize manufacturing use. The earlier active-10D entry
+`scripts/run_inverse_design.py` remains available for frozen historical
+reproduction but is not the Geometry19 public entry.
 
 ## Architecture
 
@@ -101,7 +173,7 @@ python app.py --geometry    # Engine geometry summary
 │   Geometry   │   Solver     │              │    Output      │
 ├──────────────┼──────────────┼──────────────┼────────────────┤
 │ • Inlet      │ • Brayton    │ • Surrogate  │ • STL Export   │
-│ • Compressor │   Cycle      │   (PyTorch)  │ • STEP Export  │
+│ • Compressor │   Cycle      │   (PyTorch)  │ • CFD Case     │
 │ • Combustor  │ • Station    │ • NSGA-II    │ • Lattice      │
 │ • Turbine    │   Analysis   │   Optimizer  │   Infill       │
 │ • Nozzle     │ • CFD Bridge │ • Inverse    │ • Build Prep   │
@@ -137,7 +209,7 @@ novaturbo/
 │   ├── ai/                   # Neural network surrogate & optimizer
 │   │   ├── surrogate.py      # MLP surrogate model (PyTorch)
 │   │   └── optimizer.py      # NSGA-II multi-objective optimizer
-│   ├── export/               # STL/STEP export & manufacturing prep
+│   ├── export/               # STL export & manufacturing prep
 │   └── visualization/        # Matplotlib plots & performance charts
 ├── ui/
 │   ├── server.py             # Flask backend with REST API
@@ -147,7 +219,7 @@ novaturbo/
 │       ├── js/dashboard.js   # Engineering dashboard logic
 │       └── css/viewer.css    # UI styling
 ├── data/                     # Generated datasets & trained models
-├── exports/                  # Output STL/STEP files
+├── exports/                  # Output STL files
 ├── tests/                    # Test suite
 └── notebooks/                # Jupyter exploration notebooks
 ```

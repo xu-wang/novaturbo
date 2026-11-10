@@ -1,0 +1,44 @@
+version: geometry22_v3_forward_surrogate_gpu6_v1
+scope: isolated_software_forward_surrogate_experiment
+source_dataset:
+  path: data/validation/v3_22d_local_candidate_dataset_v1
+  manifest_sha256: a6486e231f5550755b3a50ae239efc9976711d5f6810598dc49cb86cb48ccab5
+  development_sha256: 3da358aba26eb9bfdbebbdb933cd22946759ebf438574a5f1b3cf3d0fd7a9a4e
+  validation_sha256: 1255ca48e8db453c0cd29cd8007784d355f6bd7de0892a2032ec259d60c54b28
+  holdout_sha256: 6a1d1ab9972004241ca2be2c77e601edd8ebb8ee5a45e8b83463acf97f050c39
+  expected_counts: {development: 11289, validation: 2394, holdout: 2485}
+  expected_centers: {development: 23, validation: 5, holdout: 5}
+input_dimension: 22
+output_names: [thrust_N, tsfc_kg_N_s, mass_kg]
+target_transform: natural_log
+normalization: center_balanced_mean_std_fit_development_only
+sample_weight: inverse_development_center_count_normalized_to_mean_one
+models:
+  constant: center_balanced_development_log_mean
+  ridge_alphas: [1.0, 100.0]
+  mlp:
+    hidden_layers: [128, 128]
+    activation: silu
+    seeds: [42, 43]
+    batch_size: 512
+    learning_rate: 0.001
+    weight_decay: 0.0001
+    maximum_epochs: 120
+    minimum_epochs: 20
+    patience: 20
+    min_delta: 0.0001
+    device: cuda:0
+    physical_gpu_index: 6
+metric:
+  row: max_absolute_natural_log_prediction_over_truth_across_three_outputs
+  primary: validation_worst_center_p95_row_metric
+  secondary: validation_overall_p95_row_metric
+  tertiary: model_id_lexicographic
+  report: [overall_p50, overall_p95, worst_center_p95, per_output_absolute_relative_p50_p95]
+holdout: selected_model_only_after_validation_selection_and_checkpoint_seal
+accuracy_gate: diagnostic_only_no_threshold_promotion
+source_records_training_allowed: false
+isolated_software_training_authorized: true
+formal_use_allowed: false
+deployment_allowed: false
+output_root: data/validation/v3_22d_forward_surrogate_gpu6_v1

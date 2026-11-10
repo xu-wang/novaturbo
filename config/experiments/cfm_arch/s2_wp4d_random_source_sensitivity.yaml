@@ -1,0 +1,26 @@
+version: s2_wp4d_random_source_sensitivity_v1
+experiment_id: s2_wp4d_gpu_sinkhorn_cfm4_random_source_v1
+
+fixed:
+  metrics_config: config/generator_active10d_metrics.yaml
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  target_suite: config/experiments/cfm_arch/cfm_0_generalization_targets.csv
+  device: cuda
+  sample_count: 128
+  sampling_policy: v2_1_fixed_raw
+  ode_steps: 32
+
+checkpoints:
+  42: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_42/best.pt
+  43: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_43/best.pt
+
+# Each base seed is hashed with model name and target_id by WP4. Consecutive
+# values therefore do not create correlated per-target Gaussian source draws.
+source_seeds: [20260812, 20260813, 20260814, 20260815, 20260816, 20260817, 20260818, 20260819]
+
+output:
+  root: data/inverse_design/stage2/cfm_arch/s2_wp4d_random_source
+  refuse_overwrite: true
+

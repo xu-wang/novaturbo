@@ -1,0 +1,60 @@
+version: wp5_v1
+
+input:
+  ranked_candidates_csv: data/round_trip/wp4_v1_gpu6_final/ranked_candidates.csv
+  model: cvae
+  target_type: ID
+  target_id: null
+  minimum_forward_valid_candidates: 20
+  generator_schema: config/generator_v1_schema.yaml
+
+population:
+  background_seed: 42
+  background_method: random
+  duplicate_tolerance: 1.0e-9
+
+optimizer:
+  seed: 42
+  population_size: 20
+  n_generations: 3
+  crossover_rate: 0.9
+  mutation_rate: 0.1
+  mutation_scale: 0.1
+  tournament_size: 3
+  objectives:
+    - thrust_N
+    - tsfc_kg_N_s
+    - total_mass_kg
+    - thrust_to_weight
+  maximize: [true, false, false, true]
+  min_thrust_N: 30.0
+  max_tsfc: 0.00005
+  max_mass_kg: 3.0
+  use_surrogate: false
+  surrogate_model_path: null
+  warm_start_seed: 42
+  warm_start_fill_method: random
+  warm_start_out_of_bounds_policy: reject
+  warm_start_duplicate_tolerance: 1.0e-9
+  warm_start_align_legacy_rng: true
+
+runs:
+  - run_id: random_0
+    mode: random
+    generator_ratio: 0.0
+  - run_id: hybrid_30
+    mode: hybrid
+    generator_ratio: 0.3
+  - run_id: hybrid_50
+    mode: hybrid
+    generator_ratio: 0.5
+  - run_id: hybrid_70
+    mode: hybrid
+    generator_ratio: 0.7
+  - run_id: generator_100
+    mode: generator
+    generator_ratio: 1.0
+
+output:
+  directory: data/warm_start/wp5_v1_final
+  refuse_overwrite: true

@@ -1,0 +1,8 @@
+target_contract_version: wp19_23_target_v1
+target_id: c861508002110a4e194d63bf996d837cca83bd694ab14aa733a445fe195d02d3
+target_type: ID
+expected_status: UNKNOWN
+thrust_N: 70.12363839705691
+tsfc_kg_N_s: 6.25939263850248e-05
+mass_kg: 1.7952017962722595
+acceptance_profile: wp19_23_development_diagnostic_v1

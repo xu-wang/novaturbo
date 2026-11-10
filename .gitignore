@@ -30,12 +30,29 @@ Desktop.ini
 # Data & models (large files — regenerate with app.py)
 data/generated/
 data/trained_models/*.pt
+data/trained_models/geometry19/
 data/user_learning/
+data/generator_v1/
+data/splits/generator_v1_split.csv
+data/generator_v1_100k/
+data/generator_active10d_100k/
+data/generator_models/
+data/round_trip/
+data/warm_start/
+data/inverse_design/
+baseline_results/
 
 # Exports (regenerated)
 exports/stl/
 exports/step/
 exports/cfd_case/
+exports/geometry19/
+
+# WP19-16 generated regression artifacts (summary/report remain trackable)
+results/visualization/wp19_16_geometry19_regression_20260825/cases/
+results/visualization/wp19_16_geometry19_regression_20260825/_design_store*/
+results/visualization/wp19_20_sensitivity_audit_20260825/cases/
+results/visualization/wp19_20_sensitivity_audit_20260825/summary.json
 
 # Node modules (installed via npm)
 ui/static/js/node_modules/

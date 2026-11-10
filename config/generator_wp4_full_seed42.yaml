@@ -1,0 +1,24 @@
+version: wp4_full_training_seed42_v1
+metrics_config: config/generator_wp4_metrics.yaml
+
+data:
+  dataset_csv: data/generator_v1_100k/generator_dataset_v1_valid.csv
+  schema: config/generator_v1_schema.yaml
+  normalizer: data/generator_v1_100k/normalizer_v1.json
+  target_suite: data/generator_v1_100k/targets/target_suite_v1.csv
+
+models:
+  cvae: data/generator_models/wp3_full_gpu6_v2/cvae/seed_42/best.pt
+  nflows: data/generator_models/wp3_full_gpu6_v2/nflows/seed_42/best.pt
+  cinn: data/generator_models/wp3_full_gpu6_v2/cinn/seed_42/best.pt
+  cfm: data/generator_models/wp3_full_gpu6_v2/cfm/seed_42/best.pt
+
+runtime:
+  device: cuda
+  sample_count: 64
+  sample_seed: 20250813
+  maximum_targets_per_type: null
+
+output:
+  directory: data/round_trip/wp4_full_training_seed42_gpu6
+  refuse_overwrite: true

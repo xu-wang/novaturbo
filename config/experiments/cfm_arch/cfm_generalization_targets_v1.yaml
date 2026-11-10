@@ -1,0 +1,24 @@
+version: s2_arch_cfm_generalization_targets_v1
+frozen_for:
+- CFM-0
+- CFM-1
+- CFM-2
+- CFM-3
+- CFM-4
+- CFM-5
+- CFM-6
+- CFM-7
+source_target_matrix: data/inverse_design/stage2/s2_wp1_baseline_v1/target_matrix.csv
+source_target_matrix_sha256: c334e8bc00fcf1d24c0244f5ff8b18fbf62b19ffa161d8a4b41c0cb7166d6f73
+selection:
+  ID: first 10 frozen S2-WP1 end-to-end ID targets by end_to_end_rank
+  Interpolation: first 10 frozen S2-WP1 end-to-end Interpolation targets by end_to_end_rank
+  Boundary: top 10 remaining feasible ID/Interpolation targets by condition_boundary_score;
+    model-result independent
+  OOD: not evaluated because available class is OOD-feasible-unknown
+counts:
+  Boundary: 10
+  ID: 10
+  Interpolation: 10
+target_csv: config/experiments/cfm_arch/cfm_0_generalization_targets.csv
+target_csv_sha256: cf588c4613f8ee3f6e0ec45b1edcd213d546fca621353c9351e919e031208f72

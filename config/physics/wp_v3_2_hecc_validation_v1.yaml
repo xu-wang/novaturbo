@@ -1,0 +1,22 @@
+validation_id: wp_v3_2_hecc_validation_v1
+baseline_profile: v2_1
+enhanced_profile: v2_2_hecc_shadow
+expected_map_id: nasa_hecc_post_test_cfd_v1
+dense_map_scan:
+  corrected_speed_samples: 81
+  flow_coefficient_samples: 121
+  max_adjacent_work_coefficient_jump: 0.01
+  max_adjacent_efficiency_jump: 0.02
+boundary_classification:
+  probe_fraction_of_stable_span: 0.001
+root_sweep:
+  shaft_speed_ratios: [0.85, 0.90, 0.95, 1.00, 1.05]
+  minimum_enhanced_converged_fraction: 1.0
+  max_consecutive_mass_flow_relative_jump: 0.35
+runtime_benchmark:
+  shaft_speed_ratios: [0.85, 0.90, 0.95, 1.00, 1.05]
+  warmup_repetitions: 2
+  timed_repetitions: 7
+  max_enhanced_to_baseline_ratio: 2.0
+artifacts:
+  default_output_root: data/validation/wp_v3_2_hecc_v1

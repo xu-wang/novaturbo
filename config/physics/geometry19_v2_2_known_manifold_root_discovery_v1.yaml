@@ -1,0 +1,59 @@
+dataset_version: geometry19_v2_2_known_manifold_root_discovery_v1
+status: development_only_independent_known_manifold_root_discovery
+profile: v2_2_development
+purpose: raise_independent_root_support_for_known_manifold_interpolation
+formal_use_allowed: false
+
+base_development:
+  path: data/validation/v2_2_bridge_root_expansion_v6/development_dataset.jsonl
+  sha256: 9d0330d223371e96b517e7542e538b5e9c7d74619ce84ab1aecf3668d588c951
+sealed_confirmation:
+  path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+  sha256: a3051cae177d1c9735699ef4b50675f41f5f0ffd7d954b3a233f5ebf1ea8b1fd
+
+sampling:
+  method: global_root_center_pca_lhs_then_local_confirmation_v1
+  random_seed: 20260921
+  segments: [low_mass_low_to_mid, low_mass_mid_to_high]
+  global_candidate_count_per_segment: 4096
+  explained_variance_fraction: 0.995
+  latent_scale: 0.72
+  normal_score_clip: 2.5
+  seed_pool_size_per_segment: 16
+  segment_fraction_strata: 4
+  minimum_l2_to_existing: 0.055
+  maximum_l2_to_existing: 0.65
+  minimum_l2_between_selected: 0.075
+  target_accepted_rows_per_root: 40
+  discrete_step_probability: 0.02
+  local_rounds:
+    - samples_per_active_root: 64
+      radius_fraction: 0.0012
+    - samples_per_active_root: 64
+      radius_fraction: 0.0009
+    - samples_per_active_root: 64
+      radius_fraction: 0.0007
+
+root_gate:
+  minimum_new_roots_per_segment: 13
+  minimum_accepted_rows_per_new_root: 40
+  minimum_total_roots_per_segment: 40
+  minimum_effective_roots_per_segment: 35.0
+
+development_folds:
+  grouping_key: root_seed_id
+  target_segments: [low_mass_low_to_mid, low_mass_mid_to_high]
+  fold_count: 5
+  distance_strata: 3
+  minimum_validation_roots_per_target_segment: 8
+  selection_metric: development_multi_fold_worst_root_rho_p95
+
+limitations:
+  - observed_pca_support_is_not_a_mathematical_manifold_proof
+  - independent_global_initialization_does_not_imply_unknown_region_coverage
+  - local_confirmation_rows_do_not_count_as_additional_roots
+  - confirmation_hash_is_checked_but_confirmation_content_is_not_read
+  - all_labels_use_unified_v2_2_physics
+  - simplified_19d_software_labels_only
+  - no_real_geometry_or_engineering_feasibility_claim
+  - formal_use_and_deployment_remain_forbidden

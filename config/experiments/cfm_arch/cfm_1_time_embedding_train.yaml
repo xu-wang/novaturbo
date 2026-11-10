@@ -1,0 +1,66 @@
+version: s2_arch_cfm_1_time_embedding_train_v1
+lockfile: config/third_party_models.lock.yaml
+
+training_contract:
+  require_full_train_split: true
+  require_full_val_split: true
+  minimum_epochs_completed: 20
+  require_early_stopping: false
+  accepted_termination_reasons: [early_stopping, max_epochs]
+
+data:
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  target_suite: config/experiments/cfm_arch/cfm_0_generalization_targets.csv
+  batch_size: 1024
+  num_workers: 0
+  subset_seed: 314159
+  max_train_samples: null
+  max_val_samples: null
+
+runtime:
+  seeds: [42, 43]
+  device: cuda
+  epochs: 400
+  minimum_epochs: 20
+  patience: 20
+  min_delta: 1.0e-5
+  gradient_clip_norm: 10.0
+  checkpoint_sample_count: 128
+  lr_scheduler:
+    enabled: true
+    patience: 7
+    factor: 0.5
+    min_lr: 1.0e-6
+
+models:
+  cvae: {enabled: false}
+  nflows: {enabled: false}
+  cinn: {enabled: false}
+  cfm:
+    enabled: true
+    architecture: time_embedding
+    architecture_id: CFM-1
+    design_dim: 10
+    condition_dim: 3
+    hidden_dims: [128, 128, 128]
+    time_embedding:
+      enabled: true
+      type: sinusoidal
+      dim: 32
+      max_period: 10000.0
+      time_scale: 1000.0
+      trainable_projection: false
+    sigma: 0.0
+    ode_method: rk4
+    ode_steps: 32
+    ode_rtol: 0.00001
+    ode_atol: 0.00001
+    learning_rate: 0.001
+    weight_decay: 0.00001
+    bounded_output: {enabled: false}
+
+output:
+  directory: data/generator_models/stage2/cfm_arch/cfm_1_time_embedding_gpu6_v1
+  refuse_overwrite: true

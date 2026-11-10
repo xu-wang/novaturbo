@@ -1,0 +1,39 @@
+version: wp7_b0_full_training_seed42_v1
+
+target_suite:
+  csv: data/generator_v1_100k/targets/target_suite_v1.csv
+  sha256: 34dbe2442cfe544ce967edda1895b488922f0f6092ecfff6277fe2499a8ea1aa
+  selection:
+    target_ids:
+      - 5a0c200a08733f8d38e870b98b503c3944b3b6ee5d56540a443cc168f62437a4
+      - 1b1489c9afbc2dcfe9f80463ff3dee7ee91a0240e406048bc9e9a5bd97465270
+      - 56f3462fa1857de0c5348730e4b199f91f20467900949b804d15628dfc1c5256
+      - f0e776e49da9545ddf5ebb38aa21b319081f15a2621af280433ada47b0099140
+      - b3e9650e3f3cd92b4da8b65772ef2404e07d9ceeb157d4bab1411e52d54eb855
+      - 345b387ed195beba750c78a6d22eaed82afcccc92ab2e0690e29af3a2f435cf3
+
+seeds: [42, 43]
+generator_seed_offset: 20250771
+
+models:
+  - model_id: cvae
+    checkpoint_path: data/generator_models/wp3_full_gpu6_v2/cvae/seed_42/best.pt
+  - model_id: nflows
+    checkpoint_path: data/generator_models/wp3_full_gpu6_v2/nflows/seed_42/best.pt
+  - model_id: cinn
+    checkpoint_path: data/generator_models/wp3_full_gpu6_v2/cinn/seed_42/best.pt
+  - model_id: cfm
+    checkpoint_path: data/generator_models/wp3_full_gpu6_v2/cfm/seed_42/best.pt
+
+base_run_config: config/inverse_design/runs/wp7_b0_template.yaml
+
+analysis:
+  objective_reference_dataset: data/generator_v1_100k/dataset_100000_raw.csv
+  normalized_reference_point: [1.1, 1.1, 1.1, 1.1]
+  hypervolume_sobol_power: 14
+  confidence_z: 1.96
+  igd_reference: empirical_pooled_final_front
+
+output:
+  directory: data/inverse_design/wp7_b0_full_training_seed42_gpu6
+  refuse_overwrite: true

@@ -1,0 +1,65 @@
+campaign_version: geometry19_v2_2_multitarget_software_stability_v1
+domain_candidate_version: geometry19_v2_2_development_target_domain_candidate_v1
+work_package: WP-V2.2-TARGET-DOMAIN-DISCOVERY
+status: development_only
+formal_use_allowed: false
+training_enabled: false
+doe_generation_enabled: false
+pipeline_profile: v2_2_development
+execution:
+  model_variant: baseline
+  sampling_mode: direct
+  device: cpu
+  refinement_device: cpu
+  raw_candidate_count_per_target: 256
+  maximum_runtime_seconds_per_target: 120.0
+acceptance:
+  minimum_pipeline_pass_rate: 1.0
+  minimum_targets_with_physics_acceptable: 6
+  require_all_artifact_contracts: true
+targets:
+  - label: low_mass_low_thrust
+    source: v2_2_multitarget:heldout_low:direct_228
+    target_type: ID
+    expected_status: UNKNOWN
+    thrust_N: 47.70329908631581
+    tsfc_kg_N_s: 0.00007620327791193297
+    mass_kg: 1.7233923962229651
+  - label: high_mass_low_thrust
+    source: v2_2_multitarget:heldout_center:direct_113
+    target_type: ID
+    expected_status: UNKNOWN
+    thrust_N: 56.68326508823853
+    tsfc_kg_N_s: 0.00006778814891063123
+    mass_kg: 2.1902924161788118
+  - label: low_mass_mid_thrust
+    source: v2_2_multitarget:heldout_low:direct_187
+    target_type: ID
+    expected_status: UNKNOWN
+    thrust_N: 70.12363839705691
+    tsfc_kg_N_s: 0.0000625939263850248
+    mass_kg: 1.7952017962722595
+  - label: high_mass_mid_thrust
+    source: v2_2_multitarget:heldout_center:direct_190
+    target_type: ID
+    expected_status: UNKNOWN
+    thrust_N: 77.5116082382393
+    tsfc_kg_N_s: 0.00006005256199496589
+    mass_kg: 2.1136544858730604
+  - label: low_mass_high_thrust
+    source: v2_2_multitarget:heldout_low:direct_171
+    target_type: ID
+    expected_status: UNKNOWN
+    thrust_N: 96.19851046377272
+    tsfc_kg_N_s: 0.00006104065964519766
+    mass_kg: 1.7719701554270613
+  - label: high_mass_high_thrust
+    source: v2_2_multitarget:heldout_center:direct_40
+    target_type: ID
+    expected_status: UNKNOWN
+    thrust_N: 105.20929120393515
+    tsfc_kg_N_s: 0.000050897716754513317
+    mass_kg: 2.2299889738875605
+artifacts:
+  runtime_root: data/inverse_design/v2_2_target_domain_candidate_v1
+  evidence_root: data/validation/v2_2_target_domain_candidate_v1

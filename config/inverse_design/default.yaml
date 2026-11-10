@@ -1,0 +1,90 @@
+version: inverse_design_default_high_precision_v2
+strategy_id: cfm4_diag_prefilter_gradient_nsga_v1
+
+data:
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  metrics_config: config/generator_active10d_metrics.yaml
+
+model:
+  model_id: cfm4_diag_high_precision
+  checkpoint_path: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_43/best.pt
+
+generation:
+  candidate_protocol: v2_1_fixed_raw
+  n_raw: 128
+  seed: 20260813
+  diag_prefilter:
+    enabled: true
+    pool_size: 512
+    reranker_checkpoint: data/generator_models/diag_cfm/diag_cfm_paper_arch_nova_v1_gpu6/diag_cfm/seed_43/best.pt
+    score: reverse_condition_mse
+    ode_method: rk4
+    ode_steps: 32
+
+delivery:
+  mode: generator_auto_refinement
+  minimum_hit_count: 1
+  maximum_delivered_candidates: 10
+  extra_engineering_objectives: false
+
+# Optional post-processing stage. Set enabled=false, or use the public CLI flag,
+# to keep only CFM-4 generation + Diag-CFM prefilter + real 0D acceptance.
+gradient:
+  enabled: true
+  surrogate_checkpoint: data/inverse_design/stage2/s2_wp3_consistency_repair_v2/forward_surrogate.pt
+  candidate_count: 8
+  steps: 24
+  learning_rate: 0.03
+  validation_interval: 8
+  maximum_0d_evaluations: 24
+  trust_region_linf: 0.25
+  prior_weight: 0.01
+  gradient_clip_norm: 1.0
+  condition_weights: [0.3333333333333333, 0.3333333333333333, 0.3333333333333333]
+
+# Retained for compatibility with the frozen WP5 configuration contract. CFM
+# has no directly repairable latent space, so this stage is never dispatched.
+latent_repair:
+  candidate_count: 8
+  maximum_0d_evaluations: 8
+  steps: 24
+  learning_rate: 0.03
+  prior_weight: 0.01
+  boundary_weight: 5.0
+  maximum_latent_displacement: 0.75
+  maximum_initial_abs_design: 10.0
+  gradient_clip_norm: 1.0
+
+# Optional fallback. It runs only when enabled and the preceding stages still
+# have no real-0D hit. It never uses the forward surrogate as its evaluator.
+nsga2:
+  enabled: true
+  seed: 43
+  population_size: 40
+  n_generations: 15
+  crossover_rate: 0.9
+  mutation_rate: 0.1
+  mutation_scale: 0.1
+  tournament_size: 3
+  objectives: [target_weighted_relative_error]
+  maximize: [false]
+  min_thrust_N: 0.0
+  max_tsfc: 1.0
+  max_mass_kg: 10.0
+  use_surrogate: false
+  surrogate_model_path: null
+  warm_start_seed: 43
+  warm_start_fill_method: random
+  warm_start_out_of_bounds_policy: reject
+  warm_start_duplicate_tolerance: 1.0e-9
+  warm_start_align_legacy_rng: true
+
+runtime:
+  # With CUDA_VISIBLE_DEVICES=6 this resolves to physical GPU 6 as cuda:0.
+  device: cuda
+
+output:
+  directory: data/inverse_design/runs/default_high_precision_v2
+  refuse_overwrite: true

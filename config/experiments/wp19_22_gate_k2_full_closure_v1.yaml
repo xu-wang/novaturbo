@@ -1,0 +1,36 @@
+protocol_version: wp19_22_gate_k2_full_closure_v1
+work_package: WP19-22-Gate-K2
+status: development_four_loss_full_closure
+formal_use_allowed: false
+gate_k_config: config/experiments/wp19_22_gate_k_hit_aligned_surrogate_v1.yaml
+gate_k_training_summary: data/inverse_design/wp19_22_gate_k_hit_aligned_surrogate_v1/gate_k_training_summary.json
+gate_i_config: config/experiments/wp19_23_gate_i_hit_alignment_ablation_v1.yaml
+gate_i_baseline_summary: data/inverse_design/wp19_23_gate_i_hit_alignment_ablation_v1/gate_i_summary.json
+gate_i_baseline_arm: i3_full_hit_alignment
+device: cuda:0
+arms:
+  - s0_legacy_mse
+  - s1_tolerance_huber
+  - s2_smooth_minimax
+  - s3_hybrid
+budgets:
+  raw_candidates_per_target_per_arm: 256
+  maximum_c_v2_1_per_target_per_arm: 32
+  maximum_d_v2_1_per_target_per_arm: 24
+  frozen_pool: [16, 32, 64, 128, 256]
+frozen_pool:
+  candidates: data/inverse_design/wp19_23_gate_h_candidate_utilization_v1
+  truth: data/inverse_design/wp19_23_gate_h_budget_sweep_v1
+promotion:
+  minimum_target_hits: 2
+  direct_promotion_target_hits: 3
+  minimum_same_hit_median_rho_reduction: 0.20
+  maximum_refinement_improvement_rate_drop: 0.05
+  maximum_extra_v2_1_calls: 24
+  require_frozen_top32_no_regression: true
+  require_multiseed_for_production: true
+artifacts:
+  runtime_root: data/inverse_design/wp19_22_gate_k2_full_closure_v1
+  summary: gate_k2_summary.json
+  report: Gate_K2_report.md
+  manifest: gate_k2_manifest.json

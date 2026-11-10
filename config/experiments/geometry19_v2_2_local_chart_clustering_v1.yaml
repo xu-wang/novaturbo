@@ -1,0 +1,88 @@
+protocol_version: geometry19_v2_2_local_chart_clustering_v1
+status: preregistered_after_p2_diagnostic_before_p3_execution
+stage: P3_reliability_aware_chart_identification
+formal_use_allowed: false
+deployment_allowed: false
+
+parent_protocol:
+  path: config/experiments/geometry19_v2_2_local_chart_moe_v1.yaml
+  sha256: 90a8373cea8b109da79b2cb40caf304f021e2f85691ab5349b86f0802d1e5045
+p1_input_audit:
+  path: data/validation/v2_2_local_chart_moe_v1/audits/input_audit.json
+  sha256: b61f0855b027dbd5b85d5751a8e2b8bd86ce1eada47d90bef569bc71e20f0f22
+p1_root_inventory:
+  path: data/validation/v2_2_local_chart_moe_v1/audits/root_inventory.jsonl
+  sha256: 2f4af06dd7c37903c1a4924779b23218e7034c82b97ccb1ecbb424f6adc0b64c
+p2_summary:
+  path: data/validation/v2_2_local_chart_moe_v1/audits/jacobian_stability_summary.json
+  sha256: 66be51da8776d47a468522d1eadad5ab23a3c7e11d129a2c7e5a459ab2842f72
+  required_status: LOCAL_CHART_MOE_P2_JACOBIAN_STABILITY_PASS
+
+target_segments: [low_mass_low_to_mid, low_mass_mid_to_high]
+candidate_k: [3, 4, 6, 8]
+views: [design_only, response_aware]
+
+core_clustering:
+  method: average_linkage_agglomerative_precomputed
+  reliable_roots_only: true
+  design_distance: euclidean_on_schema_range_normalized_root_centers
+  response_distance: frobenius_on_scaled_log_performance_jacobians
+  component_scale: outer_train_nonzero_pairwise_median
+  response_aware_combination: normalized_design_plus_normalized_response
+  minimum_final_charts: 2
+  minimum_reliable_core_roots_per_chart: 4
+  infeasible_k_action: record_K_INFEASIBLE_FOR_RELIABLE_CORE
+  undersized_core_action: merge_with_nearest_chart_by_active_core_distance
+
+unreliable_root_attachment:
+  method: minimum_mean_normalized_design_distance_to_reliable_core_roots
+  may_change_core_linkage: false
+  jacobian_distance_weight: 0.0
+  minimum_total_roots_per_chart: 5
+  undersized_total_action: merge_with_nearest_chart_by_design_distance
+
+cross_fold_stability:
+  metrics: [adjusted_rand_index, pairwise_co_clustering_agreement]
+  compare_only_shared_outer_training_roots: true
+  label_invariant: true
+  root_switch_metric: mean_pairwise_co_clustered_neighborhood_jaccard_distance
+  minimum_overall_median_ari: 0.50
+  minimum_each_target_segment_median_ari: 0.35
+
+response_value_gate:
+  metric: reliable_root_tsfc_jacobian_within_between_median_distance_ratio
+  maximum_response_aware_median_ratio: 1.0
+  minimum_median_ratio_reduction_vs_design_only: 0.10
+  maximum_overall_median_ari_degradation_vs_design_only: 0.10
+
+selection:
+  p3_selects_final_k: false
+  final_k_selection_stage: P7_inner_GroupKFold
+  silhouette_is_not_a_standalone_gate: true
+  outer_validation_labels_used: false
+  performance_centers_used_for_clustering: false
+  cross_fold_categories_used_as_features: false
+
+statuses:
+  response_chart_pass: LOCAL_CHART_MOE_P3_RESPONSE_CHART_PASS
+  design_only_structure: LOCAL_CHART_MOE_P3_DESIGN_ONLY_STRUCTURE
+  unstable: LOCAL_CHART_MOE_P3_CHART_IDENTIFICATION_UNSTABLE
+  infeasible_k: K_INFEASIBLE_FOR_RELIABLE_CORE
+
+artifacts:
+  runtime_root: data/validation/v2_2_local_chart_moe_v1
+  chart_summary: audits/chart_identification_summary.json
+  cross_fold_stability: audits/cross_fold_chart_stability.json
+  response_comparison: audits/response_aware_vs_design_only.json
+  weak_segment_audit: audits/low_mass_mid_to_high_chart_audit.json
+  report: audits/P3_Chart_Identification_Report.md
+
+limitations:
+  - this_is_an_adaptive_p3_subprotocol_created_after_observing_p2_reliability
+  - global_38_8_32_cross_fold_categories_are_diagnostic_only
+  - each_root_has_four_training_fold_estimates_not_five
+  - unreliable_roots_attach_by_design_only_and_do_not_shape_response_cores
+  - p3_qualifies_candidates_but_does_not_select_final_k
+  - no_expert_router_or_moe_training
+  - sealed_confirmation_is_hash_only_and_not_parsed
+  - no_formal_deployment_or_real_manifold_claim

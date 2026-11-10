@@ -1,0 +1,8 @@
+target_version: target_suite_v1
+target_id: 5a0c200a08733f8d38e870b98b503c3944b3b6ee5d56540a443cc168f62437a4
+target_type: ID
+expected_status: known_feasible
+thrust_N: 78.49793668354401
+tsfc_kg_N_s: 3.603201750679005e-05
+total_mass_kg: 0.6434866738204378
+tolerance_profile: round_trip_metrics_v1

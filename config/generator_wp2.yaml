@@ -1,0 +1,52 @@
+version: wp2_v1
+dataset_version: generator_v1_expanded100k_v1
+schema: config/generator_v1_schema.yaml
+
+sampling:
+  method: global_latin_hypercube
+  n_samples: 100000
+  shard_size: 10000
+  seed: 20250810
+  bounds_version: DesignSpaceBounds_v1
+
+output:
+  directory: data/generator_v1_100k
+  resume: true
+  refuse_completed_run: true
+
+cleaning:
+  require_source_valid: true
+  require_finite_design: true
+  require_finite_conditions: true
+  thrust_min_exclusive: 0.0
+  thrust_max_inclusive: null
+  tsfc_min_exclusive: 0.0
+  tsfc_max_inclusive: null
+  duplicate_key: raw_sample_id
+
+split:
+  seed: 20250811
+  train_fraction: 0.80
+  val_fraction: 0.10
+  test_fraction: 0.10
+
+coverage:
+  bins: 20
+  sparse_condition_quantile: 0.90
+
+targets:
+  version: target_suite_v1
+  seed: 20250812
+  id_count: 100
+  interpolation_count: 100
+  ood_feasible_unknown_count: 40
+  infeasible_count: 40
+  interpolation_alpha: [0.25, 0.75]
+  infeasible_empirical_margin: [0.05, 0.25]
+
+parity:
+  enabled: true
+  thrust_absolute_tolerance: 1.0e-10
+  thrust_relative_tolerance: 1.0e-10
+  tsfc_absolute_tolerance: 1.0e-12
+  tsfc_relative_tolerance: 1.0e-10

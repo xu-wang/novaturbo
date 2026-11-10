@@ -1,0 +1,10 @@
+# Copy this file for a new design request. Arbitrary requests are conservatively
+# classified as OOD-feasible-unknown until their domain/feasibility is established.
+target_version: inverse_design_target_v1
+target_id: example_user_request
+target_type: OOD-feasible-unknown
+expected_status: unknown
+thrust_N: 100.0
+tsfc_kg_N_s: 3.8e-05
+total_mass_kg: 0.65
+tolerance_profile: round_trip_metrics_v1

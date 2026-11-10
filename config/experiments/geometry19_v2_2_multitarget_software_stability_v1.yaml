@@ -1,0 +1,64 @@
+campaign_version: geometry19_v2_2_multitarget_software_stability_v1
+work_package: WP-V2.2-SOFTWARE-STABILITY
+status: development_only
+formal_use_allowed: false
+training_enabled: false
+doe_generation_enabled: false
+pipeline_profile: v2_2_development
+execution:
+  model_variant: baseline
+  sampling_mode: direct
+  device: cpu
+  refinement_device: cpu
+  raw_candidate_count_per_target: 256
+  maximum_runtime_seconds_per_target: 120.0
+acceptance:
+  minimum_pipeline_pass_rate: 0.8
+  minimum_targets_with_physics_acceptable: 5
+  require_all_artifact_contracts: true
+targets:
+  - label: smoke_low
+    source: config/inverse_design/targets/wp19_23_smoke_test0_v1.yaml
+    target_type: ID
+    expected_status: UNKNOWN
+    thrust_N: 16.240269568822608
+    tsfc_kg_N_s: 0.0001583899410074742
+    mass_kg: 2.010229994741361
+  - label: heldout_low
+    source: wp19_23_pipeline_vs_cold_nsga2_256_v1:id_low
+    target_type: ID
+    expected_status: UNKNOWN
+    thrust_N: 31.671511833320046
+    tsfc_kg_N_s: 0.00009935217223507603
+    mass_kg: 1.7724648360118942
+  - label: heldout_center
+    source: wp19_23_pipeline_vs_cold_nsga2_256_v1:id_center
+    target_type: ID
+    expected_status: UNKNOWN
+    thrust_N: 63.142680551823695
+    tsfc_kg_N_s: 0.00006525863182009389
+    mass_kg: 2.247180990749084
+  - label: interpolation_center_high
+    source: wp19_23_pipeline_vs_cold_nsga2_256_v1:interpolation_center_high
+    target_type: INTERPOLATION
+    expected_status: UNKNOWN
+    thrust_N: 86.31618713298968
+    tsfc_kg_N_s: 0.000056389888441994895
+    mass_kg: 2.5609349639240773
+  - label: heldout_high
+    source: wp19_23_pipeline_vs_cold_nsga2_256_v1:id_high
+    target_type: ID
+    expected_status: UNKNOWN
+    thrust_N: 109.48969371415566
+    tsfc_kg_N_s: 0.0000475211450638959
+    mass_kg: 2.8746889370990707
+  - label: gate_i_very_high
+    source: wp19_23_gate_i_hit_alignment_ablation_v1:sample_92231
+    target_type: ID
+    expected_status: UNKNOWN
+    thrust_N: 169.23418951967648
+    tsfc_kg_N_s: 0.000035284841418524566
+    mass_kg: 1.7129864897096319
+artifacts:
+  runtime_root: data/inverse_design/v2_2_multitarget_software_stability_v1
+  evidence_root: data/validation/v2_2_multitarget_software_stability_v1

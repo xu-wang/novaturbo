@@ -1,0 +1,15 @@
+protocol_version: wp19_23_gate_h_budget_sweep_v1
+work_package: WP19-23-Gate-H-budget-sweep
+status: development_exhaustive_truth_audit
+formal_use_allowed: false
+source_gate_h_runtime: data/inverse_design/wp19_23_gate_h_candidate_utilization_v1
+budgets: [16, 32, 64, 128, 256]
+strategies:
+  predicted_rho: nested_prefix
+  ranked_diverse: independently_recomputed_half_exploitation_half_diversity
+full_pool_truth_evaluation: true
+artifacts:
+  runtime_root: data/inverse_design/wp19_23_gate_h_budget_sweep_v1
+  summary: gate_h_budget_sweep_summary.json
+  report: Gate_H_budget_sweep.md
+  manifest: gate_h_budget_sweep_manifest.json

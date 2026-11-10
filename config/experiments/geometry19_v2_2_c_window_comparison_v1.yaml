@@ -1,0 +1,12 @@
+version: geometry19_v2_2_c_window_comparison_v1
+scope: frozen_seed42_top1_rank1_miss_development_cohort
+source_config: config/experiments/geometry19_local_full_pipeline_difficult_v1.yaml
+source_metrics: data/validation/v2_2_performance_gated_local_cfm_v1/closure/g4_rank128_v1/Task_Metrics.jsonl
+sequential_baseline: data/validation/v2_2_local_full_pipeline_v1/n4_cost_comparison_v1/Summary.json
+c1_baseline: data/validation/v2_2_local_full_pipeline_v1/n3_rank1_miss_screen_v1/Summary.json
+output: data/validation/v2_2_local_full_pipeline_v1/n8_c_window_comparison_v1
+training_seed: 42
+c_windows: [8, 16]
+e_stop_on_first_hit: true
+expected_targets: [1, 2, 4, 5, 20, 29, 46, 56, 68, 80, 92, 98]
+formal_use_allowed: false

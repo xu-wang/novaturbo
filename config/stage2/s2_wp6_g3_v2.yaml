@@ -1,0 +1,70 @@
+version: s2_wp6_g3_v2
+
+frozen_inputs:
+  baseline_manifest: config/stage2/active10d_baseline_v1.yaml
+  wp5_manifest: config/stage2/s2_wp5_freeze_v1.yaml
+  cfm_default_manifest: config/stage2/s2_wp5_cfm_default_freeze_v2.yaml
+
+targets:
+  suite_csv: data/generator_active10d_100k/targets/target_suite_active10d_v1.csv
+  suite_sha256: 3d373ecbdc6cf88c046108edb8cdbbca071394fc1556cfa92499f049f47461dd
+  frozen_end_to_end_ids: config/stage2/s2_wp1_end_to_end_targets_v1.yaml
+  tolerance_profile: round_trip_metrics_v1
+
+seeds:
+  training: [42, 43]
+  optimizer: [42, 43]
+  generator_only_base: 20260816
+  end_to_end_generator_offset: 20260774
+  bootstrap: 20260813
+
+model_sets:
+  - training_seed: 42
+    models:
+      - model_id: nflows
+        role: frozen_generator
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/nflows/seed_42/best.pt
+      - model_id: cfm
+        role: improved_method
+        checkpoint_path: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_42/best.pt
+  - training_seed: 43
+    models:
+      - model_id: nflows
+        role: frozen_generator
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/nflows/seed_43/best.pt
+      - model_id: cfm
+        role: improved_method_selected_production_seed
+        checkpoint_path: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_43/best.pt
+
+generator_only:
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  metrics_config: config/generator_active10d_metrics.yaml
+  n_raw: 128
+  candidate_protocol: v2_1_fixed_raw
+  fixed_diversity_k: 10
+  device: cuda
+
+end_to_end:
+  base_run_config: config/inverse_design/runs/target_directed_active10d_v2_1_template.yaml
+  delivery_template: config/stage2/s2_wp5.yaml
+  benchmark_models: [nflows]
+  delivery_models: [nflows, cfm]
+  minimum_hit_count: 1
+  maximum_delivered_candidates: 10
+  difficult_target_ids:
+    - b668dfbed5da6d9771c73e87cb419f1f01528229642ff19642aa5e53073e6047
+
+statistics:
+  confidence_level: 0.95
+  bootstrap_replicates: 5000
+  primary_method: cfm
+  frozen_generator: nflows
+  required_baseline: screened_random
+  diversity_noninferiority_ratio: 0.90
+  infeasible_false_accept_maximum: 0.01
+
+output:
+  directory: data/inverse_design/stage2/s2_wp6_g3_v2
+  refuse_overwrite: true

@@ -1,0 +1,51 @@
+version: geometry22_v3_target_gate_l6b_gpu6_v1
+scope: isolated_software_target_gate_and_local_forward_experiment
+l6a:
+  path: data/validation/v3_22d_target_route_l6a_v1
+  complete_manifest_sha256: 52b9b958b2624df635e7df1bbf29eb226148bb47284eb607013f0d2b522c28f3
+  target_registry_sha256: bd68b5444894f139842d4fa0700e8c2717950ee14c358f5be417e5070049880b
+  normalization_sha256: 60b2a22b5195301f3210959b67b325007c3ce22005963c62b03657dd6916c460
+  center_support_sha256: 4841b3433684b5a4b55c12c0f000382f23e8625c9c7304dcfd97e8d587dbc88f
+source_development:
+  path: data/validation/v3_22d_local_candidate_dataset_v1/development_candidates.jsonl
+  sha256: 3da358aba26eb9bfdbebbdb933cd22946759ebf438574a5f1b3cf3d0fd7a9a4e
+runtime_condition: [thrust_N, tsfc_kg_N_s, mass_kg]
+route_classes: 23
+input_transform: frozen_l6a_natural_log_and_equal_center_fit_normalization
+fit_split: development_internal_fit_only
+model_selection_split: development_internal_tuning_only
+old_validation_and_holdout_content: not_parsed
+gate:
+  architecture: [3, 64, 64, 23]
+  activation: silu
+  seeds: [42, 43, 44]
+  batch_size: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  maximum_epochs: 180
+  minimum_epochs: 30
+  patience: 25
+  min_delta: 0.00001
+  training_loss: center_balanced_cross_entropy
+  checkpoint_selection: minimum_center_balanced_tuning_nll_then_earliest_epoch
+  neural_model_selection: minimum_center_balanced_tuning_nll_then_model_id
+  baselines: [uniform_prior, nearest_frozen_center_target_support]
+  report: [macro_top1, macro_top2, macro_nll, ece_10_bins, source_center_support_eligible_fraction]
+  runtime_support_policy: mask_to_frozen_eligible_centers_then_top1_or_top2_else_abstain
+  device: cuda:0
+  physical_gpu_index: 6
+  cublas_workspace_config: ':4096:8'
+local_forward:
+  center_fit_split: development_internal_fit_only
+  center_tuning_split: development_internal_tuning_only
+  input: 19_continuous_normalized_design_residual_divided_by_0_08
+  output: three_natural_log_performances
+  models: [center_constant, ridge_0_01, ridge_0_1, ridge_1, ridge_10]
+  ridge_alphas: [0.01, 0.1, 1.0, 10.0]
+  selection: minimum_tuning_worst_center_p95_max_abs_log_error_then_overall_p95_then_model_id
+  role: local_candidate_scoring_diagnostic_only
+source_records_training_allowed: false
+isolated_software_training_authorized: true
+formal_use_allowed: false
+deployment_allowed: false
+output_root: data/validation/v3_22d_target_gate_l6b_gpu6_v1

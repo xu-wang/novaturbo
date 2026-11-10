@@ -1,0 +1,49 @@
+map_id: synthetic_centrifugal_compressor_v1
+map_version: 1.0.0
+component_type: compressor
+formal_use_allowed: false
+source:
+  type: synthetic_interface_test
+  reference: NovaTurbo V2.2 implementation fixture
+  license: project_internal_synthetic
+  validation_status: trends_and_software_contract_only
+coordinates:
+  - name: corrected_speed_ratio
+    definition: N*sqrt(T_ref/Tt2)/Ncorr_design
+    unit: dimensionless
+  - name: flow_coefficient_ratio
+    definition: phi/phi_design using impeller-exit effective area
+    unit: dimensionless
+outputs:
+  - name: euler_work_factor
+    definition: multiplier applied once to Stanitz-slip Euler specific work
+    unit: dimensionless
+  - name: total_to_total_efficiency
+    definition: compressor total-to-total isentropic efficiency
+    unit: dimensionless
+boundaries:
+  - name: surge_flow_coefficient_ratio
+    definition: lower stable-flow boundary indexed by corrected speed ratio
+    unit: dimensionless
+  - name: choke_flow_coefficient_ratio
+    definition: upper stable-flow boundary indexed by corrected speed ratio
+    unit: dimensionless
+reference_state:
+  temperature_K: 288.15
+  pressure_Pa: 101325.0
+  corrected_speed_design_rpm: 100000.0
+  phi_design: 0.25
+  total_or_static: total
+  mass_flow_basis: air_only
+  area_definition: impeller_exit_effective_area
+  diameter_definition: impeller_exit_outer_diameter
+  speed_definition: shaft_rpm
+interpolation: {method: bilinear_v1, boundary_method: linear_v1}
+domain_policy: {diagnostic_extrapolation_limit: 0.08}
+uncertainty:
+  euler_work_factor: 0.03
+  total_to_total_efficiency: 0.025
+applicability:
+  geometry_family: small_single_stage_centrifugal_compressor
+  scaling_basis: phi_corrected_speed_similarity
+  excluded_uses: [formal_acceptance, production_training_data, certification]

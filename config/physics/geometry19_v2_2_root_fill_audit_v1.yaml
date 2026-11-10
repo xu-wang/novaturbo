@@ -1,0 +1,37 @@
+audit_version: geometry19_v2_2_root_fill_audit_v1
+status: cumulative_development_root_fill_audit
+formal_use_allowed: false
+
+original_development:
+  train:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/train.jsonl
+    sha256: 81713f27934aeb406d8fba87c6f05625eff2b8212e5319d36b180a55d3eb8fcf
+  validation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/validation.jsonl
+    sha256: ddc102939055a4890d8ac622e9747c5cac1823cbd6ffb82664edc453c713f11f
+sealed_confirmation:
+  path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+  sha256: a3051cae177d1c9735699ef4b50675f41f5f0ffd7d954b3a233f5ebf1ea8b1fd
+final_development:
+  path: data/validation/v2_2_bridge_root_expansion_v6/development_dataset.jsonl
+  sha256: 9d0330d223371e96b517e7542e538b5e9c7d74619ce84ab1aecf3668d588c951
+development_folds:
+  path: data/validation/v2_2_bridge_root_expansion_v6/development_root_folds.json
+  sha256: 444299db29ca9b8bc43320d0add4058497c59cf102f915736636eacb7a214cb7
+
+target_segments: [low_mass_low_to_mid, low_mass_mid_to_high]
+bridge_reference:
+  interpolation_fractions: [0.20, 0.35, 0.50, 0.65, 0.80]
+  minimum_endpoint_l2: 0.55
+  minimum_l2_to_existing: 0.10
+gates:
+  minimum_added_roots_per_target_segment: 10
+  maximum_added_roots_target: 15
+  minimum_validation_roots_per_fold_per_target_segment: 3
+  minimum_cumulative_bridge_p95_reduction_fraction: 0.10
+
+limitations:
+  - root_count_pass_does_not_imply_uniform_design_space_coverage
+  - confirmation_is_hash_locked_and_excluded
+  - development_ablation_only
+  - no_formal_or_deployment_claim

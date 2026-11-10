@@ -20,6 +20,27 @@ def test_default_cycle_is_valid():
     assert results.thrust_N > 0
 
 
+def test_default_cycle_frozen_numerical_regression():
+    """Protect the isolated legacy cycle while Geometry19 evolves."""
+    results = solve_brayton_cycle(FlightConditions(), EngineInputs())
+    assert results.thrust_N == pytest.approx(76.37702825332649, rel=1.0e-12)
+    assert results.fuel_flow_kg_s == pytest.approx(
+        0.0028449834439898754, rel=1.0e-12
+    )
+    assert results.tsfc_kg_N_s == pytest.approx(
+        3.724920318389013e-05, rel=1.0e-12
+    )
+    assert results.exhaust_velocity_m_s == pytest.approx(
+        499.7025517773365, rel=1.0e-12
+    )
+    assert results.stations["3_compressor_exit"].T_total_K == pytest.approx(
+        447.1381470704973, rel=1.0e-12
+    )
+    assert results.stations["5_turbine_exit"].P_total_Pa == pytest.approx(
+        172348.40208216515, rel=1.0e-12
+    )
+
+
 def test_thrust_positive():
     """Thrust must be non-negative for any reasonable input."""
     results = solve_brayton_cycle(FlightConditions(), EngineInputs())

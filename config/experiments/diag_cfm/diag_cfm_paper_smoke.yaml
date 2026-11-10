@@ -1,0 +1,59 @@
+version: diag_cfm_paper_gasturbine_smoke_v1
+lockfile: config/third_party_models.lock.yaml
+
+training_contract:
+  require_full_train_split: false
+  require_full_val_split: false
+  minimum_epochs_completed: 1
+  require_early_stopping: false
+  accepted_termination_reasons: [max_epochs]
+
+data:
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  target_suite: config/experiments/cfm_arch/cfm_0_generalization_targets.csv
+  batch_size: 512
+  num_workers: 0
+  subset_seed: 314159
+  max_train_samples: 512
+  max_val_samples: 256
+
+runtime:
+  seeds: [42]
+  device: cuda
+  epochs: 1
+  minimum_epochs: 1
+  patience: 2
+  min_delta: 0.0
+  gradient_clip_norm: 0.0
+  checkpoint_sample_count: 32
+  lr_scheduler: {enabled: false}
+
+models:
+  diag_cfm:
+    enabled: true
+    architecture_id: DIAG-CFM-V2-PAPER-GASTURBINE-SMOKE
+    design_dim: 10
+    condition_dim: 3
+    hidden_dim: 1024
+    hidden_layers: 4
+    activation: leaky_relu
+    base_distribution: uniform
+    base_low: 0.0
+    base_high: 1.0
+    state_scaling:
+      design: zero_one
+      condition: zero_one
+      condition_input_min: [-2.434751762618827, -2.711765621818321, -3.6263404512247392]
+      condition_input_max: [2.967806003329994, 17.28895328121256, 3.011576455375015]
+    ode_method: euler
+    ode_steps: 4
+    self_consistency_diagnostics: true
+    learning_rate: 0.001
+    weight_decay: 0.0
+    bounded_output: {enabled: false}
+
+output:
+  directory: data/generator_models/diag_cfm/diag_cfm_paper_gasturbine_v1_smoke_gpu6
+  refuse_overwrite: true

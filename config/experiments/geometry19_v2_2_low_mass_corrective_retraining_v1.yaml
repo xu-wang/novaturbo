@@ -1,0 +1,52 @@
+protocol_version: geometry19_v2_2_low_mass_corrective_retraining_v1
+work_package: WP-V3-6-LOW-MASS-CORRECTIVE
+status: development_fresh_confirmation
+formal_use_allowed: false
+
+design_schema: config/physics/geometry19_schema_v1.yaml
+target_domain: config/physics/geometry19_v2_2_development_target_domain_v1.yaml
+split_manifest: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/manifest.json
+split_manifest_sha256: 46ecfb167d6a204dff3de2889028297ea915995feb3d8a8afe11ac19a8fa13cd
+split_datasets:
+  train: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/train.jsonl
+  validation: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/validation.jsonl
+  confirmation: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+baseline_model_root: data/validation/v2_2_forward_surrogate_baseline_v1/formal/models/seed_43
+target_segments: [low_mass_low_to_mid, low_mass_mid_to_high]
+
+model:
+  task: performance_regression_only
+  ordered_outputs: [thrust_N, tsfc_kg_N_s, mass_kg]
+  output_transform: natural_log
+  sample_weighting: uniform
+architecture:
+  architecture_tag: legacy_surrogate_mlp_geometry19_v1_performance3_v2_2_low_mass_corrective
+  hidden_layers: [128, 256, 256, 128, 64]
+  activation: relu
+  dropout: 0.1
+  batch_norm: true
+seeds: [42, 43, 44]
+training:
+  device: cuda:0
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.00001
+  epochs: 200
+  patience: 25
+  min_delta: 0.000001
+
+confirmation_gate:
+  minimum_overall_rho_p50_reduction: 0.30
+  minimum_each_segment_rho_p50_reduction: 0.20
+  maximum_worst_segment_rho_p95: 5.0
+
+artifacts:
+  runtime_root: data/validation/v2_2_low_mass_corrective_retraining_v1
+  summary: summary.json
+  report: Corrective_Retraining_Report.md
+
+limitations:
+  - simplified_v2_2_software_labels_only
+  - confirmation_has_one_fresh_root_per_target_segment
+  - no_full_domain_confirmation_or_promotion_claim
+  - no_pipeline_or_default_model_change

@@ -1,0 +1,55 @@
+protocol_version: geometry19_v2_2_forward_baseline_v1
+work_package: WP-V3-6-FORWARD-BASELINE
+status: software_development_baseline
+formal_use_allowed: false
+
+design_schema: config/physics/geometry19_schema_v1.yaml
+target_domain: config/physics/geometry19_v2_2_development_target_domain_v1.yaml
+dataset_manifest: data/validation/v2_2_directed_segment_recovery_v1/manifest.json
+split_datasets:
+  train: data/validation/v2_2_directed_segment_recovery_v1/splits/train.jsonl
+  validation: data/validation/v2_2_directed_segment_recovery_v1/splits/validation.jsonl
+  test: data/validation/v2_2_directed_segment_recovery_v1/splits/test.jsonl
+
+model:
+  task: performance_regression_only
+  ordered_outputs: [thrust_N, tsfc_kg_N_s, mass_kg]
+  output_transform: natural_log
+  sample_weighting: uniform
+architecture:
+  architecture_tag: legacy_surrogate_mlp_geometry19_v1_performance3_v2_2_baseline
+  hidden_layers: [128, 256, 256, 128, 64]
+  activation: relu
+  dropout: 0.1
+  batch_norm: true
+
+seeds: [42, 43, 44]
+training:
+  device: cuda:0
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.00001
+  epochs: 200
+  patience: 25
+  min_delta: 0.000001
+selection:
+  split: validation
+  primary_metric: worst_segment_rho_p95
+  secondary_metric: overall_normalized_rmse
+  lower_is_better: true
+smoke:
+  seeds: [42]
+  training:
+    epochs: 2
+    patience: 2
+
+artifacts:
+  runtime_root: data/validation/v2_2_forward_surrogate_baseline_v1
+  summary: summary.json
+  report: Forward_Baseline_Report.md
+
+limitations:
+  - simplified_v2_2_software_labels_only
+  - no_real_geometry_or_engineering_feasibility_claim
+  - no_pipeline_or_default_model_change
+  - test_split_is_reporting_only

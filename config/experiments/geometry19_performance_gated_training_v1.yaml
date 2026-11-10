@@ -1,0 +1,94 @@
+protocol_version: geometry19_performance_gated_training_v1
+stage: G1_G2_training_preparation_lock
+inputs:
+  parent_protocol:
+    path: config/experiments/geometry19_v2_2_performance_gated_local_cfm_v1.yaml
+    sha256: 7c41fc92d9a51bc718d9a7225fbd0b36545a229bd130188d032a2595b66c8e37
+  labels:
+    path: data/validation/v2_2_far_precision_relabel_v1/L/Sealed_Evaluations.jsonl
+    sha256: ea14a98d9b9e63cb05127e0ed8c5773cc19e8d74b879294d56705c967e4484c5
+  label_summary:
+    path: data/validation/v2_2_far_precision_relabel_v1/Relabel_Summary.json
+    sha256: ade0fabc01771e5f239611e5ce24d0b2bee4d23a3935eb6b53348d4ec5ec39e2
+  label_manifest:
+    path: data/validation/v2_2_far_precision_relabel_v1/L/Manifest.json
+    sha256: 845cda4fdabfec3405c65f969e7e635f31d8711de0dfda5e1b3ca23c53dbbacd
+physics:
+  model_version: geometry19_v2_2_far_precision_v1
+  context_sha256: 49e9b09a047e096f59bd65132fcfaef5b8dc363d563d2be638247e7eaf55eb72
+  bundle_sha256: 2ecf2664a024ccc7ce7bad33d0ccf755eb72d1131fe01b773dff9a64b71ee5be
+dataset:
+  ledger_rows: 16896
+  roots: 33
+  eligible_train: 12153
+  eligible_validation: 3110
+  excluded_rows: 1633
+  split: inherited_G0b_pair_split_no_reassignment
+  row_order: original_ledger_order
+  root_order: root_seed_id_lexicographic
+  filtering: eligibility_flags_only_no_performance_ranking
+  root_labels: supervision_and_external_expert_dispatch_only
+  root_or_medoid_in_condition: false
+condition:
+  axes: [thrust_N, tsfc_kg_N_s, mass_kg]
+  dimension: 3
+  transform: natural_log_then_train_only_root_equal_population_mean_std
+  row_weight_for_statistics: 1_over_33_times_root_train_count
+  variance_ddof: 0
+  zero_variance: abort_no_epsilon_fallback
+  clipping: forbidden
+geometry:
+  local_state: schema_normalized_continuous_medoid_residual_divided_by_frozen_root_p95
+  pooled_state: absolute_schema_normalized_continuous_16d
+  continuous_order: schema_index_ascending
+  integer_order: schema_index_ascending
+  integer_categories: every_integer_in_closed_schema_bounds_not_fitted_from_validation
+  decoder_statistics_refit: forbidden
+validation_bank:
+  generator: numpy_Generator_PCG64_float64
+  seed_rule: 20260930_plus_training_seed
+  draws_per_row: 1
+  draw_order: all_normal_N_by_16_then_all_uniform_N
+  normal: standard_normal_16d
+  time: uniform_0_1
+  shared_between_local_and_pooled: true
+  refreshed_each_epoch: false
+training:
+  inherit_all_parent_model_settings: true
+  seeds: [42, 43, 44]
+  condition_dimension: 3
+  root_embedding: false
+  training_tensor_dtype: float32
+  preparation_statistics_dtype: float64
+  physical_gpu: 6
+  cpu_training_fallback: forbidden
+  gate_epoch: deterministic_shuffle_all_eligible_train_rows_once
+  gate_row_loss_weight: N_train_over_33_times_root_train_count
+  gate_batch_loss: mean_row_weight_times_cross_entropy
+  gate_validation: mean_of_per_root_mean_nll
+  cfm_sampling: uniform_with_replacement_16_rows_per_root_per_step_32_steps_per_epoch
+  cfm_flow_loss: mean_squared_velocity_error_over_16_axes_then_root_equal_mean
+  cfm_train_pairing: same_row_geometry_and_condition_no_cross_root_OT
+  pooled_integer_loss: mean_cross_entropy_over_three_axes_then_root_equal_mean
+  pooled_combined_loss: flow_loss_plus_integer_loss_weight_1
+  pooled_selection: root_equal_validation_flow_loss_plus_integer_loss_weight_1
+  checkpoint: absolute_minimum_validation_objective_then_earliest_epoch
+  early_stopping: separate_significant_improvement_anchor_with_parent_min_delta_and_patience_after_minimum_epochs
+  validation_metrics: all_eligible_validation_rows_without_weighted_resampling
+  targets_for_training_selection: forbidden
+  surrogate_loss_or_predictions: forbidden
+  gate_expert_joint_finetuning: forbidden
+  architecture_implementation_lock_before_training: required
+  torch_cuda_and_hardware_manifest_before_training: required
+  training_seeds_must_all_be_reported: true
+  training_validation_transforms_shared_across_all_models_and_seeds: true
+authorization:
+  preparation: true
+  model_training: false
+  model_prediction: false
+  candidate_generation: false
+  physics_evaluation: false
+  confirmation_content_access: false
+artifacts:
+  output_root: data/validation/v2_2_performance_gated_local_cfm_v1/training_preparation/g1_g2_v1
+  required: [Training_Lock.json, Training_Protocol.json, Condition_Transform.json, Expert_Decoders.json, Train_Registry.jsonl, Validation_Registry.jsonl, Excluded_Registry.jsonl, Validation_Noise_seed42.jsonl, Validation_Noise_seed43.jsonl, Validation_Noise_seed44.jsonl, Preparation_Report.md]

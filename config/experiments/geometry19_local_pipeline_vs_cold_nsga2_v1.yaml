@@ -1,0 +1,20 @@
+version: geometry19_local_pipeline_vs_cold_nsga2_v1
+scope: paired_first_hit_physics_call_comparison
+targets: [1, 2, 4, 5, 20, 29, 46, 56, 68, 80, 92, 98]
+project_source: data/validation/v2_2_local_full_pipeline_v1/n3_rank1_miss_screen_v1
+cost_source: data/validation/v2_2_local_full_pipeline_v1/n4_cost_comparison_v1
+runtime: geometry19_v2_2_far_precision_v1
+cold_nsga2:
+  initialization: latin_hypercube_full_geometry19_schema
+  population: 64
+  generations_after_initial: 9
+  maximum_physics_calls: 640
+  seed: 42
+  crossover_rate: 0.9
+  mutation_rate: 0.1
+  mutation_scale: 0.1
+  stop: immediately_after_first_physics_hit
+counting:
+  discovery: through_first_hit_excluding_delivery_recalculation
+  delivery: discovery_plus_one_independent_recalculation_when_hit
+output: data/validation/v2_2_local_full_pipeline_v1/n5_project_vs_cold_nsga2_v1

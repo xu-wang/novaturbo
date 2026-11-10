@@ -1,0 +1,65 @@
+protocol_version: wp19_23_tolerance_set_seed_replication_v1
+formal_use_allowed: false
+
+data:
+  regression_dataset: data/generated/wp19_21_development_dataset_98304_v1/regression_converged.jsonl
+  development_target_suite: data/inverse_design/wp19_23_generator_core_oracle_v1/target_suite.jsonl
+  excluded_target_files:
+    - data/inverse_design/wp19_23_generator_core_oracle_v1/target_suite.jsonl
+    - data/inverse_design/wp19_23_c_checkpoint_selection_v1/new_locked_confirmation_targets.jsonl
+    - data/inverse_design/wp19_23_performance_consistency_ablation_v1/locked_confirmation_targets.jsonl
+    - data/inverse_design/wp19_23_tolerance_set_ablation_v1/locked_confirmation_targets.jsonl
+  train_campaigns: [seed_20260826, seed_20260827, seed_20260828, seed_20260829]
+  held_out_campaign: seed_20260831
+
+arms:
+  - arm_id: t0_frozen_baseline
+    maximum_fraction: 0.0
+    checkpoint: data/generator_models/geometry19/wp19_23_cfm4_bounded_sigmoid_seed43_v1/baseline/best.pt
+  - arm_id: t_seed42
+    maximum_fraction: 1.0
+    training_seed: 42
+    weights_root: data/generator_models/geometry19/wp19_23_tolerance_set_full_seed42_v1/baseline
+  - arm_id: t_seed43
+    maximum_fraction: 1.0
+    training_seed: 43
+    weights_root: data/generator_models/geometry19/wp19_23_tolerance_set_full_v1/baseline
+  - arm_id: t_seed44
+    maximum_fraction: 1.0
+    training_seed: 44
+    weights_root: data/generator_models/geometry19/wp19_23_tolerance_set_full_seed44_v1/baseline
+
+checkpoint_selection:
+  development_target_count: 12
+  source_seeds: [20260817]
+  candidates: 128
+  snapshot_epochs: [50, 100, 150, 200, 250, 300, 350, 400]
+
+confirmation:
+  target_count: 24
+  source_seeds: [20260817, 20260902, 20260903]
+  candidates: 512
+  discrete_projection: unconditional_nearest_integer
+
+execution:
+  device: cuda:0
+  physics_workers: 16
+  physics_chunksize: 32
+
+gates:
+  minimum_hit_rate_gain: 0.10
+  minimum_median_rho_reduction_fraction: 0.20
+  require_p90_no_regression: true
+  require_net_positive_paired_hits: true
+
+replication:
+  arm_ids: [t_seed42, t_seed43, t_seed44]
+  minimum_median_hit_rate_gain: 0.10
+  minimum_seed_arms_with_lower_median: 2
+  minimum_seed_arms_with_p90_no_regression: 2
+  minimum_seed_arms_with_net_positive_hits: 2
+  minimum_strict_passes_for_promotion: 2
+
+artifacts:
+  runtime_root: data/inverse_design/wp19_23_tolerance_set_seed_replication_v1
+  report: docs/physics/WP19_23_TOLERANCE_SET_SEED_REPLICATION_20260904.md

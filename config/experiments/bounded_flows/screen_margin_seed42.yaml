@@ -1,0 +1,54 @@
+version: bounded_flows_screen_margin_v1
+lockfile: config/third_party_models.lock.yaml
+training_contract:
+  require_full_train_split: false
+  require_full_val_split: false
+  minimum_epochs_completed: 20
+  require_early_stopping: false
+  accepted_termination_reasons: [early_stopping, max_epochs]
+data:
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  target_suite: data/generator_active10d_100k/targets/target_suite_active10d_v1.csv
+  batch_size: 1024
+  num_workers: 0
+  subset_seed: 314159
+  max_train_samples: 30000
+  max_val_samples: 5000
+runtime:
+  seeds: [42]
+  device: cuda
+  epochs: 120
+  minimum_epochs: 20
+  patience: 15
+  min_delta: 1.0e-5
+  gradient_clip_norm: 10.0
+  checkpoint_sample_count: 128
+  lr_scheduler: {enabled: true, patience: 6, factor: 0.5, min_lr: 1.0e-6}
+models:
+  cvae: {enabled: false, design_dim: 10, condition_dim: 3, hidden_dims: [128, 128], latent_dim: 10, beta: 0.001, learning_rate: 0.001}
+  nflows:
+    enabled: true
+    design_dim: 10
+    condition_dim: 3
+    num_layers: 4
+    hidden_features: 64
+    num_blocks: 2
+    learning_rate: 0.001
+    weight_decay: 0.00001
+    bounded_output: &bounded {enabled: true, epsilon: 0.001, input_tolerance: 0.000001, saturation_threshold: 0.99}
+  cinn:
+    enabled: true
+    design_dim: 10
+    condition_dim: 3
+    num_blocks: 6
+    hidden_features: 64
+    affine_clamping: 2.0
+    learning_rate: 0.001
+    weight_decay: 0.00001
+    bounded_output: *bounded
+  cfm: {enabled: false, design_dim: 10, condition_dim: 3, hidden_dims: [128, 128, 128], sigma: 0.0, ode_method: rk4, ode_steps: 2, learning_rate: 0.001}
+output:
+  directory: data/generator_models/stage2/bounded_flows/screen_margin_seed42_v1
+  refuse_overwrite: true

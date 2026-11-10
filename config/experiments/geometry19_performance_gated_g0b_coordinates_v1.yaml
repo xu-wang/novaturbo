@@ -1,0 +1,85 @@
+protocol_version: geometry19_performance_gated_g0b_coordinates_v1
+stage: G0b_prelabel_training_coordinates_and_pair_split_lock
+parent_protocol:
+  path: config/experiments/geometry19_v2_2_performance_gated_local_cfm_v1.yaml
+  sha256: 7c41fc92d9a51bc718d9a7225fbd0b36545a229bd130188d032a2595b66c8e37
+parent_lock:
+  path: data/validation/v2_2_performance_gated_local_cfm_v1/audits/G0a_Protocol_Target_Lock.json
+  sha256: cd70f335b9a5c3fdb97f5db355fcceb68e2466a6a2eec54396ab1eae036a38c6
+additional_inputs:
+  calibration:
+    path: config/physics/geometry19_calibration_bootstrap_v1.yaml
+    sha256: 3bb454998c9f52d62267ab5ef3b30a98501905aba6f478c49288642619d681e7
+  geometry_reference_implementation:
+    path: src/physics/geometry_state.py
+    sha256: 674f3a741b2fffbf8071e0d2157ca1124f998c83950d518d2fec9498b8fd16e9
+  s3_v1:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/fresh_evaluation/S3_Prelabel_Coordinates.jsonl
+    sha256: 7b642cd65a0fa44b55d09d6dad05d7a75306aefcd68e4054f3a51cb98f523956
+  s3_v2:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/fresh_evaluation_v2/S3_v2_Prelabel_Coordinates.jsonl
+    sha256: 1c75997e5653e0ab5114bc3ef60764f20c381f55be83fcf17fa1551388f258d6
+  s3_v3:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/fresh_evaluation_v3_33root/S3_v3_Prelabel_Coordinates.jsonl
+    sha256: 2a5b413f26136f35a994e5d066723dea32c283da6c1e7f4a0c793090d07c2ba3
+  s3_v4_combined:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/fresh_evaluation_v4_1_medoid/S3_v4_1_Combined_Prelabel_Coordinates.jsonl
+    sha256: 81e9b934f1419abed9e5702264447be5f0e809ff894f70b75e20726251170199
+algorithm:
+  version: continuous16_medoid_sobol_pair_bands_v1
+  roots: 33
+  bands: [[0.0, 0.05], [0.05, 0.10], [0.10, 0.15], [0.15, 0.20]]
+  pairs_per_root_band: 64
+  rows_per_root: 512
+  expected_rows: 16896
+  primary_seed: 20260923
+  reserve_seed: 20260924
+  seed_mix: xor_first_8_hex_root_id
+  sobol_dimensions: 17
+  pool_base2_exponent: 13
+  pool_rows_per_band: 2048
+  maximum_attempts_per_band: 4096
+  direction_transform: first_16_sobol_axes_signed_uniform_times_symmetric_covariance_sqrt_then_unit_l2
+  radial_transform: band_lower_plus_width_times_1e_6_plus_1_minus_2e_6_times_sobol_axis_17
+  radial_endpoint_margin: 0.000001
+  covariance: same_root_unique_development_geometry_sorted_by_design_hash_medoid_second_moment_n_minus_1
+  covariance_dimensions: 16
+  shrinkage: 0.05
+  square_root: numpy_eigh_symmetric_v_sqrt_eigenvalues_v_transpose
+  bounds_safety_factor: 0.95
+  shrink: min_desired_step_and_common_two_sided_schema_limit_times_safety
+  band_membership: actual_serialized_geometry_distance_strict_lower_inclusive_upper
+  integer_policy: exact_medoid_values_never_perturbed_or_rounded
+  hard_checks: [schema_bounds_types, compressor_inducer_order, combustor_annulus, turbine_annulus, compressor_exit_blockage]
+  blockage_thickness_ratio: 0.2
+  cross_constraint_reference: geometry_state_py_pre_solver_geometry_only
+  exclusion: development_all_designs_all_prior_s3_selected_coordinates_targets_and_this_run
+  selection: first_64_legal_pairs_per_band_primary_then_reserve
+  failure: seal_partial_ledger_and_screening_then_stop_no_top_up
+split:
+  unit: accepted_positive_negative_pair
+  validation: accepted_pair_index_within_root_band_modulo_5_equals_0
+  training_pairs_per_root_band: 51
+  validation_pairs_per_root_band: 13
+  expected_training_rows: 13464
+  expected_validation_rows: 3432
+  before_physics_labels: true
+environment:
+  python: 3.11.15
+  numpy: 2.4.4
+  scipy: 1.17.1
+authorization:
+  coordinate_generation: true
+  physics_acquisition: false
+  training: false
+  model_prediction: false
+  inverse_candidate_generation: false
+  confirmation_parse: false
+artifacts:
+  output_root: data/validation/v2_2_performance_gated_local_cfm_v1/training_coordinates/g0b_v1
+  coordinates: Prelabel_Coordinates.jsonl
+  splits: Pair_Split_Registry.jsonl
+  screening: Pair_Screening.jsonl
+  direction_audit: Direction_Models.json
+  report: Coordinate_Lock_Report.md
+  lock: Coordinate_Lock.json

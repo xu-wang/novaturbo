@@ -163,54 +163,77 @@ def _create_lofted_blade(profiles_3d, close_tip=True):
     airfoil loop (suction side forward + pressure side reversed).
     Adjacent profiles are connected by triangle strips to form the blade surface.
     """
-    all_verts = []
-    all_faces = []
-    offset = 0
+    if len(profiles_3d) < 2:
+        raise ValueError("A lofted blade requires at least two span sections")
 
-    for i in range(len(profiles_3d) - 1):
-        p0 = profiles_3d[i]
-        p1 = profiles_3d[i + 1]
-        n = len(p0)
-
-        # Ensure both profiles have same point count
-        if len(p1) != n:
+    n = len(profiles_3d[0])
+    sections = []
+    for profile in profiles_3d:
+        profile = np.asarray(profile, dtype=float)
+        if len(profile) != n:
             t = np.linspace(0, 1, n)
-            t_orig = np.linspace(0, 1, len(p1))
-            p1 = np.column_stack([
-                np.interp(t, t_orig, p1[:, 0]),
-                np.interp(t, t_orig, p1[:, 1]),
-                np.interp(t, t_orig, p1[:, 2]),
-            ])
+            t_orig = np.linspace(0, 1, len(profile))
+            profile = np.column_stack(
+                [
+                    np.interp(t, t_orig, profile[:, axis])
+                    for axis in range(3)
+                ]
+            )
+        sections.append(profile)
 
-        verts = np.vstack([p0, p1])
-        faces = []
-        for j in range(n):
-            j_next = (j + 1) % n
-            # Two triangles per quad
-            faces.append([j, j_next, n + j])
-            faces.append([j_next, n + j_next, n + j])
+    # Suction and pressure surfaces meet at the leading/trailing edges.  The
+    # legacy loop retained both coincident vertices, producing zero-area faces
+    # which became open edges when a mesh consumer removed degenerates.  Use a
+    # common index mask across every span section so topology stays aligned.
+    reference = sections[0]
+    scale = max(float(np.ptp(reference, axis=0).max()), 1.0)
+    tolerance = 1.0e-9 * scale
+    keep = np.ones(n, dtype=bool)
+    for index in range(1, n):
+        if np.linalg.norm(reference[index] - reference[index - 1]) <= tolerance:
+            keep[index] = False
+    retained = np.flatnonzero(keep)
+    if len(retained) > 2 and np.linalg.norm(
+        reference[retained[-1]] - reference[retained[0]]
+    ) <= tolerance:
+        keep[retained[-1]] = False
+    sections = [section[keep] for section in sections]
+    n = len(sections[0])
+    if n < 3:
+        raise ValueError("Blade profile collapsed after duplicate-edge cleanup")
 
-        all_verts.append(verts)
-        all_faces.append(np.array(faces) + offset)
-        offset += len(verts)
+    vertices = np.vstack(sections)
+    faces = []
+    for span in range(len(sections) - 1):
+        lower = span * n
+        upper = (span + 1) * n
+        for index in range(n):
+            next_index = (index + 1) % n
+            faces.append([lower + index, lower + next_index, upper + index])
+            faces.append(
+                [lower + next_index, upper + next_index, upper + index]
+            )
 
-    # End caps (hub and tip)
-    for profile in [profiles_3d[0], profiles_3d[-1]]:
-        n = len(profile)
-        center = profile.mean(axis=0)
-        verts = np.vstack([profile, center.reshape(1, 3)])
-        faces = []
-        for j in range(n):
-            j_next = (j + 1) % n
-            faces.append([j, j_next, n])
-        all_verts.append(verts)
-        all_faces.append(np.array(faces) + offset)
-        offset += len(verts)
+    if close_tip:
+        hub_center_index = len(vertices)
+        tip_center_index = hub_center_index + 1
+        vertices = np.vstack(
+            [vertices, sections[0].mean(axis=0), sections[-1].mean(axis=0)]
+        )
+        tip_offset = (len(sections) - 1) * n
+        for index in range(n):
+            next_index = (index + 1) % n
+            faces.append([next_index, index, hub_center_index])
+            faces.append(
+                [tip_offset + index, tip_offset + next_index, tip_center_index]
+            )
 
-    verts_combined = np.vstack(all_verts)
-    faces_combined = np.vstack(all_faces)
-    mesh = trimesh.Trimesh(vertices=verts_combined, faces=faces_combined)
-    mesh.fix_normals()
+    mesh = trimesh.Trimesh(
+        vertices=vertices,
+        faces=np.asarray(faces, dtype=np.int64),
+        process=True,
+    )
+    mesh.fix_normals(multibody=True)
     return mesh
 
 
@@ -375,7 +398,17 @@ def export_compressor_stl(comp_geo, params, z_offset: float = 0.0,
     r_hub_interp = np.interp(z_common, z_hub, r_hub)
     r_shroud_interp = np.interp(z_common, z_shroud, r_shroud)
 
-    shell = _create_shell(z_common, r_shroud_interp, z_common, r_hub_interp, n_theta)
+    # This shell represents the impeller-to-shroud clearance, not a structural
+    # liner wall.  Applying the generic 0.8 mm minimum wall silently shrinks
+    # the Geometry19 exit flow radius when the calibrated clearance is 0.3 mm.
+    shell = _create_shell(
+        z_common,
+        r_shroud_interp,
+        z_common,
+        r_hub_interp,
+        n_theta,
+        min_wall_mm=max(float(params.shroud_clearance_mm), 1.0e-6),
+    )
 
     # Build proper curved impeller blades
     blade_meshes = _build_centrifugal_blade_mesh(
@@ -423,7 +456,25 @@ def export_combustor_stl(comb_geo, params, z_offset: float = 0.0,
     # Inner liner shell
     inner_shell = _create_shell(z, r_inner_out, z, r_inner_in, n_theta)
 
-    return trimesh.util.concatenate([outer_shell, inner_shell])
+    # Fuel injector bodies.  Geometry19 exposes injector count as a discrete
+    # solid-geometry coordinate, so the STL must contain one independently
+    # diagnosable body per computed injector position rather than treating the
+    # positions as metadata only.
+    injector_length = max(params.dome_recess_mm, params.injector_diameter_mm)
+    injector_radius = params.injector_diameter_mm / 2.0
+    injector_parts = []
+    for injector in comb_geo.fuel_injector_positions:
+        z_center = z_offset + injector['axial_mm']
+        body = _create_cylinder(
+            z_center - injector_length / 2.0,
+            z_center + injector_length / 2.0,
+            injector_radius,
+            max(12, n_theta // 2),
+        )
+        body.apply_translation([injector['x'], injector['y'], 0.0])
+        injector_parts.append(body)
+
+    return trimesh.util.concatenate([outer_shell, inner_shell] + injector_parts)
 
 
 def export_turbine_stl(turb_geo, params, z_offset: float = 0.0,
@@ -437,9 +488,14 @@ def export_turbine_stl(turb_geo, params, z_offset: float = 0.0,
     shell = _create_shell(z, r_casing, z, r_hub, n_theta)
 
     # Hub disc (solid)
+    # Keep the rotor disc as a separately closed body.  An exactly coincident
+    # disc/casing interface is merged by STL readers into a non-manifold seam.
+    # A 1 micron radial separation is below the mesh-diagnostic interface
+    # tolerance while preserving both watertight component bodies.
+    disc_radius = max(params.hub_diameter_mm / 2.0 - 1.0e-3, 1.0e-3)
     disc = _create_cylinder(
         z_offset, z_offset + params.stage_axial_length_mm,
-        params.hub_diameter_mm / 2.0, n_theta
+        disc_radius, n_theta
     )
 
     parts = [shell, disc]

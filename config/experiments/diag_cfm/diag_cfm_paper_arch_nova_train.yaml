@@ -1,0 +1,67 @@
+version: diag_cfm_paper_arch_nova_train_v1
+lockfile: config/third_party_models.lock.yaml
+
+training_contract:
+  require_full_train_split: true
+  require_full_val_split: true
+  minimum_epochs_completed: 20
+  require_early_stopping: false
+  accepted_termination_reasons: [early_stopping, max_epochs]
+
+data:
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  target_suite: config/experiments/cfm_arch/cfm_0_generalization_targets.csv
+  batch_size: 1024
+  num_workers: 0
+  subset_seed: 314159
+  max_train_samples: null
+  max_val_samples: null
+
+runtime:
+  seeds: [42, 43]
+  device: cuda
+  epochs: 400
+  minimum_epochs: 20
+  patience: 20
+  min_delta: 1.0e-5
+  gradient_clip_norm: 10.0
+  checkpoint_sample_count: 128
+  lr_scheduler:
+    enabled: true
+    patience: 7
+    factor: 0.5
+    min_lr: 1.0e-6
+
+models:
+  diag_cfm:
+    enabled: true
+    architecture_id: DIAG-CFM-V3-PAPER-ARCH-NOVA-TRAINING
+    design_dim: 10
+    condition_dim: 3
+    hidden_dim: 1024
+    hidden_layers: 4
+    activation: leaky_relu
+    state_convention: "[z,y]->[x,0]"
+    base_distribution: uniform
+    base_low: -1.0
+    base_high: 1.0
+    state_scaling: {design: identity, condition: identity}
+    ode_method: euler
+    ode_steps: 30
+    ode_rtol: 1.0e-5
+    ode_atol: 1.0e-5
+    self_consistency_diagnostics: true
+    learning_rate: 0.001
+    weight_decay: 0.00001
+    bounded_output: {enabled: false}
+    method_provenance:
+      paper: arXiv:2603.15925v2 Appendix F.3
+      retained_paper_architecture: {hidden_width: 1024, hidden_layers: 4, activation: leaky_relu, dropout: 0.0}
+      novaturbo_adaptations: {normalization: frozen_standard, batch_size: 1024, early_stopping: true, scheduler: plateau}
+      total_parameters: 3177485
+
+output:
+  directory: data/generator_models/diag_cfm/diag_cfm_paper_arch_nova_v1_gpu6
+  refuse_overwrite: true

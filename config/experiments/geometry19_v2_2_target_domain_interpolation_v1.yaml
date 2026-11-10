@@ -1,0 +1,58 @@
+campaign_version: geometry19_v2_2_multitarget_software_stability_v1
+domain_candidate_version: geometry19_v2_2_development_target_domain_candidate_v1
+work_package: WP-V2.2-TARGET-DOMAIN-INTERPOLATION
+status: development_only
+formal_use_allowed: false
+training_enabled: false
+doe_generation_enabled: false
+pipeline_profile: v2_2_development
+execution:
+  model_variant: baseline
+  sampling_mode: direct
+  device: cpu
+  refinement_device: cpu
+  raw_candidate_count_per_target: 256
+  maximum_runtime_seconds_per_target: 120.0
+acceptance:
+  minimum_pipeline_pass_rate: 1.0
+  minimum_targets_with_physics_acceptable: 5
+  require_all_artifact_contracts: true
+targets:
+  - label: low_mass_low_mid
+    source: log_tsfc_midpoint:low_mass_low_thrust:low_mass_mid_thrust
+    target_type: INTERPOLATION
+    expected_status: UNKNOWN
+    thrust_N: 58.91346874168636
+    tsfc_kg_N_s: 0.00006906419019953191
+    mass_kg: 1.7592970962476122
+  - label: high_mass_low_mid
+    source: log_tsfc_midpoint:high_mass_low_thrust:high_mass_mid_thrust
+    target_type: INTERPOLATION
+    expected_status: UNKNOWN
+    thrust_N: 67.09743666323891
+    tsfc_kg_N_s: 0.00006380322887581522
+    mass_kg: 2.151973451025936
+  - label: cross_branch_mid
+    source: log_tsfc_midpoint:low_mass_mid_thrust:high_mass_mid_thrust
+    target_type: INTERPOLATION
+    expected_status: UNKNOWN
+    thrust_N: 73.8176233176481
+    tsfc_kg_N_s: 0.00006131007783998512
+    mass_kg: 1.9544281410726598
+  - label: low_mass_mid_high
+    source: log_tsfc_midpoint:low_mass_mid_thrust:low_mass_high_thrust
+    target_type: INTERPOLATION
+    expected_status: UNKNOWN
+    thrust_N: 83.16107443041481
+    tsfc_kg_N_s: 0.00006181241425737112
+    mass_kg: 1.7835859758496604
+  - label: high_mass_mid_high
+    source: log_tsfc_midpoint:high_mass_mid_thrust:high_mass_high_thrust
+    target_type: INTERPOLATION
+    expected_status: UNKNOWN
+    thrust_N: 91.36044972108724
+    tsfc_kg_N_s: 0.00005528596829940329
+    mass_kg: 2.1718217298803104
+artifacts:
+  runtime_root: data/inverse_design/v2_2_target_domain_interpolation_v1
+  evidence_root: data/validation/v2_2_target_domain_interpolation_v1

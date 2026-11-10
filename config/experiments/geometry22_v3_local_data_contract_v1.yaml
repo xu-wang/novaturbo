@@ -1,0 +1,34 @@
+version: geometry22_v3_local_data_contract_v1
+scope: future_software_development_acquisition_only
+source_centers:
+  path: data/validation/v3_22d_local_center_audit_v1
+  manifest_sha256: 62b60dfabe0b360f812141e285e2f9884e4cffbf8bdb034efb32d873598dcbb2
+  centers_sha256: cc48920e511347aa7d36e9b1ea4fc9f5395f77e205074908b1ee616909113c44
+  expected_centers: 33
+source_pilot:
+  path: data/validation/v3_22d_local_pilot_v1
+  complete_manifest_sha256: 834573370ad00c01d80278eab9fb1e872c30a1ef3e302f6a3cfe83d2be1c0bab
+  labels_sha256: cf3e546cb2342da4a98d4ab122a26d0d448568813c5e344fb6a53fa7c3e340b6
+split_seed: geometry22_v3_local_centers_20260924_v1
+stratum: l0_v3_flow_root_count_numerical_branch_count_only
+stratum_split_counts:
+  1: {development: 17, validation: 3, holdout: 4}
+  2: {development: 6, validation: 2, holdout: 1}
+assignment: sha256_seed_colon_center_design_id_sort_within_stratum
+inheritance: all_future_samples_from_center_keep_center_split
+split_before_future_labels: true
+holdout_adaptive_top_up_allowed: false
+future_label_qualification:
+  regression_candidate_requires: solver_converged_and_finite_performance_and_borrowed_diagnostic_domain
+  numerical_failure: exclude_from_regression_keep_failure_diagnostic
+  outside_borrowed_diagnostic_domain: exclude_from_regression_keep_domain_diagnostic
+  engineering_soft_constraints: report_separately_do_not_use_as_regression_filter
+  engine_feasible: report_separately_no_software_delivery_claim
+  train_centers: development_only
+  validation_centers: validation_only
+  holdout_centers: holdout_only_no_adaptive_selection
+v2_2_labels_reused: false
+l0_l1_training_allowed: false
+formal_use_allowed: false
+deployment_allowed: false
+output_root: data/validation/v3_22d_local_data_contract_v1

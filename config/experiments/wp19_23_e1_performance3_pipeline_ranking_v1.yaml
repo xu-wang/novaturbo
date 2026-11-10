@@ -1,0 +1,82 @@
+protocol_version: wp19_23_e1_performance3_pipeline_ranking_v1
+work_package: WP19-23-E1-PERFORMANCE3-RANKING
+status: locked_evaluation_only
+formal_use_allowed: false
+pipeline_mutation_allowed: false
+integration_policy: forbidden_until_explicit_user_confirmation
+
+target_bank:
+  protocol: config/physics/wp19_21_development_dataset_v1.yaml
+  sample_count: 4096
+  seed: 20260908
+  campaign_id: e1_fresh_doe_seed_20260908
+  workers: 16
+  shard_size: 128
+  target_count: 96
+  reference_training_dataset: data/generated/wp19_21_development_dataset_98304_v1/regression_converged.jsonl
+  reference_train_campaigns: [seed_20260826, seed_20260827, seed_20260828, seed_20260829]
+  excluded_target_suites:
+    - data/inverse_design/wp19_23_generator_core_oracle_v1/target_suite.jsonl
+    - data/inverse_design/wp19_23_reranker_confirmation_v1/frozen_target_suite.jsonl
+
+generator:
+  arm_id: bounded_cfm_nearest_integer
+  checkpoint: data/generator_models/geometry19/wp19_23_cfm4_bounded_sigmoid_seed43_v1/baseline/best.pt
+  source_seeds: [20260911, 20260912, 20260913]
+  raw_candidates_per_run: 1024
+  mapping: unconditional_nearest_integer_projection
+  refill_allowed: false
+
+inverse_protocol: config/physics/wp19_23_inverse_closure_v1.yaml
+baseline:
+  scorer_id: shared48_s0
+  model_root: data/inverse_design/wp19_22_gate_k_hit_aligned_surrogate_v1/models/s0_legacy_mse
+  seeds: [42, 43, 44]
+challenger:
+  scorer_id: performance3_log
+  model_root: data/inverse_design/wp19_22_performance_surrogate_v2_ablation/formal/models/performance3_log
+  seeds: [42, 43, 44]
+
+ranking_budgets: [8, 16, 32, 64, 128, 256]
+statistics:
+  minimum_hit_bearing_runs: 60
+  cluster_bootstrap_replicates: 10000
+  bootstrap_seed: 20260908
+  confidence_level: 0.95
+
+decision:
+  primary_metric: hit_bearing_recall_at_32
+  minimum_recall_at_32_absolute_gain: 0.05
+  require_recall_at_64_non_degradation: true
+  require_target_coverage_at_32_non_degradation: true
+  require_cluster_ci_lower_bound_nonnegative: true
+  maximum_region_recall_at_32_regression: 0.05
+  pipeline_action_for_any_outcome: none
+
+protected_pipeline_files:
+  - config/physics/wp19_23_inverse_closure_v1.yaml
+  - scripts/run_wp19_23_pipeline.py
+  - src/ai/geometry19_pipeline.py
+
+execution:
+  device: cuda:0
+  physics_workers: 16
+  physics_chunksize: 16
+
+smoke:
+  target_bank_sample_count: 64
+  target_count: 3
+  source_seeds: [20260911]
+  raw_candidates_per_run: 32
+  physics_workers: 2
+
+artifacts:
+  runtime_root: data/inverse_design/wp19_23_e1_performance3_pipeline_ranking_v1
+  target_bank_root: target_bank
+  target_suite: frozen_target_suite.jsonl
+  candidate_ledger: frozen_candidate_ledger.jsonl
+  freeze_manifest: freeze_manifest.json
+  truth_ledger: v21_truth_ledger.jsonl
+  truth_manifest: truth_manifest.json
+  summary: summary.json
+  report: E1_Performance3_Ranking_Report.md

@@ -1,0 +1,8 @@
+target_version: target_suite_v1
+target_id: b668dfbed5da6d9771c73e87cb419f1f01528229642ff19642aa5e53073e6047
+target_type: Interpolation
+expected_status: known_feasible
+thrust_N: 11.470161222366013
+tsfc_kg_N_s: 0.0001955163715014
+total_mass_kg: 0.5692588332272221
+tolerance_profile: round_trip_metrics_v1

@@ -1,0 +1,86 @@
+version: diag_cfm_full_strategy_v1
+target_suite: config/experiments/cfm_arch/cfm_0_generalization_targets.csv
+sample_seed: 20260817
+sample_seed_namespace: diag_cfm_vs_cfm4_formal_v1
+
+data:
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  metrics_config: config/generator_active10d_metrics.yaml
+
+seeds:
+  42:
+    generator_checkpoint: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_42/best.pt
+    reranker_checkpoint: data/generator_models/diag_cfm/diag_cfm_paper_arch_nova_v1_gpu6/diag_cfm/seed_42/best.pt
+  43:
+    generator_checkpoint: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_43/best.pt
+    reranker_checkpoint: data/generator_models/diag_cfm/diag_cfm_paper_arch_nova_v1_gpu6/diag_cfm/seed_43/best.pt
+
+generation:
+  candidate_protocol: v2_1_fixed_raw
+  n_raw: 128
+  diag_prefilter:
+    enabled: true
+    pool_size: 512
+    score: reverse_condition_mse
+    ode_method: rk4
+    ode_steps: 32
+
+delivery:
+  mode: generator_auto_refinement
+  minimum_hit_count: 1
+  maximum_delivered_candidates: 10
+  extra_engineering_objectives: false
+  always_run_gradient: true
+
+gradient:
+  surrogate_checkpoint: data/inverse_design/stage2/s2_wp3_consistency_repair_v2/forward_surrogate.pt
+  candidate_count: 8
+  steps: 24
+  learning_rate: 0.03
+  validation_interval: 8
+  maximum_0d_evaluations: 24
+  trust_region_linf: 0.25
+  prior_weight: 0.01
+  gradient_clip_norm: 1.0
+  condition_weights: [0.3333333333333333, 0.3333333333333333, 0.3333333333333333]
+  stop_on_minimum_hits: false
+
+latent_repair:
+  candidate_count: 8
+  maximum_0d_evaluations: 8
+  steps: 24
+  learning_rate: 0.03
+  prior_weight: 0.01
+  boundary_weight: 5.0
+  maximum_latent_displacement: 0.75
+  maximum_initial_abs_design: 10.0
+  gradient_clip_norm: 1.0
+
+nsga2:
+  enabled: true
+  population_size: 40
+  n_generations: 15
+  crossover_rate: 0.9
+  mutation_rate: 0.1
+  mutation_scale: 0.1
+  tournament_size: 3
+  objectives: [target_weighted_relative_error]
+  maximize: [false]
+  min_thrust_N: 0.0
+  max_tsfc: 1.0
+  max_mass_kg: 10.0
+  use_surrogate: false
+  surrogate_model_path: null
+  warm_start_fill_method: random
+  warm_start_out_of_bounds_policy: reject
+  warm_start_duplicate_tolerance: 1.0e-9
+  warm_start_align_legacy_rng: true
+
+runtime:
+  device: cuda
+
+output:
+  directory: data/inverse_design/diag_cfm/diag_cfm_full_strategy_v1
+  refuse_overwrite: true

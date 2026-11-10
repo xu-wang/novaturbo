@@ -1,0 +1,98 @@
+protocol_version: geometry19_v2_2_cross_version_compatibility_v1
+stage: N0_target_and_surrogate_cross_version_compatibility
+scope: frozen_99_targets_and_frozen_s2_oracle_local_ridge
+
+inputs:
+  target_registry:
+    path: data/validation/v2_2_performance_gated_local_cfm_v1/targets/Target_Registry.jsonl
+    sha256: 4f4b18931d8aa59eed61ea142739c1559302d03c2770ef3572cc360c27d4a859
+  development_dataset:
+    path: data/validation/v2_2_known_manifold_root_discovery_v1/development_dataset.jsonl
+    sha256: cde2c3f6a0cebc91a437f45b7aae5d2ebfe2b8adff952942d05efaae09297134
+  old_target_physics_ledger:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/fresh_evaluation_v4_1_medoid/S3_v4_1_Sealed_V2_2_Evaluations.jsonl
+    sha256: 9f6c028f78b771a4d1d818b72b52ea6505ac810f5198a3dcd5a669324cb53b08
+  old_local_training_labels:
+    path: data/validation/v2_2_performance_gated_local_cfm_v1/training_physics/g0c_v1/Sealed_Evaluations.jsonl
+    sha256: d7baa82b9323926c4b1f04876e30d7a45ab1ba9be7681b65ae9a1b4d0df46b4e
+  far_precision_labels:
+    path: data/validation/v2_2_far_precision_relabel_v1/L/Sealed_Evaluations.jsonl
+    sha256: ea14a98d9b9e63cb05127e0ed8c5773cc19e8d74b879294d56705c967e4484c5
+  far_precision_summary:
+    path: data/validation/v2_2_far_precision_relabel_v1/Relabel_Summary.json
+    sha256: ade0fabc01771e5f239611e5ce24d0b2bee4d23a3935eb6b53348d4ec5ec39e2
+  far_precision_runtime_contract:
+    path: data/validation/v2_2_far_precision_relabel_v1/Runtime_Contract.json
+    sha256: 98828eb7d5b547c9f79450d5a5482183499254273cfbbdaa0b73f704562112b8
+  s2_model_manifest:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/models/S2_Model_Manifest.json
+    sha256: c1da78af5395718c855df9e32df31a4ad3763238b3d746b8374dafd0dcf8358b
+  s2_oracle_local_ridge:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/models/s2/stable_38_oracle_root_local_ridge.npz
+    sha256: 7b047285416c07471a8a65d1a95c1155b80a0c100ccbd4c6a8a0f7abf7051d16
+  schema:
+    path: config/physics/geometry19_schema_v1.yaml
+    sha256: cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28
+  target_domain:
+    path: config/physics/geometry19_v2_2_development_target_domain_v1.yaml
+    sha256: c3905de3d89c8405954d24172cdc614a3c08423595a33216adb1f2fcccc689f4
+
+runtime:
+  model_version: geometry19_v2_2_far_precision_v1
+  context_sha256: 49e9b09a047e096f59bd65132fcfaef5b8dc363d563d2be638247e7eaf55eb72
+  bundle_sha256: 2ecf2664a024ccc7ce7bad33d0ccf755eb72d1131fe01b773dff9a64b71ee5be
+  worker_policy: sequential_cpu
+
+evaluation:
+  performance_order: [thrust_N, tsfc_kg_N_s, mass_kg]
+  relative_tolerances:
+    thrust_N: 0.0274514502151586
+    tsfc_kg_N_s: 0.008573042420144972
+    mass_kg: 0.01170710896944147
+  target_source_calls: 99
+  target_classes: {center: 33, typical: 33, outer: 33}
+  surrogate_arm: stable_38_oracle_root_local_ridge
+  paired_surrogate_population: common_old_and_new_validation_eligible
+  exact_common_validation_rows: 3053
+  ranking_candidate_scope: same_root_common_validation_rows
+  top_k: 8
+
+gates:
+  target_sources:
+    require_all_solver_converged: true
+    require_all_numerically_valid: true
+    require_all_physics_domain_valid: true
+    require_all_inside_target_domain: true
+    maximum_performance_relative_change: 1.0e-6
+    maximum_target_rho: 0.001
+  surrogate_transport:
+    require_all_predictions_finite_positive: true
+    maximum_absolute_row_rho_change: 0.001
+    maximum_row_rho_p95_degradation: 0.001
+    maximum_worst_root_rho_p95_degradation: 0.001
+    maximum_mean_target_spearman_degradation: 0.001
+    maximum_single_target_spearman_degradation: 0.01
+    maximum_top8_best_rho_degradation: 0.001
+
+interpretation:
+  pass: old_targets_and_s2_scorer_transport_compatible_with_far_precision_v2_2_for_G3_G4_development
+  fail: stop_G3_G4_and_version_targets_or_surrogate_separately
+  does_not_establish: [absolute_surrogate_quality, generator_success, unknown_root_generalization, formal_use, deployment]
+
+authorization:
+  compatibility_audit_authorized: true
+  target_source_physics_calls_authorized: 99
+  candidate_generation_authorized: false
+  generator_physics_closure_authorized: false
+  model_training_authorized: false
+  confirmation_content_access: false
+  formal_use_allowed: false
+  deployment_allowed: false
+
+artifacts:
+  output_root: data/validation/v2_2_cross_version_compatibility_v1
+  target_ledger: Target_Source_Compatibility.jsonl
+  surrogate_ledger: Surrogate_Transport_Ranking.jsonl
+  call_journal: Target_Source_Calls.jsonl
+  summary: Compatibility_Summary.json
+  report: Compatibility_Report.md

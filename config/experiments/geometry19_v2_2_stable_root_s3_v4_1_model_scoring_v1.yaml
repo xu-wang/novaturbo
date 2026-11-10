@@ -1,0 +1,152 @@
+protocol_version: geometry19_v2_2_stable_root_s3_v4_1_model_scoring_v1
+status: preregistered_after_v4_1_acquisition_pass_before_model_load
+stage: S3_v4_1_five_arm_model_scoring_protocol_lock
+scope_definition: post_selected_33root_medoid_covariance_development_only
+formal_use_allowed: false
+deployment_allowed: false
+
+inputs:
+  acquisition_protocol:
+    path: config/experiments/geometry19_v2_2_stable_root_s3_v4_1_physics_acquisition_v1.yaml
+    sha256: 459a905bc121f9cd6e13c1f3c59e33ca528aea3617f93f174fff38cc57b0f467
+  acquisition_protocol_lock:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/audits/S3_v4_1_Physics_Protocol_Lock.json
+    sha256: 85ef6b09a400e69f129b1156392a1e6d137378974430a95ae298b0124b72f168
+    required_status: STABLE_ROOT_S3_V4_1_PHYSICS_PROTOCOL_LOCK_PASS
+  acquisition_implementation:
+    path: src/ai/geometry19_v2_2_stable_root_s3_v4_1_physics.py
+    sha256: 310e14f3188c0b9d3f2e60d15bc9e876ab6ff4eb5a7fd7e77d7b0d96ab63e0ea
+  acquisition_summary:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/audits/S3_v4_1_Physics_Acquisition_Summary.json
+    sha256: b83b846b7bc294f74956525dcc5a10aa7025f86c3328ac034b3f3dcabbe0051e
+    required_status: STABLE_ROOT_S3_V4_1_PHYSICS_ACQUISITION_PASS
+  sealed_physics_ledger:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/fresh_evaluation_v4_1_medoid/S3_v4_1_Sealed_V2_2_Evaluations.jsonl
+    sha256: 9f6c028f78b771a4d1d818b72b52ea6505ac810f5198a3dcd5a669324cb53b08
+  s2_model_manifest:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/models/S2_Model_Manifest.json
+    sha256: c1da78af5395718c855df9e32df31a4ad3763238b3d746b8374dafd0dcf8358b
+    required_status: STABLE_ROOT_S2_MODEL_MANIFEST_LOCK_PASS
+  stable_root_registry:
+    path: data/validation/v2_2_stable_root_conditional_surrogate_v1/audits/stable_root_registry.jsonl
+    sha256: eedbc02591bc7b6b044071ecf0d1754d648b4ad9210114887b314e1b964352ad
+  design_schema:
+    path: config/physics/geometry19_schema_v1.yaml
+    sha256: cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28
+  sealed_confirmation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+    sha256: a3051cae177d1c9735699ef4b50675f41f5f0ffd7d954b3a233f5ebf1ea8b1fd
+    access: sha256_only_no_parse
+
+evaluation_population:
+  source_rows: evaluation_eligible_only
+  exact_rows: 3039
+  exact_roots: 33
+  minimum_rows_per_root: 67
+  design_hash_sequence_sha256: 5bad27207fbb01b299d956050cb7c36c6f46466d444a84abaede65f982ebae7c
+  identical_rows_and_order_for_all_arms: true
+  rows_may_enter_training: false
+
+models:
+  manifest_must_be_parsed_at_lock: true
+  model_files_may_be_hashed_but_not_loaded_at_lock: true
+  exact_arms:
+    - id: all_78_global_root_balanced_ridge
+      sha256: 28a2719da49ff22b2929c17da68da763d4af698584dfd5a678f09db3bfca0a06
+      routing: none
+    - id: stable_38_pooled_root_balanced_ridge
+      sha256: b7b350f660d661fc204590c9d08f53ea5f600f9d6604dc4968d13d8d1accb6e6
+      routing: none
+    - id: stable_38_nearest_root_local_ridge
+      sha256: fe4c2147f455378df56324b202b4d701889b52ca4ba2f85822fe8567949b2c44
+      routing: nearest_frozen_normalized_design_center_among_selected_33_roots
+    - id: stable_38_oracle_root_local_ridge
+      sha256: 7b047285416c07471a8a65d1a95c1155b80a0c100ccbd4c6a8a0f7abf7051d16
+      routing: frozen_source_root_id
+      diagnostic_only: true
+    - id: stable_38_global_plus_root_residual_ridge
+      sha256: 388868f61c00787689b7bf5c7a4b302944c6f7825a38c08b7d30ad90193df7a0
+      routing: frozen_source_root_id
+      anchored_mode_only: true
+
+execution_order:
+  - verify_all_input_model_and_evaluation_hashes
+  - freeze_exact_3039_row_sequence_and_selected_33_root_router_candidates
+  - load_each_frozen_model_once
+  - predict_all_five_arms_on_identical_rows
+  - write_and_hash_complete_prediction_ledger_before_metrics
+  - compute_frozen_metrics_and_gates_without_adaptation
+  - seal_pass_or_no_advancement_result
+
+scoring:
+  outputs: [thrust_N, tsfc_kg_N_s, mass_kg]
+  model_output_transform: natural_log
+  convert_predictions_to_physical_space_before_error: true
+  rho_definition: max_axis_absolute_relative_error_divided_by_frozen_target_relative_tolerance
+  target_relative_tolerances:
+    thrust_N: 0.0274514502151586
+    tsfc_kg_N_s: 0.008573042420144972
+    mass_kg: 0.01170710896944147
+  root_metric: rho_p95
+  report_by:
+    - root_id
+    - frozen_source_root_segment
+    - radius_fraction
+    - combined_source_protocol
+  prediction_adaptive_changes: forbidden
+
+accuracy_gates:
+  eligible_local_arms:
+    - stable_38_nearest_root_local_ridge
+    - stable_38_oracle_root_local_ridge
+    - stable_38_global_plus_root_residual_ridge
+  maximum_worst_root_rho_p95: 5.0
+  maximum_each_source_target_segment_worst_root_rho_p95: 5.0
+  comparator_arm: all_78_global_root_balanced_ridge
+  minimum_worst_root_rho_p95_reduction: 0.15
+  minimum_each_source_target_segment_reduction: 0.10
+  maximum_any_source_target_segment_regression: 0.10
+  maximum_nearest_vs_oracle_relative_rho_p95_gap: 0.20
+  require_all_predictions_finite_positive: true
+
+claims:
+  permitted_if_gates_pass:
+    - development_accuracy_on_post_selected_33root_v4_1_subdomain
+    - anchored_forward_surrogate_comparison
+    - nearest_root_routing_comparison_inside_selected_33root_support
+  forbidden:
+    - fresh_confirmation_accuracy
+    - unbiased_generalization
+    - original_38root_accuracy
+    - all_78root_accuracy
+    - unknown_manifold_generalization
+    - inverse_design_readiness
+    - formal_or_deployment_use
+
+authorization:
+  scoring_protocol_lock_authorized_now: true
+  model_loading_or_prediction_executed_now: false
+  inverse_design_authorized: false
+  post_scoring_next_stage_requires_separate_decision: true
+
+artifacts:
+  runtime_root: data/validation/v2_2_stable_root_forward_fresh_eval_v1
+  protocol_lock: audits/S3_v4_1_Model_Scoring_Protocol_Lock.json
+  protocol_lock_report: audits/S3_v4_1_Model_Scoring_Protocol_Lock_Report.md
+  eligible_row_registry: audits/S3_v4_1_Model_Scoring_Eligible_Rows.jsonl
+  future_prediction_ledger: fresh_evaluation_v4_1_medoid/S3_v4_1_Frozen_Model_Predictions.jsonl
+  future_scoring_summary: audits/S3_v4_1_Model_Scoring_Summary.json
+  future_scoring_report: audits/S3_v4_1_Model_Scoring_Report.md
+
+statuses:
+  protocol_lock_pass: STABLE_ROOT_S3_V4_1_MODEL_SCORING_PROTOCOL_LOCK_PASS
+  scoring_pass: STABLE_ROOT_S3_V4_1_FORWARD_SURROGATE_PASS
+  scoring_no_advancement: STABLE_ROOT_S3_V4_1_FORWARD_NO_ADVANCEMENT
+  artifact_fail: STABLE_ROOT_S3_V4_1_MODEL_SCORING_ARTIFACT_FAIL
+
+limitations:
+  - scoring_rows_and_protocol_were_selected_after_observing_prior_development_failures
+  - oracle_and_residual_arms_require_known_source_root_identity
+  - nearest_root_routing_is_restricted_to_the_selected_33_roots
+  - the_models_were_trained_on_development_data_from_the_same_software_physics_domain
+  - V2_2_is_a_simplified_software_model_not_real_engine_validation

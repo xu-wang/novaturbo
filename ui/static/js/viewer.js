@@ -7,7 +7,9 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js';
-import { toggleDashboard } from './dashboard.js';
+import { STLExporter } from 'three/addons/exporters/STLExporter.js';
+import { openDashboard, toggleDashboard } from './dashboard.js';
+import { zhComponent, zhMessage } from './zh-cn.js';
 
 // ──── Color Maps ────
 function thermalColorMap(t) {
@@ -52,6 +54,7 @@ const state = {
     // Simulation
     simMode: null,
     simData: null,
+    geometry19Simulation: null,
     originalMaterials: {},
     flowParticles: null,
     flowArrows: [],
@@ -63,6 +66,7 @@ const state = {
     latticeVisible: false,
     latticeMeshes: {},
     currentVariation: 'v1_gyroid_standard',
+    exportName: 'engine_geometry',
 };
 
 // --- Init ---
@@ -140,18 +144,25 @@ function setupGrid() {
 }
 
 // --- Load STL Components ---
-async function loadComponents() {
-    const resp = await fetch('/api/components');
-    const components = await resp.json();
+let geometry19LoadEpoch = 0;
+async function loadComponents(componentList = null, requireComplete = false) {
+    const loadEpoch = geometry19LoadEpoch;
+    const generatedGeometry19 = componentList !== null;
+    let components = componentList;
+    if (!components) {
+        const resp = await fetch('/api/components');
+        components = await resp.json();
+        if (loadEpoch !== geometry19LoadEpoch) return false;
+    }
     const loader = new STLLoader();
     let loaded = 0;
 
     const progress = document.getElementById('load-progress');
-    progress.textContent = '0 / ' + components.length + ' components';
+    progress.textContent = '0 / ' + components.length + ' 个组件';
 
     for (const comp of components) {
         // Skip lattice meshes from auto-load (loaded on-demand via Lattice button)
-        if (comp.id.includes('lattice')) {
+        if (!generatedGeometry19 && comp.id.includes('lattice')) {
             loaded++;
             continue;
         }
@@ -159,6 +170,10 @@ async function loadComponents() {
             const geometry = await new Promise((resolve, reject) => {
                 loader.load(comp.file, resolve, undefined, reject);
             });
+            if (loadEpoch !== geometry19LoadEpoch) {
+                geometry.dispose();
+                return false;
+            }
 
             geometry.computeVertexNormals();
 
@@ -177,21 +192,36 @@ async function loadComponents() {
             mesh.receiveShadow = true;
 
             state.scene.add(mesh);
-            state.components[comp.id] = {
-                mesh,
-                data: comp,
-                visible: true,
-                originalPosition: mesh.position.clone()
-            };
-            state.originalMaterials[comp.id] = material.clone();
+            if (generatedGeometry19 && comp.id.includes('lattice')) {
+                mesh.visible = false;
+                state.latticeMeshes[comp.id] = mesh;
+            } else {
+                state.components[comp.id] = {
+                    mesh,
+                    data: comp,
+                    visible: true,
+                    originalPosition: mesh.position.clone()
+                };
+                state.originalMaterials[comp.id] = material.clone();
+            }
 
             state.totalVerts += geometry.attributes.position.count;
             state.totalFaces += geometry.index ? geometry.index.count / 3 : geometry.attributes.position.count / 3;
 
             loaded++;
-            progress.textContent = loaded + ' / ' + components.length + ' components';
+            progress.textContent = loaded + ' / ' + components.length + ' 个组件';
 
         } catch(e) {
+            if (loadEpoch !== geometry19LoadEpoch) return false;
+            if (requireComplete) {
+                disposeCurrentComponents();
+                document.getElementById('component-list').innerHTML = '';
+                document.getElementById('stat-verts').textContent = '0';
+                document.getElementById('stat-faces').textContent = '0';
+                document.getElementById('status-left').textContent = '投影预览加载失败';
+                window.dispatchEvent(new CustomEvent('geometry19-model-error', {detail: {error: String(e)}}));
+                return false;
+            }
             console.warn('Failed to load ' + comp.id, e);
             loaded++;
         }
@@ -200,8 +230,16 @@ async function loadComponents() {
     // Compute center for camera target
     const box = new THREE.Box3();
     Object.values(state.components).forEach(c => box.expandByObject(c.mesh));
-    box.getCenter(state.engineCenter);
-    state.engineLength = box.max.z - box.min.z;
+    if (!box.isEmpty()) {
+        box.getCenter(state.engineCenter);
+        state.engineLength = box.max.z - box.min.z;
+        if (requireComplete) {
+            // Keep the entire projection visible, including large radial extents.
+            const size = box.getSize(new THREE.Vector3());
+            const fov = THREE.MathUtils.degToRad(state.camera.fov);
+            state.engineLength = Math.max(size.x, size.y, size.z) / Math.sin(fov / 2);
+        }
+    }
 
     state.controls.target.copy(state.engineCenter);
     state.camera.position.set(
@@ -212,13 +250,92 @@ async function loadComponents() {
 
     document.getElementById('stat-verts').textContent = formatNum(state.totalVerts);
     document.getElementById('stat-faces').textContent = formatNum(state.totalFaces);
-    document.getElementById('status-left').textContent = 'Loaded ' + loaded + ' components';
+    document.getElementById('status-left').textContent = '已加载 ' + loaded + ' 个组件';
 
     buildComponentList(components);
 
     setTimeout(() => {
         document.getElementById('loading-screen').classList.add('hidden');
     }, 300);
+    return true;
+}
+
+function geometry19ComponentMetadata(componentUrls) {
+    const styles = {
+        inlet: ['#4FC3F7', 'Air Inlet', 0],
+        compressor: ['#81C784', 'Compressor', 1],
+        combustor: ['#FF8A65', 'Combustion Chamber', 2],
+        turbine: ['#FFD54F', 'Turbine Stage', 3],
+        nozzle: ['#E57373', 'Exhaust Nozzle', 4],
+        shaft: ['#B0BEC5', 'Main Shaft', 5],
+        casing: ['#78909C', 'Outer Casing', 6],
+        transitions: ['#9575CD', 'Transitions', 7],
+        combustor_lattice: ['#FF6D00', 'Combustor Lattice', 8],
+        nozzle_lattice: ['#FF3D00', 'Nozzle Lattice', 9],
+    };
+    return Object.entries(componentUrls).map(([id, file], index) => {
+        const style = styles[id] || ['#00E5FF', id.replaceAll('_', ' '), 50 + index];
+        return { id, file, color: style[0], label: zhComponent(id, style[1]), order: style[2], size_kb: 0 };
+    }).sort((a, b) => a.order - b.order);
+}
+
+function disposeCurrentComponents() {
+    if (state.simMode || state.flowParticles || state.flameParticles || state.flowArrows.length) {
+        clearSimulation();
+    }
+    for (const component of Object.values(state.components)) {
+        state.scene.remove(component.mesh);
+        component.mesh.geometry?.dispose();
+        component.mesh.material?.dispose();
+    }
+    for (const mesh of Object.values(state.latticeMeshes)) {
+        state.scene.remove(mesh);
+        mesh.geometry?.dispose();
+        mesh.material?.dispose();
+    }
+    for (const material of Object.values(state.originalMaterials)) material.dispose?.();
+    state.components = {};
+    state.latticeMeshes = {};
+    state.originalMaterials = {};
+    state.latticeVisible = false;
+    document.getElementById('btn-lattice')?.classList.remove('active');
+    state.totalVerts = 0;
+    state.totalFaces = 0;
+    state.exportName = 'engine_geometry';
+}
+
+async function showGeometry19Components(event) {
+    const urls = event.detail?.component_urls;
+    if (!urls || typeof urls !== 'object') return;
+    const modelLabel = event.detail.model_label || 'Geometry19';
+    document.getElementById('status-left').textContent = '正在加载 ' + modelLabel + ' 设计…';
+    geometry19LoadEpoch++;
+    disposeCurrentComponents();
+    state.geometry19Simulation = event.detail?.simulation || null;
+    state.simData = null;
+    if (!await loadComponents(geometry19ComponentMetadata(urls), event.detail.require_complete_mesh === true)) return;
+    state.exportName = `${modelLabel}_${String(event.detail.design_id || '').slice(0, 12)}`
+        .replace(/[^a-zA-Z0-9_-]/g, '_');
+    highlightConstraintComponents(event.detail.violated_components || []);
+    document.getElementById('status-left').textContent =
+        modelLabel + ' ' + String(event.detail.design_id || '').slice(0, 12) + ' 已加载';
+    window.dispatchEvent(new CustomEvent('geometry19-model-loaded', {detail: {model_label: modelLabel, design_id: event.detail.design_id}}));
+}
+
+function highlightConstraintComponents(components) {
+    const ids = new Set(components);
+    const mark = mesh => {
+        if (!mesh?.material) return;
+        mesh.material.color?.lerp(new THREE.Color('#ef4444'), 0.7);
+        mesh.material.emissive?.set('#4a0808');
+        mesh.material.needsUpdate = true;
+    };
+    for (const [id, component] of Object.entries(state.components)) {
+        if (ids.has(id)) mark(component.mesh);
+    }
+    if (ids.has('lattice')) {
+        Object.values(state.latticeMeshes).forEach(mark);
+    }
 }
 
 // --- Component List UI ---
@@ -233,7 +350,7 @@ function buildComponentList(components) {
         item.dataset.id = comp.id;
         item.innerHTML =
             '<div class="comp-swatch" style="background:' + comp.color + '"></div>' +
-            '<span class="comp-label">' + comp.label + '</span>' +
+            '<span class="comp-label">' + zhComponent(comp.id, comp.label) + '</span>' +
             '<span class="comp-size">' + comp.size_kb.toFixed(0) + 'KB</span>' +
             '<svg class="comp-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
             '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>' +
@@ -257,10 +374,12 @@ async function loadEngineData() {
     try {
         const resp = await fetch('/api/engine');
         const data = await resp.json();
+        if (['v3_results', 'v3_new'].includes(document.getElementById('geometry19-model-mode').value)) return;
         renderEngineInfo(data);
     } catch(e) {
+        if (['v3_results', 'v3_new'].includes(document.getElementById('geometry19-model-mode').value)) return;
         document.getElementById('engine-info').innerHTML =
-            '<div class="loading-placeholder">Could not load engine data</div>';
+            '<div class="loading-placeholder">无法加载发动机数据</div>';
     }
 }
 
@@ -270,54 +389,53 @@ function renderEngineInfo(data) {
 
     if (data.metrics && !data.metrics.error) {
         const m = data.metrics;
-        html += '<div class="info-section"><h4>Geometry</h4>';
-        html += infoRow('Engine', m.name, 'accent');
-        html += infoRow('Length', m.total_length_mm + ' mm');
-        html += infoRow('Max Diameter', m.max_diameter_mm + ' mm');
-        html += infoRow('Total Mass', m.total_mass_g + ' g', 'accent');
+        html += '<div class="info-section"><h4>几何</h4>';
+        html += infoRow('长度', m.total_length_mm + ' mm');
+        html += infoRow('最大直径', m.max_diameter_mm + ' mm');
+        html += infoRow('总质量', m.total_mass_g + ' g', 'accent');
         html += '</div>';
 
-        html += '<div class="info-section"><h4>Specifications</h4>';
-        html += infoRow('Pressure Ratio', m.specs.pressure_ratio);
-        html += infoRow('RPM', formatNum(m.specs.rpm));
-        html += infoRow('TIT', m.specs.tit_k + ' K (' + m.specs.tit_c + ' \u00B0C)', 'warning');
-        html += infoRow('Shaft Dia', m.specs.shaft_diameter_mm + ' mm');
+        html += '<div class="info-section"><h4>规格</h4>';
+        html += infoRow('压比', m.specs.pressure_ratio);
+        html += infoRow('转速 (RPM)', formatNum(m.specs.rpm));
+        html += infoRow('涡轮进口温度 (TIT)', m.specs.tit_k + ' K (' + m.specs.tit_c + ' \u00B0C)', 'warning');
+        html += infoRow('主轴直径', m.specs.shaft_diameter_mm + ' mm');
         html += '</div>';
 
-        html += '<div class="info-section"><h4>Mass Breakdown</h4>';
+        html += '<div class="info-section"><h4>质量构成</h4>';
         const total = Object.values(m.mass_breakdown).reduce((a, b) => a + b, 0);
         const colors = ['#4FC3F7','#81C784','#FF8A65','#FFD54F','#E57373','#B0BEC5','#9575CD'];
         let ci = 0;
         html += '<div class="mass-bar">';
         for (const [k, v] of Object.entries(m.mass_breakdown)) {
             const pct = (v / total * 100).toFixed(1);
-            html += '<div class="mass-bar-segment" style="width:' + pct + '%;background:' + colors[ci % colors.length] + '" title="' + k + ': ' + v + 'g (' + pct + '%)"></div>';
+            html += '<div class="mass-bar-segment" style="width:' + pct + '%;background:' + colors[ci % colors.length] + '" title="' + zhComponent(k, k) + '：' + v + ' g (' + pct + '%)"></div>';
             ci++;
         }
         html += '</div>';
         for (const [k, v] of Object.entries(m.mass_breakdown)) {
-            html += infoRow(capitalize(k), v.toFixed(1) + ' g');
+            html += infoRow(zhComponent(k, capitalize(k)), v.toFixed(1) + ' g');
         }
         html += '</div>';
     }
 
     if (data.performance) {
         const p = data.performance;
-        html += '<div class="info-section"><h4>AI Dataset</h4>';
-        html += infoRow('Total Designs', formatNum(p.total_designs));
-        html += infoRow('Valid', formatNum(p.valid_designs), 'success');
-        html += infoRow('Thrust Range', p.thrust_range[0] + ' \u2013 ' + p.thrust_range[1] + ' N');
-        html += infoRow('T/W Range', p.tw_range[0] + ' \u2013 ' + p.tw_range[1]);
-        html += infoRow('Efficiency', p.efficiency_range[0] + ' \u2013 ' + p.efficiency_range[1] + '%');
-        html += infoRow('Mean Thrust', p.mean_thrust + ' N', 'accent');
-        html += infoRow('Mean T/W', p.mean_tw, 'accent');
+        html += '<div class="info-section"><h4>AI 数据集</h4>';
+        html += infoRow('设计总数', formatNum(p.total_designs));
+        html += infoRow('有效', formatNum(p.valid_designs), 'success');
+        html += infoRow('推力范围', p.thrust_range[0] + ' \u2013 ' + p.thrust_range[1] + ' N');
+        html += infoRow('推重比范围', p.tw_range[0] + ' \u2013 ' + p.tw_range[1]);
+        html += infoRow('效率', p.efficiency_range[0] + ' \u2013 ' + p.efficiency_range[1] + '%');
+        html += infoRow('平均推力', p.mean_thrust + ' N', 'accent');
+        html += infoRow('平均推重比', p.mean_tw, 'accent');
         html += '</div>';
     }
 
     if (data.metrics && data.metrics.positions) {
-        html += '<div class="info-section"><h4>Axial Positions</h4>';
+        html += '<div class="info-section"><h4>轴向位置</h4>';
         for (const [k, v] of Object.entries(data.metrics.positions)) {
-            html += infoRow(capitalize(k), 'z = ' + v + ' mm');
+            html += infoRow(zhComponent(k, capitalize(k)), 'z = ' + v + ' mm');
         }
         html += '</div>';
     }
@@ -333,12 +451,49 @@ function infoRow(label, value, cls) {
 
 // --- Toolbar Controls ---
 function bindControls() {
+window.addEventListener('geometry19-model-ready', showGeometry19Components);
+window.addEventListener('geometry19-clear-model', () => {
+    geometry19LoadEpoch++;
+    disposeCurrentComponents();
+    state.geometry19Simulation = null;
+    state.simData = null;
+    document.getElementById('component-list').innerHTML = '';
+    document.getElementById('stat-verts').textContent = '0';
+    document.getElementById('stat-faces').textContent = '0';
+    document.getElementById('load-progress').textContent = '';
+    document.getElementById('status-left').textContent = '等待 Geometry19 结果';
+});
     document.getElementById('btn-reset-cam').addEventListener('click', resetCamera);
     document.getElementById('btn-wireframe').addEventListener('click', toggleWireframe);
     document.getElementById('btn-section').addEventListener('click', toggleSection);
     document.getElementById('btn-explode').addEventListener('click', toggleExplode);
     document.getElementById('btn-screenshot').addEventListener('click', takeScreenshot);
+    document.getElementById('btn-export-geometry').addEventListener('click', exportGeometry);
     document.getElementById('btn-toggle-all').addEventListener('click', toggleAll);
+    const flowOverlay = document.getElementById('inverse-flow-overlay');
+    const flowButton = document.getElementById('btn-show-inverse-flow');
+    const closeFlow = () => {
+        flowOverlay.hidden = true;
+        flowButton.focus();
+    };
+    flowButton.addEventListener('click', () => {
+        flowOverlay.hidden = false;
+        document.getElementById('btn-close-inverse-flow').focus();
+    });
+    document.getElementById('btn-close-inverse-flow').addEventListener('click', closeFlow);
+    flowOverlay.addEventListener('click', event => {
+        if (event.target === flowOverlay) closeFlow();
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !flowOverlay.hidden) closeFlow();
+    });
+    document.getElementById('btn-open-inverse-design').addEventListener('click', () => {
+        closeFlow();
+        openDashboard();
+        const selector = document.getElementById('geometry19-model-mode');
+        selector.value = 'v3_new';
+        selector.dispatchEvent(new Event('change', {bubbles: true}));
+    });
 
     // Simulation buttons
     document.getElementById('btn-sim-thermal').addEventListener('click', function() {
@@ -449,7 +604,7 @@ function applyExplode() {
 
 function toggleAll() {
     state.allVisible = !state.allVisible;
-    document.getElementById('btn-toggle-all').textContent = state.allVisible ? 'Hide All' : 'Show All';
+    document.getElementById('btn-toggle-all').textContent = state.allVisible ? '全部隐藏' : '全部显示';
 
     Object.keys(state.components).forEach(id => {
         state.components[id].visible = state.allVisible;
@@ -464,10 +619,45 @@ function toggleAll() {
 function takeScreenshot() {
     state.renderer.render(state.scene, state.camera);
     const link = document.createElement('a');
-    link.download = 'novaturbo_engine.png';
+    link.download = 'engine_view.png';
     link.href = state.renderer.domElement.toDataURL('image/png');
     link.click();
-    document.getElementById('status-left').textContent = 'Screenshot saved';
+    document.getElementById('status-left').textContent = '截图已保存';
+}
+
+function exportGeometry() {
+    const status = document.getElementById('status-left');
+    const exportScene = new THREE.Group();
+    for (const component of Object.values(state.components)) {
+        if (!component.mesh.visible) continue;
+        const mesh = component.mesh.clone(false);
+        // The explode control moves meshes for display only; export the assembled design.
+        mesh.position.copy(component.originalPosition);
+        exportScene.add(mesh);
+    }
+    for (const mesh of Object.values(state.latticeMeshes)) {
+        if (mesh.visible) exportScene.add(mesh.clone(false));
+    }
+    if (exportScene.children.length === 0) {
+        status.textContent = '没有可导出的几何；请先显示组件';
+        return;
+    }
+    try {
+        exportScene.updateMatrixWorld(true);
+        const binary = new STLExporter().parse(exportScene, {binary: true});
+        const url = URL.createObjectURL(new Blob([binary.buffer], {type: 'model/stl'}));
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${state.exportName}.stl`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+        status.textContent = `已导出 ${exportScene.children.length} 个可见组件的 STL 几何（毫米）`;
+    } catch (error) {
+        console.error('STL export failed', error);
+        status.textContent = '导出 STL 失败，请检查浏览器控制台';
+    }
 }
 
 // --- Animation Loop ---
@@ -592,16 +782,19 @@ function interpolateArray(xArr, yArr, x) {
 }
 
 // ──── Simulation Engine ────
-async function loadSimulation() {
+async function loadSimulation(mode) {
+    if ((mode === 'thermal' || mode === 'stress') && state.geometry19Simulation) {
+        return state.geometry19Simulation;
+    }
     if (state.simData) return state.simData;
-    document.getElementById('status-left').textContent = 'Running simulation...';
+    document.getElementById('status-left').textContent = '正在运行模拟…';
     try {
         var resp = await fetch('/api/simulation');
         state.simData = await resp.json();
-        document.getElementById('status-left').textContent = 'Simulation complete';
+        document.getElementById('status-left').textContent = '模拟完成';
         return state.simData;
     } catch(e) {
-        document.getElementById('status-left').textContent = 'Simulation failed';
+        document.getElementById('status-left').textContent = '模拟失败';
         return null;
     }
 }
@@ -645,7 +838,7 @@ function clearSimulation() {
 }
 
 async function activateThermalSim() {
-    var data = await loadSimulation();
+    var data = await loadSimulation('thermal');
     if (!data) return;
     clearSimulation();
     state.simMode = 'thermal';
@@ -684,8 +877,8 @@ async function activateThermalSim() {
         });
     }
 
-    showLegend('Temperature (K)', tMin, tMax, thermalColorMap);
-    showBadge('THERMAL ANALYSIS', '#ef4444');
+    showLegend('温度 (K)', tMin, tMax, thermalColorMap);
+    showBadge('热分析', '#ef4444');
     renderSimInfo(data, 'thermal');
 }
 
@@ -806,11 +999,11 @@ async function activateFlowSim() {
 
     // Flow direction arrows (larger, at key stations)
     var arrowPositions = [
-        { z: 15, r: 0, label: 'INTAKE' },
-        { z: 70, r: 0, label: 'COMPRESS' },
-        { z: 130, r: 0, label: 'BURN' },
-        { z: 180, r: 0, label: 'EXPAND' },
-        { z: 215, r: 0, label: 'EXHAUST' }
+        { z: 15, r: 0, label: '进气' },
+        { z: 70, r: 0, label: '压缩' },
+        { z: 130, r: 0, label: '燃烧' },
+        { z: 180, r: 0, label: '膨胀' },
+        { z: 215, r: 0, label: '排气' }
     ];
     for (var a = 0; a < arrowPositions.length; a++) {
         var ap = arrowPositions[a];
@@ -822,13 +1015,13 @@ async function activateFlowSim() {
         state.flowArrows.push(arrow);
     }
 
-    showLegend('Velocity (m/s)', flow.v_min, flow.v_max, flowColorMap);
-    showBadge('AIRFLOW ANALYSIS', '#3b82f6');
+    showLegend('速度 (m/s)', flow.v_min, flow.v_max, flowColorMap);
+    showBadge('气流分析', '#3b82f6');
     renderSimInfo(data, 'flow');
 }
 
 async function activateStressSim() {
-    var data = await loadSimulation();
+    var data = await loadSimulation('stress');
     if (!data) return;
     clearSimulation();
     state.simMode = 'stress';
@@ -867,8 +1060,8 @@ async function activateStressSim() {
         });
     }
 
-    showLegend('Stress (MPa)', sMin, sMax, stressColorMap);
-    showBadge('STRESS ANALYSIS', '#f59e0b');
+    showLegend('应力 (MPa)', sMin, sMax, stressColorMap);
+    showBadge('应力分析', '#f59e0b');
     renderSimInfo(data, 'stress');
 }
 
@@ -904,7 +1097,7 @@ async function activateFlameSim() {
     var cb = getComponentBounds('combustor');
     var nb = getComponentBounds('nozzle');
     if (!cb || !nb) {
-        document.getElementById('status-left').textContent = 'Flame simulation unavailable: missing combustor/nozzle mesh';
+        document.getElementById('status-left').textContent = '火焰模拟不可用：缺少燃烧室或喷管网格';
         return;
     }
 
@@ -984,8 +1177,8 @@ async function activateFlameSim() {
     state.scene.add(plume);
     state.flameVolumes.push(plume);
 
-    showLegend('Flame Temp (K)', 900, 2200, flameColorMap);
-    showBadge('COMBUSTION FLAME', '#ff6a00');
+    showLegend('火焰温度 (K)', 900, 2200, flameColorMap);
+    showBadge('燃烧火焰', '#ff6a00');
     renderSimInfo(data, 'flame');
 }
 
@@ -1050,7 +1243,7 @@ function renderSimInfo(data, mode) {
         html += '<div class="info-section" style="text-align:center;padding:12px;">';
         html += '<div style="font-size:28px;margin-bottom:4px;">' + (allSafe ? '✅' : '⚠️') + '</div>';
         html += '<div style="font-size:13px;font-weight:600;color:' + (allSafe ? 'var(--success)' : 'var(--warning)') + ';">';
-        html += allSafe ? 'ALL TEMPERATURES WITHIN LIMITS' : 'THERMAL WARNING DETECTED';
+        html += allSafe ? '所有温度均在限值内' : '检测到热风险';
         html += '</div></div>';
     }
 
@@ -1062,42 +1255,42 @@ function renderSimInfo(data, mode) {
         html += '<div class="info-section" style="text-align:center;padding:12px;">';
         html += '<div style="font-size:28px;margin-bottom:4px;">' + (allSafe ? '✅' : '🔴') + '</div>';
         html += '<div style="font-size:13px;font-weight:600;color:' + (allSafe ? 'var(--success)' : 'var(--danger)') + ';">';
-        html += allSafe ? 'ALL STRESSES BELOW YIELD' : 'STRUCTURAL FAILURE RISK';
+        html += allSafe ? '所有应力均低于屈服强度' : '存在结构失效风险';
         html += '</div></div>';
     }
 
     if (mode === 'flow') {
         html += '<div class="info-section" style="text-align:center;padding:12px;">';
         html += '<div style="font-size:28px;margin-bottom:4px;">🌊</div>';
-        html += '<div style="font-size:13px;font-weight:600;color:var(--accent);">AIRFLOW ANALYSIS</div>';
-        html += '<div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">Streamlines show velocity-colored flow paths through the engine</div>';
+        html += '<div style="font-size:13px;font-weight:600;color:var(--accent);">气流分析</div>';
+        html += '<div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">流线以颜色表示发动机内部流速</div>';
         html += '</div>';
     }
 
     if (mode === 'flame') {
         html += '<div class="info-section" style="text-align:center;padding:12px;">';
         html += '<div style="font-size:28px;margin-bottom:4px;">🔥</div>';
-        html += '<div style="font-size:13px;font-weight:600;color:#ff6a00;">COMBUSTION FLAME VISUALIZATION</div>';
-        html += '<div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">Particle fume field shows hot core + nozzle plume dynamics</div>';
+        html += '<div style="font-size:13px;font-weight:600;color:#ff6a00;">燃烧火焰可视化</div>';
+        html += '<div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">粒子烟羽显示高温核心与喷管尾焰动态</div>';
         html += '</div>';
     }
 
-    html += '<div class="info-section"><h4>Cycle Performance</h4>';
-    html += infoRow('Thrust', c.thrust_N + ' N (' + c.thrust_kgf + ' kgf)', 'accent');
-    html += infoRow('Exhaust Vel.', c.exhaust_velocity + ' m/s');
-    html += infoRow('Exhaust Temp', Math.round(c.exhaust_temp_K) + ' K', 'warning');
-    html += infoRow('Fuel Flow', c.fuel_flow_g_hr + ' g/hr');
-    html += infoRow('TSFC', c.tsfc_g_kNs + ' g/kN\u00B7s');
-    html += infoRow('Thermal Eff.', c.thermal_efficiency_pct + '%', 'success');
-    html += infoRow('Comp. Power', c.compressor_power_kW + ' kW');
-    html += infoRow('Turb. Power', c.turbine_power_kW + ' kW');
+    html += '<div class="info-section"><h4>循环性能</h4>';
+    html += infoRow('推力', c.thrust_N + ' N (' + c.thrust_kgf + ' kgf)', 'accent');
+    html += infoRow('排气速度', c.exhaust_velocity + ' m/s');
+    html += infoRow('排气温度', Math.round(c.exhaust_temp_K) + ' K', 'warning');
+    html += infoRow('燃油流量', c.fuel_flow_g_hr + ' g/hr');
+    html += infoRow('单位推力油耗', c.tsfc_g_kNs + ' g/kN\u00B7s');
+    html += infoRow('热效率', c.thermal_efficiency_pct + '%', 'success');
+    html += infoRow('压气机功率', c.compressor_power_kW + ' kW');
+    html += infoRow('涡轮功率', c.turbine_power_kW + ' kW');
     html += '</div>';
 
-    html += '<div class="info-section"><h4>Station Analysis</h4>';
+    html += '<div class="info-section"><h4>截面分析</h4>';
     var stationLabels = {
-        'S0': '🌬️ Ambient', 'S1': '📥 Inlet Exit',
-        'S2': '🔄 Compressor Exit', 'S3': '🔥 Combustor Exit',
-        'S4': '⚙️ Turbine Exit', 'S5': '💨 Nozzle Exit'
+        'S0': '🌬️ 环境', 'S1': '📥 进气道出口',
+        'S2': '🔄 压气机出口', 'S3': '🔥 燃烧室出口',
+        'S4': '⚙️ 涡轮出口', 'S5': '💨 喷管出口'
     };
     for (var key in c.stations) {
         var st = c.stations[key];
@@ -1107,8 +1300,8 @@ function renderSimInfo(data, mode) {
     html += '</div>';
 
     if (mode === 'thermal') {
-        html += '<div class="info-section"><h4>🌡️ Thermal Limits</h4>';
-        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">Max wall temp vs material limit. Green = safe, Yellow = caution.</div>';
+        html += '<div class="info-section"><h4>🌡️ 热限值</h4>';
+        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">最高壁温与材料限值对比。绿色为安全，黄色为警示。</div>';
         for (var comp in data.thermal.material_limits) {
             var temps = data.thermal.component_temps[comp];
             if (!temps) continue;
@@ -1118,7 +1311,7 @@ function renderSimInfo(data, mode) {
             var pct = Math.round(maxWall / limit * 100);
             var status = maxWall < limit * 0.85 ? 'success' : (maxWall < limit ? 'warning' : 'danger');
             html += '<div class="info-row">';
-            html += '<span class="info-label">' + capitalize(comp) + '</span>';
+            html += '<span class="info-label">' + zhComponent(comp, capitalize(comp)) + '</span>';
             html += '<span class="info-value ' + status + '">' + maxWall + ' / ' + limit + ' K</span>';
             html += '</div>';
             // Progress bar showing how close to limit
@@ -1131,13 +1324,13 @@ function renderSimInfo(data, mode) {
     }
 
     if (mode === 'flow') {
-        html += '<div class="info-section"><h4>🌊 Flow Stages</h4>';
-        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">Pressure ratio and temperature change per component</div>';
+        html += '<div class="info-section"><h4>🌊 流动阶段</h4>';
+        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">各组件压比与温度变化</div>';
         for (var fc in data.flow.component_flow) {
             var fd = data.flow.component_flow[fc];
             html += '<div class="info-row">';
-            html += '<span class="info-label">' + capitalize(fc) + '</span>';
-            html += '<span class="info-value">PR=' + fd.pressure_ratio + '</span>';
+            html += '<span class="info-label">' + zhComponent(fc, capitalize(fc)) + '</span>';
+            html += '<span class="info-value">压比=' + fd.pressure_ratio + '</span>';
             html += '</div>';
             html += '<div style="font-size:10px;color:var(--text-secondary);margin:-2px 0 6px 12px;">';
             html += fd.inlet_temp_K + 'K → ' + fd.outlet_temp_K + 'K (Δ' + (fd.outlet_temp_K - fd.inlet_temp_K > 0 ? '+' : '') + (fd.outlet_temp_K - fd.inlet_temp_K) + 'K)';
@@ -1145,13 +1338,13 @@ function renderSimInfo(data, mode) {
         }
         html += '</div>';
 
-        html += '<div class="info-section"><h4>📊 Flow Legend</h4>';
+        html += '<div class="info-section"><h4>📊 流动图例</h4>';
         html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;">';
-        html += '• <span style="color:#0a1a4a;">Dark blue</span> = Slow flow (intake)<br>';
-        html += '• <span style="color:#1a9fff;">Cyan</span> = Medium flow<br>';
-        html += '• <span style="color:#ffffff;">White</span> = Fast flow (exhaust)<br>';
-        html += '• Tubes show streamline paths<br>';
-        html += '• Particles animate flow direction';
+        html += '• <span style="color:#0a1a4a;">深蓝</span> = 低速流动（进气）<br>';
+        html += '• <span style="color:#1a9fff;">青色</span> = 中速流动<br>';
+        html += '• <span style="color:#ffffff;">白色</span> = 高速流动（排气）<br>';
+        html += '• 管线表示流线路径<br>';
+        html += '• 粒子显示流动方向';
         html += '</div></div>';
     }
 
@@ -1161,25 +1354,25 @@ function renderSimInfo(data, mode) {
             s3 = c.stations['4_combustor_exit'] || c.stations['S3'] || null;
             s5 = c.stations['6_nozzle_exit'] || c.stations['S5'] || null;
         }
-        html += '<div class="info-section"><h4>🔥 Flame Core</h4>';
-        html += infoRow('Combustor Core', s3 ? s3.T_total_K + ' K' : 'N/A', 'warning');
-        html += infoRow('Nozzle Exit', s5 ? s5.T_total_K + ' K' : 'N/A');
-        html += infoRow('Fuel Flow', c.fuel_flow_g_hr + ' g/hr');
-        html += infoRow('Visual Mode', 'Fume-style particle plume', 'accent');
+        html += '<div class="info-section"><h4>🔥 火焰核心</h4>';
+        html += infoRow('燃烧室核心', s3 ? s3.T_total_K + ' K' : '无数据', 'warning');
+        html += infoRow('喷管出口', s5 ? s5.T_total_K + ' K' : '无数据');
+        html += infoRow('燃油流量', c.fuel_flow_g_hr + ' g/hr');
+        html += infoRow('显示模式', '烟羽粒子效果', 'accent');
         html += '</div>';
 
-        html += '<div class="info-section"><h4>📊 Flame Legend</h4>';
+        html += '<div class="info-section"><h4>📊 火焰图例</h4>';
         html += '<div style="font-size:10px;color:var(--text-muted);">';
-        html += '• <span style="color:#ff3b00;">Red/Orange</span> = Hot reaction zone<br>';
-        html += '• <span style="color:#ffd166;">Yellow/White</span> = Peak combustion<br>';
-        html += '• Core shell = combustor volume<br>';
-        html += '• Cone plume = exhaust flame tail';
+        html += '• <span style="color:#ff3b00;">红色/橙色</span> = 高温反应区<br>';
+        html += '• <span style="color:#ffd166;">黄色/白色</span> = 燃烧峰值<br>';
+        html += '• 核心壳层 = 燃烧室体积<br>';
+        html += '• 锥形羽流 = 排气尾焰';
         html += '</div></div>';
     }
 
     if (mode === 'stress') {
-        html += '<div class="info-section"><h4>🛡️ Yield Margins</h4>';
-        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">Peak stress vs material yield strength. Higher margin = safer.</div>';
+        html += '<div class="info-section"><h4>🛡️ 屈服裕度</h4>';
+        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">峰值应力与材料屈服强度对比；裕度越高越安全。</div>';
         for (var sc in data.stress.yield_margins) {
             var sd = data.stress.component_stress[sc];
             var maxS = Math.round(Math.max.apply(null, sd.total_MPa));
@@ -1187,7 +1380,7 @@ function renderSimInfo(data, mode) {
             var yieldMPa = sd.yield_MPa;
             var status = margin > 30 ? 'success' : (margin > 10 ? 'warning' : 'danger');
             html += '<div class="info-row">';
-            html += '<span class="info-label">' + capitalize(sc) + '</span>';
+            html += '<span class="info-label">' + zhComponent(sc, capitalize(sc)) + '</span>';
             html += '<span class="info-value ' + status + '">' + maxS + ' / ' + yieldMPa + ' MPa</span>';
             html += '</div>';
             html += '<div style="display:flex;align-items:center;margin:-2px 0 6px 0;gap:6px;">';
@@ -1196,24 +1389,24 @@ function renderSimInfo(data, mode) {
             html += '<div style="height:100%;width:' + usePct + '%;border-radius:2px;background:';
             html += status === 'success' ? 'var(--success)' : (status === 'warning' ? 'var(--warning)' : 'var(--danger)');
             html += ';"></div></div>';
-            html += '<span style="font-size:9px;color:var(--text-muted);">' + margin + '% margin</span>';
+            html += '<span style="font-size:9px;color:var(--text-muted);">' + margin + '% 裕度</span>';
             html += '</div>';
-            html += '<div style="font-size:9px;color:var(--text-muted);margin:-2px 0 6px 12px;">Material: ' + sd.material + '</div>';
+            html += '<div style="font-size:9px;color:var(--text-muted);margin:-2px 0 6px 12px;">材料：' + sd.material + '</div>';
         }
         html += '</div>';
 
-        html += '<div class="info-section"><h4>📊 Stress Legend</h4>';
+        html += '<div class="info-section"><h4>📊 应力图例</h4>';
         html += '<div style="font-size:10px;color:var(--text-muted);">';
-        html += '• <span style="color:#1acc1a;">Green</span> = Low stress (safe)<br>';
-        html += '• <span style="color:#cccc00;">Yellow</span> = Moderate stress<br>';
-        html += '• <span style="color:#cc3300;">Red</span> = High stress (near yield)<br>';
-        html += '• Sources: centrifugal + pressure + thermal';
+        html += '• <span style="color:#1acc1a;">绿色</span> = 低应力（安全）<br>';
+        html += '• <span style="color:#cccc00;">黄色</span> = 中等应力<br>';
+        html += '• <span style="color:#cc3300;">红色</span> = 高应力（接近屈服）<br>';
+        html += '• 来源：离心力 + 压力 + 热应力';
         html += '</div></div>';
     }
 
     if (c.warnings && c.warnings.length > 0) {
-        html += '<div class="info-section"><h4>⚠️ Warnings</h4>';
-        c.warnings.forEach(function(w) { html += '<div class="info-row" style="color:var(--warning);font-size:11px;">\u26A0 ' + w + '</div>'; });
+        html += '<div class="info-section"><h4>⚠️ 警告</h4>';
+        c.warnings.forEach(function(w) { html += '<div class="info-row" style="color:var(--warning);font-size:11px;">\u26A0 ' + zhMessage(w) + '</div>'; });
         html += '</div>';
     }
 
@@ -1241,7 +1434,7 @@ async function toggleLattice() {
                 state.components[cid].mesh.material.needsUpdate = true;
             }
         }
-        showBadge('TPMS LATTICE', '#FF6D00');
+        showBadge('TPMS 点阵', '#FF6D00');
         renderLatticeInfo();
     } else {
         for (var id in state.latticeMeshes) {
@@ -1265,7 +1458,7 @@ async function loadLatticeMeshes(variation) {
     var varKey = variation || state.currentVariation || 'v1_gyroid_standard';
     state.currentVariation = varKey;
 
-    document.getElementById('status-left').textContent = 'Loading TPMS lattice...';
+    document.getElementById('status-left').textContent = '正在加载 TPMS 点阵…';
     var loader = new STLLoader();
 
     // Determine file paths based on variation
@@ -1298,12 +1491,12 @@ async function loadLatticeMeshes(variation) {
             state.latticeMeshes[lf.id] = mesh;
 
             var vCount = geometry.attributes.position.count;
-            document.getElementById('status-left').textContent = 'Loaded ' + lf.label + ' (' + formatNum(Math.round(vCount)) + ' verts)';
+            document.getElementById('status-left').textContent = '已加载' + zhComponent(lf.id, lf.label) + '（' + formatNum(Math.round(vCount)) + ' 个顶点）';
         } catch(e) {
             console.warn('Lattice load failed: ' + lf.id, e);
         }
     }
-    document.getElementById('status-left').textContent = 'TPMS lattice loaded';
+    document.getElementById('status-left').textContent = 'TPMS 点阵已加载';
 }
 
 async function switchVariation(varKey) {
@@ -1334,16 +1527,16 @@ function renderLatticeInfo() {
     var varKey = state.currentVariation || 'v1_gyroid_standard';
 
     var variations = {
-        'v1_gyroid_standard': { label: 'V1 Gyroid', desc: 'Balanced heat transfer & strength', type: 'Gyroid', eq: 'sin(x)cos(y)+sin(y)cos(z)+sin(z)cos(x)=t', cell: '14', color: '#FF6D00' },
-        'v2_gyroid_dense':    { label: 'V2 Dense',  desc: 'Maximum heat exchange, heavier',    type: 'Gyroid (Dense)', eq: 'sin(x)cos(y)+sin(y)cos(z)+sin(z)cos(x)=t', cell: '10', color: '#FF8F00' },
-        'v3_schwarz_p':       { label: 'V3 Schwarz', desc: 'Straight-through flow channels',   type: 'Schwarz-P',     eq: 'cos(x)+cos(y)+cos(z)=t',                  cell: '14', color: '#00E5FF' },
-        'v4_diamond':         { label: 'V4 Diamond', desc: 'Highest stiffness-to-weight',      type: 'Diamond',       eq: 'sin·sin·sin + sin·cos·cos + ...',          cell: '14', color: '#76FF03' },
+        'v1_gyroid_standard': { label: 'V1 螺旋曲面', desc: '兼顾传热与强度', type: '螺旋曲面', eq: 'sin(x)cos(y)+sin(y)cos(z)+sin(z)cos(x)=t', cell: '14', color: '#FF6D00' },
+        'v2_gyroid_dense':    { label: 'V2 高密度',  desc: '换热能力更强，质量更大',    type: '高密度螺旋曲面', eq: 'sin(x)cos(y)+sin(y)cos(z)+sin(z)cos(x)=t', cell: '10', color: '#FF8F00' },
+        'v3_schwarz_p':       { label: 'V3 Schwarz 曲面', desc: '直通式流道',   type: 'Schwarz-P',     eq: 'cos(x)+cos(y)+cos(z)=t',                  cell: '14', color: '#00E5FF' },
+        'v4_diamond':         { label: 'V4 钻石曲面', desc: '最高比刚度',      type: '钻石曲面',       eq: 'sin·sin·sin + sin·cos·cos + ...',          cell: '14', color: '#76FF03' },
     };
 
     var cur = variations[varKey] || variations['v1_gyroid_standard'];
 
     // Variation selector buttons
-    html += '<div class="info-section"><h4>🔬 TPMS Design Variants</h4>';
+    html += '<div class="info-section"><h4>🔬 TPMS 设计变体</h4>';
     html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:6px 0;">';
     for (var vk in variations) {
         var v = variations[vk];
@@ -1363,25 +1556,25 @@ function renderLatticeInfo() {
 
     // Current variant details
     html += '<div class="info-section"><h4>' + cur.type + '</h4>';
-    html += infoRow('Equation', cur.eq);
-    html += infoRow('Cell Size', cur.cell + ' mm');
-    html += infoRow('Wall Type', 'Solid shell (thick walls)', 'accent');
-    html += infoRow('Smoothing', 'Laplacian (2 iterations)');
+    html += infoRow('方程', cur.eq);
+    html += infoRow('单元尺寸', cur.cell + ' mm');
+    html += infoRow('壁面类型', '实体壳层（厚壁）', 'accent');
+    html += infoRow('平滑', '拉普拉斯平滑（2 次迭代）');
     html += '</div>';
 
-    html += '<div class="info-section"><h4>Benefits</h4>';
-    html += '<div class="info-row" style="color:var(--success);">✓ Up to 60% weight reduction</div>';
-    html += '<div class="info-row" style="color:var(--success);">✓ 3× surface area for heat transfer</div>';
-    html += '<div class="info-row" style="color:var(--success);">✓ Self-supporting for metal 3D printing</div>';
-    html += '<div class="info-row" style="color:var(--success);">✓ Contained within engine walls</div>';
-    html += '<div class="info-row" style="color:var(--success);">✓ No overhangs > 45° (DMLS compatible)</div>';
+    html += '<div class="info-section"><h4>优势</h4>';
+    html += '<div class="info-row" style="color:var(--success);">✓ 最多减重 60%</div>';
+    html += '<div class="info-row" style="color:var(--success);">✓ 换热表面积扩大 3 倍</div>';
+    html += '<div class="info-row" style="color:var(--success);">✓ 支持金属三维打印自支撑</div>';
+    html += '<div class="info-row" style="color:var(--success);">✓ 位于发动机壁内</div>';
+    html += '<div class="info-row" style="color:var(--success);">✓ 无大于 45° 的悬垂（适配 DMLS）</div>';
     html += '</div>';
 
-    html += '<div class="info-section"><h4>Manufacturing</h4>';
-    html += infoRow('Process', 'DMLS / SLM Metal 3D Printing');
-    html += infoRow('Material', 'Inconel 718 (combustor)');
-    html += infoRow('Min Feature', '0.4 mm wall thickness');
-    html += infoRow('Print Orient.', 'Vertical (Z-axis = engine axis)');
+    html += '<div class="info-section"><h4>制造</h4>';
+    html += infoRow('工艺', 'DMLS / SLM 金属三维打印');
+    html += infoRow('材料', 'Inconel 718（燃烧室）');
+    html += infoRow('最小特征', '0.4 mm 壁厚');
+    html += infoRow('打印方向', '竖直（Z 轴为发动机轴线）');
     html += '</div>';
 
     el.innerHTML = html;

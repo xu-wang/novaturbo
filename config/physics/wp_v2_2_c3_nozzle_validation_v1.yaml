@@ -1,0 +1,33 @@
+validation_id: wp_v2_2_c3_nozzle_validation_v1
+baseline_profile: v2_2_comp_turb_inlet_comb_shadow
+enhanced_profile: v2_2_full_component_shadow
+expected_nozzle_map_id: synthetic_convergent_nozzle_v1
+dense_map_scan:
+  inlet_pressure_ratio_samples: 81
+  reynolds_ratio_samples: 101
+  max_adjacent_recovery_jump: 0.004
+  max_adjacent_discharge_jump: 0.006
+boundary_classification:
+  probe_fraction_of_reynolds_span: 0.001
+critical_transition:
+  ambient_pressure_min_Pa: 60000.0
+  ambient_pressure_max_Pa: 110000.0
+  pressure_samples: 101
+  max_branch_transition_capacity_relative_jump: 0.02
+  enthalpy_absolute_tolerance_J_kg: 1.0e-8
+root_sweep:
+  shaft_speed_ratios: [0.90, 0.95, 1.00, 1.05]
+  maximum_consecutive_mass_flow_relative_jump: 0.20
+runtime_benchmark:
+  shaft_speed_ratios: [0.90, 0.95, 1.00, 1.05]
+  warmup_repetitions: 2
+  timed_repetitions: 7
+  max_p50_enhanced_to_baseline_ratio: 3.0
+  max_p95_enhanced_to_baseline_ratio: 3.0
+engineering_blockers:
+  - nozzle_map_is_synthetic_software_fixture
+  - no_independent_nozzle_rig_or_high_fidelity_validation
+  - no_measured_discharge_or_separation_boundary
+  - combustion_product_viscosity_uses_air_sutherland_proxy
+artifacts:
+  default_output_root: data/validation/wp_v2_2_c3_nozzle_v1

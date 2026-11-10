@@ -1,0 +1,41 @@
+version: geometry19_local_full_pipeline_smoke_v1
+baseline_commit: c4bac5f
+scope: N3_development_adapter_and_component_smoke_not_full_benchmark
+targets: [0, 1, 2]
+training_seed: 42
+generation_seed: 20261001
+raw_candidates: 32
+physical_gpu: 6
+runtime: geometry19_v2_2_far_precision_v1
+flow: [local_CFM, mature_DFlow, geometry_associated_ranking, C, D_if_no_hit, E_if_no_hit, independent_F]
+budgets: {C: 8, D: 24, E: 640, F: 1}
+guidance:
+  integration: mature_torchdiffeq_RK4_32
+  source_steps: 24
+  frozen_route: performance_gate_top1
+  support: selected_expert_radius_0_20_and_schema
+  outside_support: reject_before_scoring_or_physics
+  differentiable_queries: project_query_to_fixed_expert_support_without_repairing_generated_candidate
+refinement:
+  checkpoints: [8, 16, 24]
+  maximum_seeds: 8
+  integers: fixed
+  step_projection: schema_box_and_local_radius_intersection
+  physical_acceptance: strictly_lower_true_rho_or_hit
+nsga2:
+  population: 16
+  generations: 15
+  domain: selected_gate_expert_continuous_support_fixed_integers
+  operators: mature_tournament_sbx_mutation_constraint_dominance_environmental_selection
+  invalid_proposal: reject_no_physics
+component_probes:
+  target: 0
+  D: independent_first_direct_candidate
+  E: independent_direct_candidate_warm_start
+  attribution: test_only_never_count_as_pipeline_rescue
+acceptance:
+  differentiable_ridge_vs_numpy_rtol: 0.00002
+  finite_difference_relative_error: 0.005
+  delivery_relative_tolerance: 0.000000000001
+  no_claim_of_enhancement_superiority: true
+output: data/validation/v2_2_local_full_pipeline_v1/n3_smoke_v1

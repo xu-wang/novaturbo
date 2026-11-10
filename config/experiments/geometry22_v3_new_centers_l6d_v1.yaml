@@ -1,0 +1,19 @@
+version: geometry22_v3_new_centers_l6d_v1
+scope: coordinate_only_root_disjoint_center_expansion
+source_pool:
+  path: data/validation/v2_2_known_manifold_root_discovery_v1/development_dataset.jsonl
+  sha256: cde2c3f6a0cebc91a437f45b7aae5d2ebfe2b8adff952942d05efaae09297134
+old_v3_centers:
+  path: data/validation/v3_22d_local_center_audit_v1/centers.jsonl
+  sha256: cc48920e511347aa7d36e9b1ea4fc9f5395f77e205074908b1ee616909113c44
+selection: closest_to_root_mean_normalized_22d_tie_design_id
+split: sha256_root_id_sorted_32_development_6_validation_7_holdout
+new_coordinates: v3_schema_reference_values
+diagnostic_partition:
+  path: config/physics/geometry19_constraint_profile_pipeline_debug_v1.yaml
+  sha256: 5b5d916ae60bdd80fb0a64e0af514206100d4aff2612d8d0261989b1695fa8f3
+registry_output: data/validation/v3_22d_new_center_l6d_v1
+development_label_output: data/validation/v3_22d_new_center_l6d_development_labels_v1
+training_allowed: false
+formal_use_allowed: false
+deployment_allowed: false

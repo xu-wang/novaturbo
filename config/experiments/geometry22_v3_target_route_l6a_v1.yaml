@@ -1,0 +1,60 @@
+version: geometry22_v3_target_route_l6a_v1
+scope: software_target_routing_protocol_and_coverage_audit_no_training
+source_dataset:
+  path: data/validation/v3_22d_local_candidate_dataset_v1
+  manifest_sha256: a6486e231f5550755b3a50ae239efc9976711d5f6810598dc49cb86cb48ccab5
+  development_sha256: 3da358aba26eb9bfdbebbdb933cd22946759ebf438574a5f1b3cf3d0fd7a9a4e
+  validation_sha256: 1255ca48e8db453c0cd29cd8007784d355f6bd7de0892a2032ec259d60c54b28
+  holdout_sha256: 6a1d1ab9972004241ca2be2c77e601edd8ebb8ee5a45e8b83463acf97f050c39
+  expected_counts: {development: 11289, validation: 2394, holdout: 2485}
+  expected_centers: {development: 23, validation: 5, holdout: 5}
+center_registry:
+  path: data/validation/v3_22d_local_data_contract_v1/center_split_registry.jsonl
+  sha256: 583c455c02fbaa96bf442e8252e90416a96ee91676dc59f1e246f2d7e2f0e58f
+center_designs:
+  path: data/validation/v3_22d_local_center_audit_v1/centers.jsonl
+  sha256: cc48920e511347aa7d36e9b1ea4fc9f5395f77e205074908b1ee616909113c44
+schema:
+  path: config/physics/geometry22_schema_v3_development_v1.yaml
+  design_schema_hash: 856f763c6318fd19b8f5e4914203a0279c36f83d3c11fe828546131965cc77b2
+  physics_bundle_hash: 822220d90af85f75ff36ef418972d5ec75123c246e0dff52e081e6eed177c450
+runtime_condition: [thrust_N, tsfc_kg_N_s, mass_kg]
+runtime_input_only: three_positive_performance_targets
+route_classes: development_center_ids_sorted_lexicographically
+route_class_count: 23
+target_transform: natural_log_then_route_fit_only_equal_center_mean_std
+internal_split:
+  unit: source_center_and_pair_index
+  allocation: each_center_and_band_sorted_pair_modulo_5_eq_0_for_tuning
+  tuning_fraction_nominal: 0.20
+  fitting_source: development_only
+target_support:
+  metric: euclidean_l2_of_normalized_log_performance
+  centroid: fitting_rows_mean_per_center
+  radius: fitting_rows_distance_p95_per_center
+  eligible: distance_at_most_radius
+  top_k: [1, 2]
+  order: normalized_distance_over_radius_then_center_id
+  no_eligible_center: abstain
+design_support:
+  distance: euclidean_l2_over_19_continuous_normalized_22d_schema_coordinates
+  radius: 0.08
+  integer_policy: fixed_at_source_center
+cross_center_diagnostic:
+  source: old_validation_centers_diagnostic_only
+  targets_per_center: 3
+  selected_bands: [0, 2, 3]
+  selection_within_center_band: smallest_design_id
+  metric: target_support_coverage_only_no_generation_or_hit_claim
+future_evaluation_budget:
+  raw_candidates_per_target_per_arm: 256
+  physics_evaluations_per_target_per_arm: 8
+  arms: [gated_top1, gated_top2, nearest_center_without_gate]
+  allocation_top2: equal_split
+  note: frozen_budget_for_later_l6c_no_evaluation_in_l6a
+physical_gpu_for_future_training: 6
+source_records_training_allowed: false
+training_executed: false
+formal_use_allowed: false
+deployment_allowed: false
+output_root: data/validation/v3_22d_target_route_l6a_v1

@@ -1,0 +1,25 @@
+protocol_version: wp19_21_development_dataset_v1
+work_package: WP19-21
+dataset_tier: development_bootstrap
+formal_use_allowed: false
+design_schema: config/physics/geometry19_schema_v1.yaml
+calibration_pack: config/physics/geometry19_calibration_bootstrap_v1.yaml
+constraint_profile: config/physics/geometry19_constraint_profile_pipeline_debug_v1.yaml
+operating_point_policy: config/physics/geometry19_operating_point_policy_reference_continuation_v1.yaml
+visualization_calibration: config/physics/geometry19_visualization_calibration_v1.yaml
+conservation_tolerances: config/physics/geometry19_conservation_tolerances_v1.yaml
+sample_count: 16384
+seed: 20260826
+sampler: latin_hypercube
+shard_size: 256
+workers: 4
+environment: {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 0.0}
+mesh_preview:
+  budget: 256
+  quality: preview_mesh
+  selection: deterministic_status_stratified
+artifacts:
+  runtime_root: data/generated/wp19_21_development_dataset_v1
+  mesh_storage_root: exports/geometry19
+  summary_json: results/physics/wp19_21_development_dataset_v1.json
+  report_markdown: docs/physics/WP19_21_DEVELOPMENT_DATASET_20260826.md

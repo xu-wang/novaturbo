@@ -1,0 +1,52 @@
+protocol_version: wp19_22_performance_surrogate_v2_ablation
+work_package: WP19-22-PERFORMANCE-V2
+status: development_controlled_ablation
+formal_use_allowed: false
+
+base_surrogate_protocol: config/physics/wp19_22_geometry19_surrogate_v1.yaml
+inverse_protocol: config/physics/wp19_23_inverse_closure_v1.yaml
+regression_dataset: data/generated/wp19_21_development_dataset_98304_v1/regression_converged.jsonl
+locked_reference_targets: data/inverse_design/wp19_23_c_checkpoint_selection_v1/new_locked_confirmation_targets.jsonl
+gate_h_candidate_root: data/inverse_design/wp19_23_gate_h_candidate_utilization_v1
+gate_h_truth_root: data/inverse_design/wp19_23_gate_h_budget_sweep_v1
+
+baseline:
+  arm_id: shared48_s0
+  model_root: data/inverse_design/wp19_22_gate_k_hit_aligned_surrogate_v1/models/s0_legacy_mse
+
+arms:
+  - arm_id: performance3_raw
+    output_transform: identity
+  - arm_id: performance3_log
+    output_transform: natural_log
+
+seeds: [42, 43, 44]
+training:
+  device: cuda:0
+  batch_size: 1024
+  learning_rate: 0.001
+  weight_decay: 0.00001
+  epochs: 80
+  patience: 12
+  min_delta: 0.000001
+
+ranking_budgets: [32, 64, 128, 256]
+promotion:
+  minimum_test_rho_p50_reduction: 0.20
+  minimum_locked_rho_p50_reduction: 0.20
+  minimum_tsfc_p50_reduction: 0.20
+  maximum_other_axis_p50_worsening: 0.05
+  minimum_positive_seed_count: 2
+  require_gate_h_recall_non_degradation: true
+
+smoke:
+  maximum_rows_per_split: 256
+  seeds: [42]
+  training:
+    epochs: 2
+    patience: 2
+
+artifacts:
+  runtime_root: data/inverse_design/wp19_22_performance_surrogate_v2_ablation
+  summary: summary.json
+  report: Performance_Surrogate_V2_Report.md

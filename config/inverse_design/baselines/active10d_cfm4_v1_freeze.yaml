@@ -1,0 +1,101 @@
+freeze_manifest_version: inverse_design_baseline_freeze_v1
+baseline_id: active10d_cfm4_v1
+status: complete
+immutable: true
+frozen_utc: '2026-08-14T09:26:28.577177+00:00'
+
+execution_source:
+  commit: 8295cc6a1e701dc8da411965a877e7c1f8f81171
+  tree: 601331225d282e2130d4e15f60512e69536a2428
+  branch: main
+  dirty: false
+
+configuration:
+  path: config/inverse_design/baselines/active10d_cfm4_v1.yaml
+  sha256: 8a4c971988e8d775c8f85e5bebc31267360160df64cb32fdae437e40a75831af
+
+runtime:
+  physical_gpu: 6
+  logical_device: cuda:0
+  gpu_name: NVIDIA GeForce RTX 4090
+  driver_version: 535.129.03
+  torch_version: 2.13.0+cu126
+  torch_cuda_version: '12.6'
+  cudnn_version: 91002
+
+contract:
+  candidate_protocol: v2_1_fixed_raw
+  N_raw: 128
+  keep_rule: power_of_two_floor
+  refill: false
+  minimum_hit_count: 1
+  maximum_direct_0d: 128
+  maximum_gradient_0d: 24
+  maximum_nsga2_0d: 640
+  theoretical_maximum_total_0d: 792
+  frozen_extreme_actual_total_0d: 728
+  thrust_relative_tolerance: 0.0274514502151586
+  tsfc_relative_tolerance: 0.008573042420144972
+  mass_relative_tolerance: 0.01170710896944147
+  total_error_tolerance: 0.01591053386824835
+
+cases:
+  ordinary:
+    target_id: 5a0c200a08733f8d38e870b98b503c3944b3b6ee5d56540a443cc168f62437a4
+    generation_seed: 20260813
+    N_valid: 111
+    N_keep: 64
+    direct_hit_count: 63
+    final_best_total_error: 0.000580748943630309
+    total_0d: 64
+    decision_sha256: a16fce3e6d16c64c39e7a6ce2db17f42a437b208a1a84a77203545c4a302e8a0
+  extreme:
+    target_id: b668dfbed5da6d9771c73e87cb419f1f01528229642ff19642aa5e53073e6047
+    generation_seed: 20913717
+    N_valid: 83
+    N_keep: 64
+    direct_hit_count: 0
+    direct_best_total_error: 0.05430112848512068
+    gradient_best_total_error: 0.02510733140873624
+    final_best_total_error: 0.003317746059821345
+    total_0d: 728
+    decision_sha256: 7879b5520893f7d7d0cd2588c1ca0cf5cfa0fe5ad10d964e2327c4f5134db860
+
+output:
+  directory: data/inverse_design/baselines/active10d_cfm4_v1
+  size_mib_approx: 53
+  critical_artifact_count: 20
+  frozen_artifact_count: 404
+  parity_gate: passed
+  ordinary_parity_artifact_count: 7
+  extreme_parity_artifact_count: 11
+
+artifacts:
+  - path: data/inverse_design/baselines/active10d_cfm4_v1/manifest.yaml
+    sha256: 81b475ac7d7a78d19158a68051fcc1528514d69022e9ca6861ca55feb43e9a17
+  - path: data/inverse_design/baselines/active10d_cfm4_v1/artifact_manifest.csv
+    sha256: a2305862c1c5bc285f65ef0d4ef06f150e82cd59231824999c26e5e139e64b52
+  - path: data/inverse_design/baselines/active10d_cfm4_v1/contract.yaml
+    sha256: 86fdf2e6db1095d935750ab7579d8464cd0128acb66dda076f65fd9b0a409d18
+  - path: data/inverse_design/baselines/active10d_cfm4_v1/baseline_metrics.yaml
+    sha256: 646a2c210873d37a4ec5368b032dd2778bfa19dba1a7cf80d15ca5ffb7377aac
+  - path: data/inverse_design/baselines/active10d_cfm4_v1/parity.json
+    sha256: 34e89e763b24b2be0c07baf87188c56476d6ae88ce266f635ea64a1a85dd2059
+  - path: data/inverse_design/baselines/active10d_cfm4_v1/input_manifest.csv
+    sha256: 31a25839c88c3a13b747e9002ae22acfde50dc925bd01876870d2cdf7f09342e
+  - path: data/inverse_design/baselines/active10d_cfm4_v1/git_state.json
+    sha256: 2b1460b937ccf6e50770e20f40f7ed9642f3e18665ad981ebe8974809c8b8c33
+  - path: data/inverse_design/baselines/active10d_cfm4_v1/source_manifest.json
+    sha256: 44879321a3ed137aa73e4b9996a29a092de56d7fa16105b592801aa9aa2e6134
+  - path: data/inverse_design/baselines/active10d_cfm4_v1/environment/runtime.json
+    sha256: 8f88797e8afad378e617c7a1e688b5c9de809974fffedcfed0bc877bd3ca7412
+  - path: data/inverse_design/baselines/active10d_cfm4_v1/environment/python_torch.json
+    sha256: 00f4bd06cff6aeb5c321b9ab97a6e911e22955a7e2fec5ffc16d77fec4e0bca4
+
+verification:
+  command: >-
+    conda run -n inverse_design_nova python
+    scripts/freeze_inverse_design_baseline.py --verify
+    data/inverse_design/baselines/active10d_cfm4_v1
+  expected_status: verified
+  expected_artifact_count: 404

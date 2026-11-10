@@ -1,0 +1,58 @@
+version: wp3_v1
+lockfile: config/third_party_models.lock.yaml
+
+data:
+  dataset_csv: data/generator_v1_100k/generator_dataset_v1_valid.csv
+  schema: config/generator_v1_schema.yaml
+  normalizer: data/generator_v1_100k/normalizer_v1.json
+  target_suite: data/generator_v1_100k/targets/target_suite_v1.csv
+  batch_size: 1024
+  num_workers: 0
+  subset_seed: 314159
+  max_train_samples: 20000
+  max_val_samples: 5000
+
+runtime:
+  seeds: [42, 43]
+  device: auto
+  epochs: 3
+  patience: 3
+  gradient_clip_norm: 10.0
+  checkpoint_sample_count: 32
+
+models:
+  cvae:
+    enabled: true
+    hidden_dims: [128, 128]
+    latent_dim: 8
+    beta: 0.001
+    learning_rate: 0.001
+    weight_decay: 0.00001
+  nflows:
+    enabled: true
+    num_layers: 4
+    hidden_features: 64
+    num_blocks: 2
+    learning_rate: 0.001
+    weight_decay: 0.00001
+  cinn:
+    enabled: true
+    num_blocks: 6
+    hidden_features: 64
+    affine_clamping: 2.0
+    learning_rate: 0.001
+    weight_decay: 0.00001
+  cfm:
+    enabled: true
+    hidden_dims: [128, 128, 128]
+    sigma: 0.0
+    ode_method: rk4
+    ode_steps: 32
+    ode_rtol: 0.00001
+    ode_atol: 0.00001
+    learning_rate: 0.001
+    weight_decay: 0.00001
+
+output:
+  directory: data/generator_models/wp3_v1
+  refuse_overwrite: true

@@ -1,0 +1,71 @@
+protocol_version: geometry19_performance_gated_g3_v1
+stage: G3_full_raw_generation_then_scoring_and_selection_seal
+parent_protocol:
+  path: config/experiments/geometry19_v2_2_performance_gated_local_cfm_v1.yaml
+  sha256: 7c41fc92d9a51bc718d9a7225fbd0b36545a229bd130188d032a2595b66c8e37
+inference_protocol:
+  path: config/experiments/geometry19_v2_2_performance_gated_inference_v1.yaml
+  sha256: c73f53d42bff51d44e3d064e364c36e541989b4a150bc57cbe82e8ca0f52729a
+inference_implementation:
+  path: src/ai/geometry19_performance_gated_inference.py
+  sha256: 0a1670d4df63c576365ba9a32d2bcc2aa191e049a81d147ea3c1eb41fc979621
+runtime_targets:
+  path: data/validation/v2_2_performance_gated_local_cfm_v1/targets/Runtime_Targets.jsonl
+  sha256: f10086d44c137fc96c0774eedfb2bed9979166912adf054866200b7d9ad7f340
+population:
+  targets: 99
+  seeds: [42, 43, 44]
+  arms: [gated_top1_local_cfm, gated_top2_local_cfm, oracle_source_root_local_cfm, pooled_33_global_cfm]
+  tasks: 1188
+  raw_per_task: 256
+  raw_total: 304128
+  selection_per_task: 8
+  selection_slots_total: 9504
+generation:
+  source_rng: numpy_PCG64_float32_standard_normal_256_by_16
+  seed_rule: generation_seed_plus_target_index
+  generation_seeds: {42: 20261001, 43: 20261002, 44: 20261003}
+  ode: classical_rk4_32_steps_inherited_from_N1
+  dtype: float32
+  top2_allocation: one_each_then_largest_remainder_254_float64_root_id_ties
+  dispatch_slot_order: root_id_ascending_contiguous
+  pooled_integers: condition_only_categorical_inverse_cdf_float64_uniform_after_source_draw
+  source_sharing: all_arms_same_noise_per_target_seed
+  runtime_target_fields: [target_id, performance, units]
+  oracle: separate_diagnostic_dispatch_argument_only
+filtering:
+  local_generator_support: selected_expert_distance_le_0_20_no_projection
+  geometry: Geometry19_from_mapping_and_derive_geometry_state_using_frozen_runtime_calibration
+  scoring_root: all_arms_matching_integer_tuple_minimum_distance_then_root_id
+  source_root_used_for_scoring: false
+  finite_serialization: nonfinite_raw_values_null_with_original_float_bytes_hash_and_rejection
+  resampling_or_repair: forbidden
+scoring:
+  require_all_raw_sealed_before_model_loading: true
+  model: frozen_S2_oracle_local_ridge
+  deduplication: exact_design_hash_keep_smallest_raw_slot
+  ranking: predicted_rho_then_design_hash
+  keep_all_predictions_and_full_rank: true
+  missing_selection_slots: explicit_null_geometry_count_as_failure
+execution:
+  physical_gpu: 6
+  logical_device: cuda:0
+  deterministic_algorithms: true
+  tf32: false
+  shards: one_task_each
+  resume: verify_inputs_code_environment_raw_ranking_selection_hashes_before_skip
+  orphan_partial_shard: fail_preserve_no_automatic_replay
+  physics_calls: 0
+authorization:
+  full_G3_generation_and_scoring: true
+  G4_physics: false
+  dflow: false
+  gradient_enhancement: false
+  nsga2: false
+  training: false
+  confirmation_content_access: false
+  formal_use_allowed: false
+  deployment_allowed: false
+artifacts:
+  output_root: data/validation/v2_2_performance_gated_local_cfm_v1/candidates/g3_v1
+  smoke_root: data/validation/v2_2_performance_gated_local_cfm_v1/candidates/g3_v1_smoke

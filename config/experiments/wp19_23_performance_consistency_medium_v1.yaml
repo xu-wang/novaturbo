@@ -1,0 +1,52 @@
+version: wp19_23_geometry19_cfm4_performance_consistency_v1
+work_package: WP19-23-PC
+protocol: config/physics/wp19_23_inverse_closure_v1.yaml
+data:
+  dataset_manifest: data/generated/wp19_21_development_dataset_98304_v1/manifest.json
+  regression_dataset: data/generated/wp19_21_development_dataset_98304_v1/regression_converged.jsonl
+  design_schema: config/physics/geometry19_schema_v1.yaml
+  calibration_pack: config/physics/geometry19_calibration_bootstrap_v1.yaml
+  constraint_profile: config/physics/geometry19_constraint_profile_pipeline_debug_v1.yaml
+  campaign_split: {train: [seed_20260826, seed_20260827, seed_20260828, seed_20260829], validation: [seed_20260830], test: [seed_20260831]}
+  condition_transforms: {thrust_N: identity, tsfc_kg_N_s: natural_log, mass_kg: natural_log}
+  batch_size: 1024
+  num_workers: 0
+model:
+  generator_name: cfm
+  model_tag: novaturbo_geometry19_cfm4_performance_consistency_medium_v1
+  ablation_of_model_tag: novaturbo_geometry19_gpu_sinkhorn_cfm4_film_residual_v1
+  architecture: film_residual
+  architecture_id: WP19-23-PC-MEDIUM-005
+  design_dim: 19
+  condition_dim: 3
+  hidden_dim: 256
+  residual_blocks: 2
+  condition_encoder_dim: 128
+  film: {parameterization: one_plus_delta_gamma, projection_initialization: zeros, modulation_location: residual_block_input}
+  time_embedding: {enabled: true, type: sinusoidal, dim: 32, max_period: 10000.0, time_scale: 1000.0, trainable_projection: false}
+  matcher: gpu_sinkhorn
+  sinkhorn_cost_normalization: batch_mean
+  sinkhorn_regularization: 0.1
+  sinkhorn_iterations: 50
+  sigma: 0.0
+  ode_method: rk4
+  ode_steps: 32
+  ode_rtol: 0.00001
+  ode_atol: 0.00001
+  learning_rate: 0.001
+  weight_decay: 0.00001
+  bounded_output: {enabled: true, kind: offset_sigmoid, epsilon: 0.0001, input_tolerance: 0.000001, saturation_threshold: 0.99, offset_strategy: train_normalized_mean_logit}
+performance_consistency: {enabled: true, weight: 0.05, objective: hit_aligned_smooth_rho, integer_projection: straight_through_nearest_even, forward_weights: data/inverse_design/wp19_22_gate_k_hit_aligned_surrogate_v1/models/s0_legacy_mse/seed_43}
+training:
+  seed: 43
+  device: cuda:0
+  epochs: 400
+  minimum_epochs: 400
+  patience: 400
+  min_delta: 0.00001
+  gradient_clip_norm: 10.0
+  snapshot_every: 10
+  lr_scheduler: {enabled: true, patience: 7, factor: 0.5, min_lr: 0.000001}
+smoke: {device: cpu, epochs: 1, minimum_epochs: 1, patience: 1, maximum_rows_per_split: 256, batch_size: 128, ode_steps: 2, source_consistency_count: 8, minimum_in_bounds_count: 8}
+validation: {source_seed: 20260817, source_consistency_count: 128, minimum_in_bounds_count: 128, require_exact_source_integration_match: true, require_checkpoint_reload_match: true, require_finite_samples: true}
+artifacts: {weights_root: data/generator_models/geometry19/wp19_23_performance_consistency_medium_v1, runtime_root: data/inverse_design/wp19_23_performance_consistency_medium_v1, summary_json: results/physics/wp19_23_performance_consistency_medium_v1.json, report_markdown: docs/physics/WP19_23_PERFORMANCE_CONSISTENCY_ABLATION_20260903.md, refuse_overwrite: true}

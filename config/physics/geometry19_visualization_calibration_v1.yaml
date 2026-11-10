@@ -1,0 +1,152 @@
+calibration_version: geometry19_visualization_calibration_v1
+description: >-
+  Versioned non-19D parameters required by the legacy parametric mesh classes.
+  Geometry19 and GeometryState overwrite the physical design coordinates;
+  values retained here are explicit visualization closures, never hidden
+  dataclass defaults.
+
+components:
+  inlet:
+    inlet_diameter_mm: 80.0
+    outlet_diameter_mm: 50.0
+    length_mm: 40.0
+    lip_radius_mm: 8.0
+    wall_thickness_mm: 1.5
+    inlet_type: bellmouth
+    screen_mesh: true
+    screen_mesh_size_mm: 2.0
+    pressure_recovery: 0.98
+  compressor:
+    impeller_tip_diameter_mm: 80.0
+    impeller_hub_diameter_mm: 20.0
+    inducer_tip_diameter_mm: 50.0
+    blade_count: 12
+    splitter_blade_count: 12
+    inducer_blade_angle_deg: 30.0
+    exducer_blade_angle_deg: 60.0
+    blade_thickness_mm: 1.0
+    backsweep_angle_deg: 30.0
+    axial_length_mm: 32.0
+    diffuser_type: vaneless
+    diffuser_radius_ratio: 1.5811388300841898
+    diffuser_width_mm: 5.0
+    diffuser_vane_count: 17
+    diffuser_vane_angle_deg: 25.0
+    shroud_clearance_mm: 0.3
+    inlet_duct_length_mm: 15.0
+    rpm: 100000.0
+    pressure_ratio: 3.5
+    mass_flow_kg_s: 0.15
+  combustor:
+    outer_diameter_mm: 110.0
+    inner_diameter_mm: 60.0
+    length_mm: 80.0
+    liner_thickness_mm: 1.2
+    casing_thickness_mm: 1.5
+    dome_recess_mm: 5.0
+    dome_type: flat
+    num_fuel_injectors: 6
+    injector_diameter_mm: 3.0
+    injector_spray_angle_deg: 60.0
+    swirler_vane_count: 8
+    swirler_vane_angle_deg: 45.0
+    injector_axial_position_fraction: 0.05
+    num_primary_holes: 6
+    primary_hole_diameter_mm: 6.0
+    primary_hole_axial_fraction: 0.25
+    num_dilution_holes: 12
+    dilution_hole_diameter_mm: 8.0
+    dilution_hole_axial_fraction: 0.55
+    num_cooling_rows: 4
+    holes_per_row: 24
+    cooling_hole_diameter_mm: 1.5
+    cooling_hole_angle_deg: 30.0
+    primary_zone_fraction: 0.30
+    intermediate_zone_fraction: 0.25
+    dilution_zone_fraction: 0.45
+    inlet_temperature_K: 450.0
+    outlet_temperature_K: 1100.0
+    air_fuel_ratio: 60.0
+    pressure_Pa: 350000.0
+  turbine:
+    tip_diameter_mm: 85.0
+    hub_diameter_mm: 59.5
+    blade_height_mm: 12.75
+    axial_chord_mm: 8.5
+    stage_axial_length_mm: 25.5
+    ngv_count: 13
+    ngv_chord_mm: 14.0
+    ngv_inlet_angle_deg: 0.0
+    ngv_outlet_angle_deg: 70.0
+    ngv_thickness_ratio: 0.15
+    ngv_axial_position_mm: 0.0
+    blade_count: 17
+    blade_chord_mm: 8.5
+    blade_inlet_angle_deg: 40.0
+    blade_outlet_angle_deg: -60.0
+    blade_thickness_ratio: 0.12
+    blade_twist_deg: 15.0
+    blade_lean_deg: 0.0
+    tip_clearance_mm: 0.3
+    blade_axial_position_mm: 16.0
+    hub_tip_ratio: 0.70
+    hub_flare_angle_deg: 5.0
+    tip_flare_angle_deg: 0.0
+    rpm: 100000.0
+    inlet_temperature_K: 1100.0
+  nozzle:
+    inlet_diameter_mm: 85.25
+    exit_diameter_mm: 55.0
+    length_mm: 50.05
+    wall_thickness_mm: 1.485
+    contour_type: conic
+    contraction_half_angle_deg: 15.0
+    is_convergent_divergent: false
+    divergent_exit_diameter_mm: 65.0
+    divergent_length_mm: 30.0
+    divergent_half_angle_deg: 8.0
+    lip_thickness_mm: 2.0
+    lip_radius_mm: 3.0
+    flange_outer_diameter_mm: 95.0
+    flange_thickness_mm: 3.0
+    bolt_circle_diameter_mm: 90.0
+    num_bolts: 6
+    discharge_coefficient: 0.98
+
+assembly:
+  name: NovaTurbo-Geometry19-V1
+  inlet_compressor_gap_mm: 0.0
+  compressor_combustor_gap_mm: 0.0
+  combustor_turbine_gap_mm: 0.0
+  turbine_nozzle_gap_mm: 0.0
+  casing_thickness_mm: 2.0
+  casing_clearance_mm: 1.0
+  shaft_diameter_mm: 11.9
+  shaft_material: ss316l
+
+derivation:
+  inlet_length_to_impeller_diameter: 0.5
+  inlet_lip_radius_to_impeller_diameter: 0.1
+  compressor_inlet_duct_to_impeller_diameter: 0.1875
+  compressor_splitter_count_to_main_count: 1.0
+  combustor_dome_recess_to_length: 0.0625
+  combustor_primary_hole_count_to_injector_count: 1.0
+  combustor_dilution_hole_count_to_injector_count: 2.0
+  turbine_ngv_chord_to_rotor_chord: 1.6470588235294117
+  turbine_blade_axial_position_fraction: 0.6274509803921569
+  nozzle_lip_thickness_to_throat_diameter: 0.03636363636363636
+  nozzle_lip_radius_to_throat_diameter: 0.05454545454545454
+  nozzle_flange_outer_to_inlet_diameter: 1.1143695014662756
+  nozzle_flange_thickness_to_throat_diameter: 0.05454545454545454
+  nozzle_bolt_circle_to_flange_outer_diameter: 0.9473684210526315
+  nozzle_divergent_exit_to_throat_diameter: 1.1818181818181819
+  nozzle_divergent_length_to_throat_diameter: 0.5454545454545454
+
+lattice:
+  topology: gyroid
+  skin_retained: true
+  combustor_inner_skin_mm: 0.5
+  combustor_outer_skin_mm: 0.5
+  relative_density_to_wall_threshold: 1.0
+  wall_threshold_min: 0.1
+  wall_threshold_max: 0.5

@@ -1,0 +1,64 @@
+protocol_version: wp19_22_gate_k_hit_aligned_surrogate_v1
+work_package: WP19-22-Gate-K
+status: development_equal_data_loss_ablation
+formal_use_allowed: false
+base_surrogate_protocol: config/physics/wp19_22_geometry19_surrogate_v1.yaml
+inverse_protocol: config/physics/wp19_23_inverse_closure_v1.yaml
+seeds: [42, 43, 44]
+training:
+  device: cuda:0
+  batch_size: 1024
+  learning_rate: 0.001
+  weight_decay: 0.00001
+  epochs: 80
+  patience: 12
+  min_delta: 0.000001
+loss_defaults:
+  performance_weight: 0.5
+  constraint_weight: 0.5
+  huber_delta: 1.0
+  smooth_max_alpha: 12.0
+  hybrid_mean_weight: 0.5
+  smooth_abs_epsilon: 0.000001
+arms:
+  - arm_id: s0_legacy_mse
+    loss: {mode: legacy_mse}
+  - arm_id: s1_tolerance_huber
+    loss: {mode: tolerance_huber}
+  - arm_id: s2_smooth_minimax
+    loss: {mode: smooth_minimax}
+  - arm_id: s3_hybrid
+    loss: {mode: hybrid}
+evaluation:
+  maximum_ranking_targets: 128
+  ranking_budgets: [32, 64, 128]
+frozen_rerank:
+  gate_h_candidate_root: data/inverse_design/wp19_23_gate_h_candidate_utilization_v1
+  gate_h_truth_root: data/inverse_design/wp19_23_gate_h_budget_sweep_v1
+  budgets: [16, 32, 64, 128, 256]
+  output_subdirectory: frozen_rerank
+downstream:
+  gate_i_config: config/experiments/wp19_23_gate_i_hit_alignment_ablation_v1.yaml
+  gate_i_baseline_summary: data/inverse_design/wp19_23_gate_i_hit_alignment_ablation_v1/gate_i_summary.json
+  baseline_arm: i3_full_hit_alignment
+  c_true_physics_budget_per_target: 32
+  output_subdirectory: downstream_pipeline
+promotion:
+  minimum_tsfc_p50_reduction: 0.25
+  maximum_other_axis_p50_worsening: 0.05
+  minimum_test_rho_p50_reduction: 0.20
+  minimum_same_hit_downstream_rho_reduction: 0.20
+  required_target_hits_for_direct_promotion: 3
+  output_subdirectory: final_decision
+smoke:
+  seed: 42
+  maximum_rows_per_split: 256
+  training:
+    epochs: 2
+    patience: 2
+    min_delta: 0.000001
+artifacts:
+  runtime_root: data/inverse_design/wp19_22_gate_k_hit_aligned_surrogate_v1
+  summary: gate_k_training_summary.json
+  report: Gate_K_training_report.md
+  manifest: gate_k_training_manifest.json

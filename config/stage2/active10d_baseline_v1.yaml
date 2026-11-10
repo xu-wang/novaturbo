@@ -1,0 +1,245 @@
+baseline_id: active10d_baseline_v1
+manifest_version: stage2_baseline_manifest_v1
+immutable: true
+frozen_utc: '2026-08-11T00:00:00Z'
+
+scope:
+  stage: stage_II_entry
+  inverse_mapping: '[thrust_N, tsfc_kg_N_s, total_mass_kg] -> active 10D -> complete 19D'
+  design_dim: 10
+  condition_dim: 3
+  status: dimensionally_adapted_and_fully_trained
+  problem_specific_method_adaptation: false
+  statement: >-
+    This baseline supports 10D generation and has completed formal training.
+    It intentionally precedes bounded-support transforms, physics/forward
+    consistency losses, local repair, CFM-specific architecture changes and
+    Stage-II method ablations.
+
+code:
+  source_commit: 44a3ca9b0af4fff7df8c86c355c37b368dc7aa2f
+  target_directed_implementation_commit: 3d7b5f8
+  branch_at_freeze: main
+  source_commit_policy: must_be_ancestor_of_current_head
+
+runtime:
+  conda_environment: inverse_design_nova
+  physical_gpu: 6
+  cuda_visible_devices: '6'
+  logical_torch_device: cuda:0
+  python: 3.11.15
+  torch: 2.13.0+cu126
+  cuda: '12.6'
+  gpu_name: NVIDIA GeForce RTX 4090
+
+data_contract:
+  dataset_version: generator_active10d_expanded100k_v1
+  dataset_rows: 99929
+  splits:
+    train: 79945
+    val: 9992
+    test: 9992
+  target_suite_version: target_suite_active10d_v1
+  target_rows: 280
+  target_types:
+    ID: 100
+    Interpolation: 100
+    OOD-feasible-unknown: 40
+    Infeasible: 40
+
+training_contract:
+  models: [cvae, nflows, cinn, cfm]
+  seeds: [42, 43]
+  checkpoint_count: 8
+  full_train_split_required: true
+  full_validation_split_required: true
+  checkpoint_round_trip_reproducible: true
+  functional_gate_pass: true
+  approximate_out_of_bounds_rate_range: [0.45703125, 0.609375]
+
+benchmark_contract:
+  benchmark_version: target_directed_active10d_benchmark_v1
+  target_ids: 4
+  optimizer_seeds: [42, 43]
+  training_seeds: [42, 43]
+  methods: [random, screened_random, cvae, nflows, cinn, cfm]
+  completed_runs: 96
+  candidate_budget: 256
+  initial_population: 40
+  generations: 15
+  primary_metric: weighted_relative_target_error_J
+  primary_metric_definition: '(relative_F_error + relative_TSFC_error + relative_Mass_error) / 3'
+  hypervolume_role: secondary_global_pareto_diagnostic_only
+  expected_aggregate:
+    random:
+      initial_best_error_mean: 0.08472579877339854
+      initial_hit_rate_mean: 0.0
+      search_best_error_mean: 0.012411546810982579
+    screened_random:
+      initial_best_error_mean: 0.03914003688593372
+      initial_hit_rate_mean: 0.0
+      search_best_error_mean: 0.0031724848708355935
+    cvae:
+      initial_best_error_mean: 0.0003929573630764777
+      initial_hit_rate_mean: 0.8859375
+      search_best_error_mean: 0.0001446161517300115
+    nflows:
+      initial_best_error_mean: 0.0001909802275200526
+      initial_hit_rate_mean: 1.0
+      search_best_error_mean: 0.00013191870245907284
+    cinn:
+      initial_best_error_mean: 0.00021256463363852483
+      initial_hit_rate_mean: 1.0
+      search_best_error_mean: 0.0001238577030907238
+    cfm:
+      initial_best_error_mean: 0.0019688939456102973
+      initial_hit_rate_mean: 0.734375
+      search_best_error_mean: 0.00030575277901673573
+
+artifacts:
+  - category: configuration
+    path: config/generator_active10d_schema.yaml
+    bytes: 2091
+    sha256: e1a9b667ae8479be21be2727f2f2c714d3853fbb291919570054a1cf81c7566c
+  - category: configuration
+    path: config/generator_active10d_view.yaml
+    bytes: 422
+    sha256: 33167806e27ffc9ee6583033334bf5d8c1032d8b091686cd5c9a5ec360dd1d17
+  - category: configuration
+    path: config/generator_active10d_wp3_full.yaml
+    bytes: 1828
+    sha256: 2de2d93094cd13a75d9ace005b797b724fbcb94bb9a2f4194c84e4b3e3ee631f
+  - category: configuration
+    path: config/generator_active10d_metrics.yaml
+    bytes: 830
+    sha256: 0d2cf0e76c2b7140649732e8276315d0779c661d531ae7fba2ad61bcde31ef1e
+  - category: configuration
+    path: config/inverse_design/target_directed_active10d.yaml
+    bytes: 1805
+    sha256: 3ef0a1ea6b558d0fdb9792287e561d2ccb240b5eced82d2c2f7af1cd6f2e1544
+  - category: configuration
+    path: config/inverse_design/runs/target_directed_active10d_template.yaml
+    bytes: 1442
+    sha256: 77d369ff7ba1dcc96eff6afcd015f05b58e7365aee4c68761ed52eb3078dda4a
+  - category: upstream_lock
+    path: config/third_party_models.lock.yaml
+    bytes: 3738
+    sha256: e0d1b0756d61eefcc6f3461a35748d713f656804f987678b0f8e75f1eaf90037
+  - category: dataset
+    path: data/generator_active10d_100k/generator_active10d_valid.csv
+    bytes: 39455785
+    sha256: b4784922be044fccff846cacc93cec4133965de0007145fee84545dd60e78637
+  - category: dataset
+    path: data/generator_active10d_100k/normalizer_active10d.json
+    bytes: 2978
+    sha256: 9bf25fe526a395beadf4057012e67a5823d88757c11457346ec36c21a2a1b68b
+  - category: dataset
+    path: data/generator_active10d_100k/targets/target_suite_active10d_v1.csv
+    bytes: 139667
+    sha256: 3d373ecbdc6cf88c046108edb8cdbbca071394fc1556cfa92499f049f47461dd
+  - category: training_record
+    path: data/generator_models/wp3_active10d_full_gpu6_v1/environment.json
+    bytes: 758
+    sha256: 90cccbd10be65ae0c16ada012c950e9c53305ca882006bc38215a09191e45cf9
+  - category: training_record
+    path: data/generator_models/wp3_active10d_full_gpu6_v1/wp3_manifest.yaml
+    bytes: 3904
+    sha256: 4bad84bf66ab107a3ac784e6a43bf663e2b91d1d134afe5f99763e4e8d279556
+  - category: training_record
+    path: data/generator_models/wp3_active10d_full_gpu6_v1/seed_summary.csv
+    bytes: 2003
+    sha256: adb90eee1dabd556aaf3067fd4d6c7446088e77960bb9e574c8b131519b20ac1
+  - category: training_record
+    path: data/generator_models/wp3_active10d_full_gpu6_v1/compatibility_report.md
+    bytes: 1220
+    sha256: df7488c85dac5b3dabae5a5b587e0ffdf8fbd43413e20b6480a6dbdf3dad9f1e
+  - category: training_record
+    path: data/generator_models/wp3_active10d_full_gpu6_v1/source_manifest.json
+    bytes: 22912
+    sha256: 4ee7e26b5017dbe53ee7f4847fb90c3bccf04c6941d510a7d032c4af5f64c168
+  - category: checkpoint
+    path: data/generator_models/wp3_active10d_full_gpu6_v1/cvae/seed_42/best.pt
+    bytes: 182717
+    sha256: b0ebf0295990d00ab47ecb75f49fe31e830b993641cb847857f966277a06e2da
+  - category: checkpoint
+    path: data/generator_models/wp3_active10d_full_gpu6_v1/cvae/seed_43/best.pt
+    bytes: 184573
+    sha256: 2e5fa7dadf76e809eeb951ced5b09ffc7f02a71f34d0e719b3daf52ebb5fee07
+  - category: checkpoint
+    path: data/generator_models/wp3_active10d_full_gpu6_v1/nflows/seed_42/best.pt
+    bytes: 708929
+    sha256: 341f19b3c6e56e4692ee5d8c3f7a993484d5f8a427083abba3c7a7736e68cb64
+  - category: checkpoint
+    path: data/generator_models/wp3_active10d_full_gpu6_v1/nflows/seed_43/best.pt
+    bytes: 708929
+    sha256: 81d41694465cf680ebacbd93f863d7319fc16eabe34a8b66eedca4a8235e92c4
+  - category: checkpoint
+    path: data/generator_models/wp3_active10d_full_gpu6_v1/cinn/seed_42/best.pt
+    bytes: 202729
+    sha256: fc0a545c1694768db85d01127cd757b4bf3b7ec1ea087d44c83eca68137aeeca
+  - category: checkpoint
+    path: data/generator_models/wp3_active10d_full_gpu6_v1/cinn/seed_43/best.pt
+    bytes: 202729
+    sha256: 0d8638fc00b365cfc30cf95b879284f74537627ec88e1a9a4c606a18fe7171ea
+  - category: checkpoint
+    path: data/generator_models/wp3_active10d_full_gpu6_v1/cfm/seed_42/best.pt
+    bytes: 159395
+    sha256: 569dfedabdf50913b51c7e6c8ea9fbd6a9dbf915176c01569e32c093f08811a9
+  - category: checkpoint
+    path: data/generator_models/wp3_active10d_full_gpu6_v1/cfm/seed_43/best.pt
+    bytes: 162723
+    sha256: 5b82be623187b33460a2709d0d643cc7194b47caa198a7a1c020a817ad4b7203
+  - category: benchmark_result
+    path: data/inverse_design/target_directed_active10d_gpu6/aggregate.csv
+    bytes: 1223
+    sha256: 5a8e537b3e931870767204e488f75e2b98953a49ca0f36167a912c05319d3fd2
+  - category: benchmark_result
+    path: data/inverse_design/target_directed_active10d_gpu6/run_metrics.csv
+    bytes: 44350
+    sha256: bceb1baef018088e534969db38b66c3b6e7e0b5b247876e3a7416b7b42a740ac
+  - category: benchmark_result
+    path: data/inverse_design/target_directed_active10d_gpu6/convergence.csv
+    bytes: 235917
+    sha256: 2fd50e117d19b30af20b4434cb138ad06b744a363463814b2077da85f99313e6
+  - category: benchmark_result
+    path: data/inverse_design/target_directed_active10d_gpu6/selected_targets.csv
+    bytes: 2504
+    sha256: 75b7d4354392731ad7e1cd4f75fb6463406c15af2a770ea5562959baea52e6e3
+  - category: report
+    path: docs/10D条件生成网络完整训练与对比报告.md
+    bytes: 8035
+    sha256: 4c488b467eabe531f7630d54b689953bf43c93294072e51378d3e71d3b25093f
+  - category: report
+    path: docs/目标导向初始化重新评估报告.md
+    bytes: 6355
+    sha256: 647124e9be5ad18108d1a8e400e9da15bb149ebcc4c0ad28c8bbfb9273601fe6
+
+semantic_checks:
+  - kind: csv
+    path: data/generator_active10d_100k/generator_active10d_valid.csv
+    row_count: 99929
+    value_counts:
+      split:
+        train: 79945
+        val: 9992
+        test: 9992
+  - kind: csv
+    path: data/generator_active10d_100k/targets/target_suite_active10d_v1.csv
+    row_count: 280
+    value_counts:
+      target_type:
+        ID: 100
+        Interpolation: 100
+        OOD-feasible-unknown: 40
+        Infeasible: 40
+  - kind: csv
+    path: data/inverse_design/target_directed_active10d_gpu6/run_metrics.csv
+    row_count: 96
+    value_counts:
+      method:
+        random: 16
+        screened_random: 16
+        cvae: 16
+        nflows: 16
+        cinn: 16
+        cfm: 16

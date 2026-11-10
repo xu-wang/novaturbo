@@ -1,0 +1,34 @@
+version: geometry22_v3_new_center_local_data_l6e_v1
+scope: development_only_local_sampling_before_extended_gate
+source_registry:
+  path: data/validation/v3_22d_new_center_l6d_v1
+  manifest_sha256: f93e4dc84dfc3b4d8813c72f7e3dbe35a6743c14952cb72071ea6c3017ef9158
+  registry_sha256: f3c6c53714aa108f6152f8b0f3e480e8d308a565044bccc41ff7d3d5452185a2
+source_development_labels:
+  path: data/validation/v3_22d_new_center_l6d_development_labels_v1
+  manifest_sha256: fd7ef99ef0a99110b238f54c16c06b079c9fd2f68de8a547b03fdf131f80a660
+  labels_sha256: 7252f624624275280a000af44549dbd350d34fc3ab986073cbd5556cb1ccbfa3
+coordinate_plan:
+  center_count: 32
+  bands: [[0.0, 0.02], [0.02, 0.04], [0.04, 0.06], [0.06, 0.08]]
+  pairs_per_center_band: 64
+  primary_seed: 20260930
+  reserve_seed: 20261001
+  sobol_pool_base2_exponent: 13
+  pool_rows_per_band: 2048
+  maximum_attempts_per_band: 4096
+  integer_policy: fixed_at_source_center
+  pair_policy: positive_negative_symmetric_no_clipping_or_shrinking
+  geometric_screen: v2_2_analytic_geometry_checks_applied_to_22d_projection
+  adaptive_top_up: false
+physics:
+  diagnostic_partition:
+    path: config/physics/geometry19_constraint_profile_pipeline_debug_v1.yaml
+    sha256: 5b5d916ae60bdd80fb0a64e0af514206100d4aff2612d8d0261989b1695fa8f3
+  minimum_candidate_per_center_band: 80
+  minimum_candidate_per_center: 384
+  adaptive_top_up: false
+training_allowed: false
+formal_use_allowed: false
+deployment_allowed: false
+output_root: data/validation/v3_22d_new_center_local_data_l6e_v1

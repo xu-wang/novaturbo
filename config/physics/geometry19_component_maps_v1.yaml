@@ -1,0 +1,44 @@
+registry_version: geometry19_component_maps_v1
+maps:
+  - component_type: compressor
+    map_id: synthetic_centrifugal_compressor_v1
+    map_version: 1.0.0
+    source_hash: a8f351201fbadd9e391785c0bcd6c580ef90d4d556d323243b2bdddd623f995f
+    usage_level: software_fixture
+    formal_use_allowed: false
+    package: config/physics/maps/compressor/synthetic_centrifugal_compressor_v1
+  - component_type: compressor
+    map_id: nasa_hecc_post_test_cfd_v1
+    map_version: 1.0.0
+    source_hash: a2ea4346d41e5920fa5ced57eaa6f8056ad2820346d175674937a962dbb9cea7
+    usage_level: validation_shadow
+    formal_use_allowed: false
+    package: config/physics/maps/compressor/nasa_hecc_post_test_cfd_v1
+  - component_type: turbine
+    map_id: synthetic_single_stage_turbine_v1
+    map_version: 1.0.0
+    source_hash: f5554aae91378dd94b6dbeb5d53e7f86b25cb82936e4ddc1c8180876e41b792c
+    usage_level: software_fixture
+    formal_use_allowed: false
+    package: config/physics/maps/turbine/synthetic_single_stage_turbine_v1
+  - component_type: inlet
+    map_id: synthetic_subsonic_inlet_v1
+    map_version: 1.0.0
+    source_hash: 66ce6f35d87e01571bc308bbb82b77c7cb8b5755234e5b796e60d972ecfd5547
+    usage_level: software_fixture
+    formal_use_allowed: false
+    package: config/physics/maps/inlet/synthetic_subsonic_inlet_v1
+  - component_type: combustor
+    map_id: synthetic_annular_combustor_v1
+    map_version: 1.0.0
+    source_hash: 4dab111a6fc277ffe14189e3d079658e977f4c2b4f5736a1f20a054264eddc36
+    usage_level: software_fixture
+    formal_use_allowed: false
+    package: config/physics/maps/combustor/synthetic_annular_combustor_v1
+  - component_type: nozzle
+    map_id: synthetic_convergent_nozzle_v1
+    map_version: 1.0.0
+    source_hash: 35f38b0ff38ac917bc44d1354094033a0a2095eb7985f4a8cefa03cc8e75e1d7
+    usage_level: software_fixture
+    formal_use_allowed: false
+    package: config/physics/maps/nozzle/synthetic_convergent_nozzle_v1

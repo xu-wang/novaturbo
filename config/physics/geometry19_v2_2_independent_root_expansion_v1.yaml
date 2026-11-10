@@ -1,0 +1,53 @@
+dataset_version: geometry19_v2_2_independent_root_expansion_v1
+status: software_development_independent_root_expansion
+profile: v2_2_development
+purpose: add_independent_roots_for_low_mass_segment_generalization
+formal_use_allowed: false
+
+source_observations:
+  path: data/validation/v2_2_segment_balanced_expansion_v1/raw_dataset.jsonl
+  sha256: f059371e70e2529a4508beb20ae487f2adc123707a4e91fefb8f975b8d0833f2
+base_dataset:
+  path: data/validation/v2_2_directed_segment_recovery_v1/combined_accepted_dataset.jsonl
+  sha256: dca809406829dad1614523737c26ea539542f1c1585fe13ef6bca07e5ff22f1d
+
+sampling:
+  method: excluded_existing_root_local_jacobian_projection_v1
+  random_seed: 20260914
+  segments: [low_mass_low_to_mid, low_mass_mid_to_high]
+  root_pool_size_per_segment: 8
+  minimum_observations_per_root: 25
+  maximum_observations_per_root: 96
+  minimum_normalized_l2_separation: 0.08
+  target_accepted_rows_per_root: 40
+  ridge: 0.001
+  inverse_ridge: 0.01
+  discrete_step_probability: 0.08
+  rounds:
+    - samples_per_active_root: 64
+      trust_radius_fraction: 0.060
+      perturbation_radius_fraction: 0.0030
+      step_gain: 0.90
+    - samples_per_active_root: 64
+      trust_radius_fraction: 0.050
+      perturbation_radius_fraction: 0.0025
+      step_gain: 0.95
+    - samples_per_active_root: 64
+      trust_radius_fraction: 0.040
+      perturbation_radius_fraction: 0.0020
+      step_gain: 0.95
+    - samples_per_active_root: 64
+      trust_radius_fraction: 0.030
+      perturbation_radius_fraction: 0.0015
+      step_gain: 1.00
+
+diversity_gate:
+  minimum_qualified_new_roots_per_segment: 5
+  minimum_accepted_rows_per_new_root: 24
+
+limitations:
+  - local_linear_sensitivity_is_a_sampling_controller_not_a_physics_model
+  - simplified_v2_2_software_labels_only
+  - no_real_geometry_or_engineering_feasibility_claim
+  - previous_baseline_test_has_been_observed
+  - fresh_root_level_split_required_before_surrogate_retraining

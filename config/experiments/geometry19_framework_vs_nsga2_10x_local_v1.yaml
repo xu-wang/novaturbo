@@ -1,0 +1,24 @@
+version: geometry19_framework_vs_nsga2_10x_local_v1
+scope: project_vs_global_and_route_informed_nsga2_dynamic_budget
+targets: [1, 2, 4, 5, 20, 29, 46, 56, 68, 80, 92, 98]
+project_source: data/validation/v2_2_local_full_pipeline_v1/n3_rank1_miss_screen_v1
+route_source: data/validation/v2_2_local_full_pipeline_v1/n3_rank1_miss_screen_v1
+runtime: geometry19_v2_2_far_precision_v1
+budget_multiplier: 10
+counting: first_hit_unique_physics_calls_excluding_delivery
+arms:
+  - global_cold_nsga2
+  - route_informed_local_nsga2
+nsga2:
+  maximum_population: 64
+  seed: 42
+  crossover_rate: 0.9
+  mutation_rate: 0.1
+  mutation_scale: 0.1
+  immediate_first_hit_stop: true
+local_domain:
+  source: frozen_project_gate_selected_expert
+  continuous: selected_expert_radius_0_20_intersect_schema
+  integers: fixed_to_selected_expert
+output: data/validation/v2_2_local_full_pipeline_v1/n6_framework_vs_nsga2_10x_local_v1
+report: docs/physics/V22_FRAMEWORK_VS_NSGA2_10X_LOCAL_RESULTS.md

@@ -1,0 +1,42 @@
+version: target_directed_active10d_benchmark_v1
+
+target_suite:
+  csv: data/generator_active10d_100k/targets/target_suite_active10d_v1.csv
+  sha256: 3d373ecbdc6cf88c046108edb8cdbbca071394fc1556cfa92499f049f47461dd
+  selection:
+    target_ids:
+      - 5a0c200a08733f8d38e870b98b503c3944b3b6ee5d56540a443cc168f62437a4
+      - 1b1489c9afbc2dcfe9f80463ff3dee7ee91a0240e406048bc9e9a5bd97465270
+      - 56f3462fa1857de0c5348730e4b199f91f20467900949b804d15628dfc1c5256
+      - f0e776e49da9545ddf5ebb38aa21b319081f15a2621af280433ada47b0099140
+
+optimizer_seeds: [42, 43]
+generator_seed_offset: 20250771
+
+model_sets:
+  - training_seed: 42
+    models:
+      - model_id: cvae
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/cvae/seed_42/best.pt
+      - model_id: nflows
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/nflows/seed_42/best.pt
+      - model_id: cinn
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/cinn/seed_42/best.pt
+      - model_id: cfm
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/cfm/seed_42/best.pt
+  - training_seed: 43
+    models:
+      - model_id: cvae
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/cvae/seed_43/best.pt
+      - model_id: nflows
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/nflows/seed_43/best.pt
+      - model_id: cinn
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/cinn/seed_43/best.pt
+      - model_id: cfm
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/cfm/seed_43/best.pt
+
+base_run_config: config/inverse_design/runs/target_directed_active10d_template.yaml
+
+output:
+  directory: data/inverse_design/target_directed_active10d_gpu6
+  refuse_overwrite: true

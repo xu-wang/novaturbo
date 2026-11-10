@@ -1,0 +1,377 @@
+"""Versioned trained V3 B--F flow with sealed stage boundaries and strict resume."""
+from __future__ import annotations
+
+from contextlib import contextmanager
+import fcntl
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import shutil
+import tempfile
+from typing import Any
+
+import torch
+import yaml
+
+from src.ai.geometry19_pipeline_v3 import (
+    Geometry19V3PendingError, OUTPUT_NAMES, _load_target_v3, _rho,
+)
+from src.ai.v3_extended_gate_l6f import network
+from src.ai.v3_target_routed_local_l6c import _candidate, _draws, _route, _score
+from src.ai.v3_validation_integrity import dependency_hashes
+from src.physics.constraint_profiles import ConstraintProfile, assess_constraint_profile
+from src.physics.geometry22_data import Geometry22Normalizer
+from src.physics.geometry22_design import Geometry22Design
+from src.physics.v3_development_runtime import build_v3_development_physics_runtime
+
+
+CONFIG = "config/experiments/geometry22_pipeline_v3_routed_development_v1.yaml"
+PROFILE = "v3_routed_development"
+VERSION = "geometry22_pipeline_v3_routed_development_v1"
+STAGES = list("BCDEF")
+
+
+def require(condition: bool, message: str) -> None:
+    if not condition:
+        raise Geometry19V3PendingError(message)
+
+
+def sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def read(path: Path) -> Any:
+    return json.loads(path.read_text())
+
+
+def write(path: Path, data: Any) -> None:
+    """Replace a single JSON record atomically; stage directories are sealed separately."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(path.name + ".tmp")
+    with temporary.open("w") as stream:
+        json.dump(data, stream, sort_keys=True, indent=2, allow_nan=False)
+        stream.write("\n")
+        stream.flush()
+        os.fsync(stream.fileno())
+    os.replace(temporary, path)
+
+
+def source(root: Path) -> tuple[dict, dict, dict, list, dict, dict]:
+    cfg = yaml.safe_load((root / CONFIG).read_text())
+    require(cfg["version"] == VERSION and cfg["pipeline_profile"] == PROFILE
+            and cfg["stages"] == STAGES and cfg["stage_budgets"] == {"C": 8, "D": 8, "E": 8}
+            and cfg["route_arm"] == "gated_top2" and cfg["raw_candidates_per_target_per_arm"] == 256
+            and cfg["relative_tolerances"] == {name: .05 for name in OUTPUT_NAMES}
+            and cfg["formal_use_allowed"] is False and cfg["deployment_allowed"] is False
+            and cfg["holdout_labels_parsed"] is False
+            and cfg["top2_allocation"] == "equal_128_each_if_two_else_256_single"
+            and cfg["local_generation"]["radial_bands"] == [[0., .02], [.02, .04], [.04, .06], [.06, .08]]
+            and cfg["local_generation"]["integer_policy"] == "fixed_from_routed_center"
+            and cfg["physical_gpu_index"] == 6, "V3 routed config changed scope")
+    spec = cfg["sources"]
+    assets = root / spec["l6f_path"]
+    for filename, key in (("fit_manifest.json", "fit_sha256"), ("gate_selection.json", "gate_selection_sha256"),
+                          ("local_forward_models.json", "local_forward_sha256"), ("normalization.json", "normalization_sha256"),
+                          ("center_support.json", "center_support_sha256")):
+        require(sha(assets / filename) == spec[key], "V3 routed asset changed: " + filename)
+    require(sha(root / spec["diagnostic_profile_path"]) == spec["diagnostic_profile_sha256"], "V3 routed profile changed")
+    fit = read(assets / "fit_manifest.json")
+    local = read(assets / "local_forward_models.json")
+    support = read(assets / "center_support.json")["centers"]
+    norm = read(assets / "normalization.json")
+    require(len(support) == 55 and len({t["center_id"] for t in support}) == 55
+            and fit["selected_neural_model_id"] == "gate_seed_44"
+            and local["selected_model_id"] == fit["selected_local_forward_model_id"]
+            and fit["new_validation_or_holdout_labels_parsed"] is False, "V3 routed model population changed")
+    checkpoint = next(t for t in fit["neural_models"] if t["model_id"] == fit["selected_neural_model_id"])
+    require(sha(assets / checkpoint["path"]) == checkpoint["sha256"], "V3 routed checkpoint changed")
+    return cfg, fit, local, support, norm, checkpoint
+
+
+def code_hashes(root: Path) -> dict:
+    # Preserve the L6h lock implementation. Add all pipeline-specific consumers.
+    paths = set(dependency_hashes(root)) | {
+        "src/ai/geometry22_pipeline_v3_routed.py", "src/ai/geometry19_pipeline_v3.py",
+        "src/ai/v3_development_assets.py", "src/ai/geometry19_pipeline_dispatch.py",
+        "scripts/run_wp19_23_pipeline.py",
+    }
+    return {name: sha(root / name) for name in sorted(paths)}
+
+
+def generate(root: Path, target: dict, cfg: dict, local: dict, support: list, norm: dict, checkpoint: dict) -> tuple[list, list, dict]:
+    require(os.environ.get("CUDA_VISIBLE_DEVICES") == "6" and torch.cuda.is_available()
+            and torch.cuda.device_count() == 1, "V3 routed inference requires physical GPU 6 (CUDA_VISIBLE_DEVICES=6)")
+    device = torch.device("cuda:0")
+    print(f"V3 route GPU: visible=1 device={torch.cuda.get_device_name(0)} physical=6", flush=True)
+    model = network().to(device)
+    payload = torch.load(root / cfg["sources"]["l6f_path"] / checkpoint["path"], map_location="cpu", weights_only=True)
+    model.load_state_dict(payload["state_dict"])
+    model.eval()
+    public = {"target_id": target["target_id"], "target_performance": {name: target[name] for name in OUTPUT_NAMES}}
+    route = _route(public, norm, support, model, device)
+    choices = route["arms"][cfg["route_arm"]]
+    if not choices:
+        return [], [], route
+    require(len(choices) in (1, 2), "Invalid V3 Top-2 population")
+    normalizer = Geometry22Normalizer()
+    continuous = local["input_continuous_indices_zero_based"]
+    by_center = {c["center_id"]: c for c in support}
+    raw = []
+    for center in choices:
+        draws = _draws(public["target_id"], center, cfg)
+        for slot in range(256 // len(choices)):
+            raw.append(_candidate(public, cfg["route_arm"], len(raw), by_center[center], draws[slot], normalizer, continuous, cfg))
+    _score(raw, public, local, continuous, by_center, device)
+    ranked = sorted((r for r in raw if r["status"] == "geometric_candidate"),
+                    key=lambda r: (r["predicted_rho"], r["design_id"], r["raw_slot"]))
+    seen, selected = set(), []
+    for row in ranked:
+        if row["design_id"] in seen:
+            continue
+        seen.add(row["design_id"])
+        selected.append({**row, "rank": len(selected)})
+        if len(selected) == sum(cfg["stage_budgets"].values()):
+            break
+    return selected, raw, route
+
+
+def evaluate_design(row: dict, runtime: Any, profile: Any, target: dict, cfg: dict) -> dict:
+    design = Geometry22Design.from_mapping(row["design"])
+    result = runtime.evaluate(design)
+    engine = result.engine_result
+    diagnostic = assess_constraint_profile(engine, profile, conservation_tolerances=runtime.base_runtime.conservation_tolerances).as_mapping()
+    performance = {n: float(engine.performance[n]) for n in OUTPUT_NAMES} if engine.solver.converged else None
+    if performance is not None and any(not math.isfinite(v) or v <= 0 for v in performance.values()):
+        performance = None
+    rho = _rho(performance, target, cfg["relative_tolerances"])
+    return {"design_id": result.design_id, "design": design.as_mapping(), "route_center_id": row["route_center_id"],
+            "design_schema_hash": result.design_schema_hash, "physics_bundle_hash": result.physics_bundle_hash,
+            "solver_converged": bool(engine.solver.converged), "solver_failure_code": engine.solver.failure_code.value if engine.solver.failure_code else None,
+            "diagnostic_domain_valid": bool(diagnostic["numerically_valid"] and diagnostic["physics_domain_valid"]),
+            "feasible": bool(engine.feasible), "performance": performance, "rho": rho,
+            "software_hit_5pct": bool(rho is not None and rho <= 1),
+            "formal_use_allowed": False, "deployment_allowed": False}
+
+
+def state_files(output: Path) -> dict:
+    files = {}
+    for p in sorted(output.rglob("*")):
+        require(p.resolve().is_relative_to(output.resolve()), "V3 artifact path escapes run")
+        if p.is_file() and not (p.parent == output and p.name in {"Run_State.json", ".runner.lock", "Complete_Manifest.json"}):
+            files[str(p.relative_to(output))] = sha(p)
+    return files
+
+
+def verify_state(output: Path, identity: dict) -> dict:
+    state = read(output / "Run_State.json")
+    require(read(output / "Protocol_Lock.json")["identity"] == identity, "V3 routed identity changed")
+    require(state["status"] in {"RUNNING", "COMPLETE"}, "Failed V3 routed run exists; preserve and stop")
+    stages = state["completed_stages"]
+    require(stages == STAGES[:len(stages)], "V3 routed stage order changed")
+    require({p.name for p in output.iterdir() if p.is_dir()} == set(stages), "Unsealed V3 stage exists; preserve and stop")
+    require(state["files"] == state_files(output), "V3 routed artifacts changed or unsealed stage exists; preserve and stop")
+    require(read(output / "target.json") == identity["target"], "V3 routed target changed")
+    return state
+
+
+def best_result(evaluated: list) -> dict | None:
+    usable = [r for r in evaluated if r["rho"] is not None]
+    feasible = [r for r in usable if r["feasible"]]
+    return min(feasible or usable, key=lambda r: (r["rho"], r["design_id"])) if usable else None
+
+
+def verify_relationships(output: Path, identity: dict, cfg: dict, stages: list) -> None:
+    if "B" not in stages:
+        return
+    selected = read(output / "B/candidates.json")
+    raw = read(output / "B/raw_candidates.json")
+    route = read(output / "B/route.json")
+    b = read(output / "B/summary.json")
+    require(route["target_id"] == identity["target"]["target_id"], "V3 route target changed")
+    require(route["status"] in {"routable", "abstained_no_target_support"}, "V3 route status changed")
+    require(len(raw) == (256 if route["status"] == "routable" else 0), "V3 raw budget changed")
+    require(len(selected) <= 24 and len({r["design_id"] for r in selected}) == len(selected), "V3 selected budget changed")
+    valid = sorted((r for r in raw if r["status"] == "geometric_candidate"), key=lambda r: (r["predicted_rho"], r["design_id"], r["raw_slot"]))
+    expected, seen = [], set()
+    for r in valid:
+        if r["design_id"] not in seen:
+            seen.add(r["design_id"])
+            expected.append({**r, "rank": len(expected)})
+            if len(expected) == 24:
+                break
+    require(selected == expected and b["count"] == len(selected) and b["raw_slots"] == len(raw), "V3 B ranked selection changed")
+    contract = identity["runtime_contract"]
+    for r in selected:
+        require(Geometry22Design.from_mapping(r["design"]).design_id() == r["design_id"], "V3 B design identity changed")
+        require(all(r[k] == contract[k] for k in ("design_schema_hash", "physics_bundle_hash")), "V3 B backend identity changed")
+        require(r["route_center_id"] in route["arms"][cfg["route_arm"]], "V3 selected center changed")
+        require(r["target_id"] == identity["target"]["target_id"] and r["arm"] == cfg["route_arm"], "V3 candidate target changed")
+    evaluated = []
+    cursor = 0
+    for stage in "CDE":
+        if stage not in stages:
+            break
+        group = read(output / stage / "evaluations.json")
+        expected_designs = selected[cursor:cursor + cfg["stage_budgets"][stage]]
+        cursor += cfg["stage_budgets"][stage]
+        require(len(group) == len(expected_designs), "V3 stage budget changed")
+        for result, chosen in zip(group, expected_designs):
+            require(result["design"] == chosen["design"] and result["design_id"] == chosen["design_id"]
+                    and result["route_center_id"] == chosen["route_center_id"], "V3 evaluation design changed")
+            require(all(result[k] == contract[k] for k in ("design_schema_hash", "physics_bundle_hash")), "V3 evaluation backend changed")
+            expected_rho = _rho(result["performance"], identity["target"], cfg["relative_tolerances"])
+            require(result["rho"] == expected_rho and result["software_hit_5pct"] == (expected_rho is not None and expected_rho <= 1), "V3 evaluation rho changed")
+            require(result["formal_use_allowed"] is False and result["deployment_allowed"] is False, "V3 evaluation use changed")
+        require(read(output / stage / "summary.json") == evaluation_summary(group), "V3 stage summary changed")
+        evaluated.extend(group)
+    if "F" in stages:
+        best = best_result(evaluated)
+        f = read(output / "F/summary.json")
+        require(f["independent_recompute"] == best, "V3 F independent recompute changed")
+        require(f == final_summary(best), "V3 F terminal changed")
+        if (output / "Pipeline_Summary.json").exists():
+            summary = read(output / "Pipeline_Summary.json")
+            require(summary == pipeline_summary(output, identity, selected, evaluated, f, route), "V3 pipeline summary changed")
+
+
+def evaluation_summary(group: list) -> dict:
+    return {"evaluated_count": len(group), "solver_converged": sum(r["solver_converged"] for r in group),
+            "diagnostic_domain_valid": sum(r["diagnostic_domain_valid"] for r in group),
+            "feasible_count": sum(r["feasible"] for r in group), "software_hit_count": sum(r["software_hit_5pct"] for r in group)}
+
+
+def final_summary(best: dict | None) -> dict:
+    delivered = bool(best is not None and best["feasible"] and best["software_hit_5pct"])
+    return {"status": "PASS" if delivered else "NO_HIT" if best else "NO_CANDIDATES",
+            "selected_design_id": best["design_id"] if best else None, "independent_recompute": best,
+            "software_hit_5pct": bool(best is not None and best["software_hit_5pct"])}
+
+
+def pipeline_summary(output: Path, identity: dict, selected: list, evaluated: list, f: dict, route: dict) -> dict:
+    return {"status": "V3_ROUTED_DEVELOPMENT_COMPLETED" if f["status"] == "PASS" else "V3_ROUTED_DEVELOPMENT_NO_DELIVERED_HIT",
+            "model": "model V3", "pipeline_profile": PROFILE, "target_id": identity["target"]["target_id"],
+            "terminal_source_stage": "F", "delivery_status": f["status"],
+            "delivered_design_ids": [f["selected_design_id"]] if f["status"] == "PASS" else [],
+            "route_status": route["status"], "eligible_center_count": route["eligible_center_count"],
+            "software_hit_5pct": any(r["software_hit_5pct"] for r in evaluated),
+            "candidate_count": len(selected), "physics_evaluation_count": len(evaluated) + (f["independent_recompute"] is not None),
+            "diagnostic_domain_valid_count": sum(r["diagnostic_domain_valid"] for r in evaluated),
+            "feasible_count": sum(r["feasible"] for r in evaluated), "design_dimension": 22,
+            "design_schema_hash": identity["runtime_contract"]["design_schema_hash"],
+            "physics_bundle_hash": identity["runtime_contract"]["physics_bundle_hash"],
+            "asset_status": "frozen_development_gate_and_local_ridge_unvalidated",
+            "physics_validation_status": "not_completed", "formal_use_allowed": False, "deployment_allowed": False,
+            "paths": {"runtime_root": str(output), "pipeline_manifest": str(output / "Complete_Manifest.json")}}
+
+
+def seal_stage(output: Path, stage: str, records: dict, state: dict) -> None:
+    temporary = Path(tempfile.mkdtemp(prefix=".stage_", dir=output))
+    try:
+        for name, value in records.items():
+            write(temporary / name, value)
+        os.rename(temporary, output / stage)
+        state["completed_stages"].append(stage)
+        state["files"] = state_files(output)
+        write(output / "Run_State.json", state)
+    finally:
+        if temporary.exists():
+            shutil.rmtree(temporary)
+
+
+@contextmanager
+def run_lock(output: Path):
+    with (output / ".runner.lock").open("a") as stream:
+        try:
+            fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as exc:
+            raise Geometry19V3PendingError("V3 routed run is already active") from exc
+        try:
+            yield
+        finally:
+            fcntl.flock(stream, fcntl.LOCK_UN)
+
+
+def run_v3_routed_pipeline(repository_root: str | Path, *, target_path=None, target_values=None,
+                           target_type="ID", expected_status="UNKNOWN", output_root=None,
+                           resume=False, device="cuda:0", refinement_device=None,
+                           pipeline_profile=PROFILE, **kwargs) -> dict:
+    require(pipeline_profile == PROFILE and device == "cuda:0" and refinement_device is None,
+            "V3 routed profile requires --device cuda:0 and no refinement device")
+    allowed = {"model_variant", "forward_model_tag", "sampling_mode", "storage_root", "restart_from_stage", "pipeline_context", "export_mesh"}
+    require(set(kwargs) <= allowed and all(v is None or v is False for v in kwargs.values()), "Unsupported V3 routed option")
+    root = Path(repository_root).resolve()
+    cfg, fit, local, support, norm, checkpoint = source(root)
+    target = _load_target_v3(target_path, target_values, target_type, expected_status)
+    runtime = build_v3_development_physics_runtime(root)
+    require(all(runtime.contract_mapping()[k] == cfg["identity"][k] for k in cfg["identity"]), "V3 routed runtime changed")
+    identity = {"version": VERSION, "model": "model V3", "pipeline_profile": PROFILE, "protocol": cfg,
+                "target": target, "config_sha256": sha(root / CONFIG), "source_code_sha256": code_hashes(root),
+                "runtime_contract": runtime.contract_mapping(), "sources": cfg["sources"],
+                "gate_checkpoint_sha256": checkpoint["sha256"], "local_model_id": local["selected_model_id"],
+                "inference_device": "cuda:0", "physical_gpu_index": 6, "physics_device": "cpu"}
+    output = Path(output_root).resolve() if output_root else root / cfg["default_output_root"] / target["target_id"]
+    if resume:
+        require(output.is_dir(), "No V3 routed run to resume")
+    else:
+        require(not output.exists(), "Refusing to overwrite V3 routed run")
+        output.mkdir(parents=True)
+    with run_lock(output):
+        if resume:
+            state = verify_state(output, identity)
+            verify_relationships(output, identity, cfg, state["completed_stages"])
+            if state["status"] == "COMPLETE":
+                manifest = read(output / "Complete_Manifest.json")
+                require(manifest == {"manifest_version": VERSION, "stages": STAGES, "files": state["files"],
+                                     "run_state_sha256": sha(output / "Run_State.json")}, "V3 routed complete manifest changed")
+                return read(output / "Pipeline_Summary.json")
+            require(not (output / "Complete_Manifest.json").exists(), "Unexpected V3 complete manifest")
+        else:
+            write(output / "Protocol_Lock.json", {"identity": identity})
+            write(output / "target.json", target)
+            state = {"status": "RUNNING", "completed_stages": [], "files": state_files(output)}
+            write(output / "Run_State.json", state)
+        try:
+            if "B" not in state["completed_stages"]:
+                selected, raw, route = generate(root, target, cfg, local, support, norm, checkpoint)
+                seal_stage(output, "B", {"candidates.json": selected, "raw_candidates.json": raw, "route.json": route,
+                           "summary.json": {"count": len(selected), "raw_slots": len(raw), "route_status": route["status"]}}, state)
+            selected = read(output / "B/candidates.json")
+            profile = ConstraintProfile.from_yaml(root / cfg["sources"]["diagnostic_profile_path"])
+            evaluated, cursor = [], 0
+            for stage in "CDE":
+                group = selected[cursor:cursor + cfg["stage_budgets"][stage]]
+                cursor += cfg["stage_budgets"][stage]
+                if stage not in state["completed_stages"]:
+                    results = [evaluate_design(r, runtime, profile, target, cfg) for r in group]
+                    seal_stage(output, stage, {"evaluations.json": results, "summary.json": evaluation_summary(results)}, state)
+                evaluated.extend(read(output / stage / "evaluations.json"))
+            if "F" not in state["completed_stages"]:
+                best = best_result(evaluated)
+                if best is not None:
+                    fresh = build_v3_development_physics_runtime(root)
+                    require(fresh.contract_mapping() == runtime.contract_mapping(), "V3 F runtime identity changed")
+                    repeated = evaluate_design(best, fresh, profile, target, cfg)
+                    require(repeated == best, "V3 F independent recompute differs")
+                f = final_summary(best)
+                seal_stage(output, "F", {"summary.json": f}, state)
+            route = read(output / "B/route.json")
+            summary = pipeline_summary(output, identity, selected, evaluated, read(output / "F/summary.json"), route)
+            write(output / "Pipeline_Summary.json", summary)
+            state.update(status="COMPLETE", files=state_files(output))
+            write(output / "Run_State.json", state)
+            write(output / "Complete_Manifest.json", {"manifest_version": VERSION, "stages": STAGES,
+                  "files": state["files"], "run_state_sha256": sha(output / "Run_State.json")})
+            verify_state(output, identity)
+            verify_relationships(output, identity, cfg, STAGES)
+            return summary
+        except Exception as exc:
+            write(output / "Failure_Summary.json", {"status": "V3_ROUTED_DEVELOPMENT_FAILED", "model": "model V3",
+                  "pipeline_profile": PROFILE, "error_type": type(exc).__name__, "error": str(exc),
+                  "last_completed_stage": state["completed_stages"][-1] if state["completed_stages"] else None,
+                  "formal_use_allowed": False, "deployment_allowed": False})
+            state.update(status="FAILED", files=state_files(output))
+            write(output / "Run_State.json", state)
+            write(output / "Failure_Manifest.json", {"status": "V3_ROUTED_DEVELOPMENT_FAILED", "files": state["files"]})
+            raise Geometry19V3PendingError(f"V3 routed run failed; see {output / 'Failure_Summary.json'}") from exc

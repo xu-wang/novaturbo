@@ -1,0 +1,36 @@
+protocol_version: wp19_23_generator_failure_decomposition_v1
+status: development_analysis_only
+formal_use_allowed: false
+
+source_oracle_runtime: data/inverse_design/wp19_23_generator_core_oracle_v1
+generator_checkpoint: data/generator_models/geometry19/wp19_23_cfm4_bounded_sigmoid_seed43_v1/baseline/best.pt
+
+targets:
+  train_diagnostic: 12
+  locked_held_out_per_region: 4
+  held_out_regions: [dense, mid, sparse]
+
+sampling:
+  source_seeds: [20260817, 20260902, 20260903]
+  maximum_raw_candidates: 8192
+  nested_prefixes: [512, 1024, 2048, 4096, 8192]
+  discrete_diagnostic_candidates: 512
+  strict_discrete_tolerance_count: 0.25
+
+diagnostic_modes:
+  strict: frozen_discrete_tolerance
+  nearest_integer: round_all_three_integer_coordinates
+  reference_discrete_oracle: replace_three_integer_coordinates_with_reference_design
+
+execution:
+  device: cuda:0
+  physics_workers: 16
+  physics_chunksize: 32
+
+artifacts:
+  runtime_root: data/inverse_design/wp19_23_generator_failure_decomposition_v1
+  report: Generator_Failure_Decomposition_Report.md
+  summary: generator_failure_decomposition_summary.json
+  run_ledger: run_summary_ledger.jsonl
+  candidate_ledger: compact_candidate_ledger.jsonl
+

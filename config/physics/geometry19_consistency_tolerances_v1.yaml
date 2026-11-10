@@ -1,0 +1,20 @@
+profile_version: geometry19_consistency_tolerances_v1
+description: >-
+  Resolution-aware WP19-17 tolerances. Radial probes include the polygon-chord
+  error R*(1-cos(pi/n_theta)); axial probes inherit the mesh-profile interface
+  tolerance; TPMS threshold tolerances scale with reciprocal voxels-per-cell.
+source_mesh_profile: geometry19_mesh_profiles_v1
+methods:
+  diameter: nearest radial vertex cluster at the named axial station
+  area: propagated from measured diameters and the frozen GeometryState formula
+  lattice: median inverse-gyroid iso-threshold over combustor lattice vertices
+  count: connected mesh bodies after coincident-vertex merge
+qualities:
+  preview_mesh:
+    radial_absolute_tolerance_mm: 0.36
+    axial_absolute_tolerance_mm: 0.051
+    lattice_threshold_absolute_tolerance: 0.017
+  export_mesh:
+    radial_absolute_tolerance_mm: 0.052
+    axial_absolute_tolerance_mm: 0.051
+    lattice_threshold_absolute_tolerance: 0.015

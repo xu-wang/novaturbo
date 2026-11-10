@@ -1,0 +1,35 @@
+protocol_version: geometry19_performance_gated_g4_rank128_v1
+authorization_source: user_20260918_explicit_rank128_confirmation
+g3_root: data/validation/v2_2_performance_gated_local_cfm_v1/candidates/g3_v1
+g3_complete_sha256: 482add6385dcb331c63285723f1f97c3417a97c0f359244965e0f7f04b93a6ef
+output_root: data/validation/v2_2_performance_gated_local_cfm_v1/closure/g4_rank128_v1
+population:
+  tasks: 1188
+  ranks: 128
+  slots: 152064
+  original_G4_prefix: 8
+selection:
+  source: sealed_G3_full_predictions_rank
+  full_plan_sealed_before_any_physics: true
+  missing: explicit_failure_no_resampling
+  evaluate_after_first_hit: true
+physics:
+  model_version: geometry19_v2_2_far_precision_v1
+  context_sha256: 49e9b09a047e096f59bd65132fcfaef5b8dc363d563d2be638247e7eaf55eb72
+  bundle_sha256: 2ecf2664a024ccc7ce7bad33d0ccf755eb72d1131fe01b773dff9a64b71ee5be
+  backend: existing_PhysicsRuntime_CPU
+  cache: exact_geometry_and_runtime_within_this_campaign_only
+  dispatch: first_occurrence_in_task_then_rank_order_parallel_fixed_shards
+  workers: 16
+  unique_calls_per_shard: 64
+  solver_failure_retry: false
+  partial_shard_policy: preserve_and_stop_no_automatic_replay
+metrics:
+  hit: geometry_support_and_solver_and_numerical_and_physics_domain_and_target_domain_and_finite_positive_and_rho_le_1
+  rho_tolerances: inherited_unchanged_from_G3_parent
+  ranks_reported: every_integer_1_through_128
+  cumulative_hit: any_hit_in_first_k_fixed_slots
+  report: [first_hit_rank, cumulative_hit_at_k, exact_rank_hit_rate, candidate_hit_count, candidate_hit_fraction_fixed_denominator, at_least_64_hits_of_128, per_seed, per_root, per_target_class, noncenter]
+  original_gates: rank1_primary_arm_and_root_cluster_paired_loss_unchanged
+  expansion: descriptive_rank128_not_replacement_for_original_top8
+prohibited: [dflow, gradient_enhancement, nsga2, resampling, repair, retraining, confirmation_read, deployment]

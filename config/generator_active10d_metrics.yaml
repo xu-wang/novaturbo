@@ -1,0 +1,38 @@
+metrics_version: round_trip_active10d_metrics_v1
+
+threshold_derivation:
+  reference_split: test
+  candidate_split: train
+  quantile: 0.90
+  minimum_thrust_relative_tolerance: 0.001
+  minimum_tsfc_relative_tolerance: 0.001
+  minimum_mass_relative_tolerance: 0.001
+
+epsilons:
+  thrust_N: 1.0e-12
+  tsfc_kg_N_s: 1.0e-15
+  total_mass_kg: 1.0e-15
+
+weights:
+  thrust: 0.3333333333333333
+  tsfc: 0.3333333333333333
+  mass: 0.3333333333333333
+  constraint_violation: 1.0
+
+candidate_validation:
+  normalized_bound_tolerance: 1.0e-7
+  physical_bound_tolerance: 1.0e-10
+  duplicate_linf_tolerance: 1.0e-7
+
+selection:
+  selected_count: 10
+  loose_error_multiplier: 2.0
+  relaxation_factor: 2.0
+  maximum_relaxations: 3
+
+reporting:
+  top_k: [1, 5, 10]
+  coverage_bins_per_dimension: 10
+
+target_domain:
+  normalized_range_margin_fraction: 0.05

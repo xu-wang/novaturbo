@@ -1,0 +1,60 @@
+protocol_version: wp19_23_independent_reranker_v1
+work_package: WP19-23-INDEPENDENT-RERANKER
+status: controlled_ablation
+formal_use_allowed: false
+
+candidate_runtime: data/inverse_design/wp19_23_generator_core_oracle_v1
+candidate_ledger: candidate_ledger.jsonl
+target_suite: target_suite.jsonl
+inverse_protocol: config/physics/wp19_23_inverse_closure_v1.yaml
+
+baseline_model_root: data/inverse_design/wp19_22_gate_k_hit_aligned_surrogate_v1/models/s0_legacy_mse
+performance_model_root: data/inverse_design/wp19_22_performance_surrogate_v2_ablation/formal/models/performance3_log
+forward_model_seeds: [42, 43, 44]
+
+target_splits:
+  train: [train_diagnostic]
+  validation: [development]
+  locked_test: [locked_held_out]
+  external_regression: [historical_regression]
+
+ranking_budgets: [32, 64, 128, 256]
+reranker_seeds: [42, 43, 44]
+training:
+  device: cuda:0
+  hidden_layers: [128, 128, 64]
+  learning_rate: 0.001
+  weight_decay: 0.00001
+  epochs: 60
+  patience: 10
+  pairs_per_run: 256
+  elite_per_run: 16
+  batch_size: 4096
+  minimum_utility_gap: 0.01
+  hit_crossing_weight: 3.0
+
+selection:
+  primary: validation_hit_bearing_recall_at_32
+  tie_breakers:
+    - validation_hit_bearing_recall_at_64
+    - validation_median_first_hit_rank
+  locked_test_used_for_selection: false
+
+promotion:
+  comparison_basis: shared48_s0_only
+  minimum_validation_recall_at_32_absolute_gain: 0.05
+  minimum_locked_recall_at_32_absolute_gain: 0.05
+  require_locked_recall_at_64_non_degradation: true
+
+smoke:
+  maximum_rows_per_split: 2048
+  reranker_seeds: [42]
+  training:
+    epochs: 2
+    patience: 2
+    pairs_per_run: 32
+
+artifacts:
+  runtime_root: data/inverse_design/wp19_23_independent_reranker_v1
+  summary: summary.json
+  report: Independent_Reranker_Report.md

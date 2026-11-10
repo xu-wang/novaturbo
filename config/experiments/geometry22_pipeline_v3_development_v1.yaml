@@ -1,0 +1,19 @@
+version: geometry22_pipeline_v3_development_v1
+model_selector: model V3
+scope: software_fixture_only_unvalidated
+asset_root: data/validation/v3_22d_software_fixture_v1
+stages: [B, C, D, E, F]
+stage_budgets: {C: 8, D: 8, E: 29}
+target_metric: max_absolute_relative_error_divided_by_tolerance
+relative_tolerances:
+  thrust_N: 0.0274514502151586
+  tsfc_kg_N_s: 0.008573042420144972
+  mass_kg: 0.01170710896944147
+tolerance_source: v2_2_development_diagnostic_reused_for_software_routing_only
+candidate_source: deterministic_22d_candidate_table_fixture
+forward_source: exact_label_lookup_fixture
+execution_device: cpu
+resume: complete_run_read_only_verify;partial_run_preserve_and_stop
+formal_use_allowed: false
+deployment_allowed: false
+default_output_root: data/inverse_design/geometry_lowdim_pipeline/model_v3_development

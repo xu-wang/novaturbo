@@ -1,0 +1,41 @@
+version: geometry19_performance_gated_implementation_v1
+preparation_lock:
+  path: data/validation/v2_2_performance_gated_local_cfm_v1/training_preparation/g1_g2_v1/Training_Lock.json
+  sha256: a973aa77b722e35c03c381c7a7ae83c0ce96f26586e917d8053f5ef16603251d
+architecture:
+  activation: silu
+  state_projection: linear_16_to_128
+  condition_encoder: linear_3_to_64_then_silu
+  time_embedding: concat_sin_cos_2pi_t_exp_linspace_0_log1000_16
+  film_context: concat_condition64_time32
+  residual_block: h_plus_linear128_silu_linear128_of_silu_layernorm_h_times_1_plus_scale_plus_shift
+  layer_norm: no_affine_eps_1e-5
+  film_affine: linear_96_to_256_split_scale_shift
+  residual_blocks: 2
+  local_heads: 33_independent_linear128_64_silu_linear64_16
+  pooled_flow: same_trunk_one_head_no_root_input
+  pooled_integer: independent_3_64_silu_64_silu_encoder_three_linear_heads
+  initialization: pytorch_default_seeded
+  dropout: none
+runtime:
+  arms: [gate, local_cfm, pooled_cfm]
+  seeds: [42, 43, 44]
+  device: cuda_0_physical_6_only
+  precision: float32_no_amp_no_tf32
+  deterministic_algorithms: true
+  cublas_workspace_config: ':4096:8'
+  sampler: independent_cpu_generator_seed_plus_10000
+  flow_noise: independent_cuda_generator_seed_plus_20000
+  validation_batch_size: 528
+  gate_gradient_clip: none
+  pooled_gradient_clip: inherit_local_10
+  checkpoint: unique_epoch_file_at_each_absolute_best_no_overwrite
+  resume: unsupported_fail_closed_on_existing_run_directory
+  nonfinite_loss_or_gradient: abort_and_retain_failed_run
+  diagnostic_gate_thresholds: report_only_not_training_block
+  synthetic_tests: permitted_not_formal_training
+  formal_training: requires_explicit_cli_authorization
+  generation_and_physics: not_implemented_or_authorized
+artifacts:
+  implementation_lock: data/validation/v2_2_performance_gated_local_cfm_v1/training_implementation/g1_g2_v1/Implementation_Lock.json
+  training_output: data/validation/v2_2_performance_gated_local_cfm_v1/model_training/g1_g2_v1

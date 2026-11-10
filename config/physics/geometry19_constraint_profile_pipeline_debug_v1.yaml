@@ -1,0 +1,26 @@
+profile_version: geometry19_constraint_profile_pipeline_debug_v1
+description: >-
+  Permissive Geometry19 pipeline-debug profile. Numerical and physics-domain
+  validity remain mandatory; engineering constraints are reported but do not
+  reject an otherwise defined design point.
+
+acceptance:
+  require_numerical_valid: true
+  require_physics_domain_valid: true
+  require_engineering_feasible: false
+
+constraint_partition:
+  numerical_hard:
+    - solver convergence and typed failure state
+    - finite positive thrust, TSFC, and V2.1 mass
+    - finite conservation residuals
+  physics_domain:
+    - complete matched component state
+    - finite thermodynamic-domain residuals
+  engineering_soft:
+    - thermodynamic performance and calibration limits
+    - assembly limits
+    - structural limits
+    - thermal limits
+    - manufacturing limits
+

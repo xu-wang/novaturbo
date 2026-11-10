@@ -1,0 +1,45 @@
+version: geometry22_v3_target_routed_local_l6c_v1
+scope: old_validation_covered_targets_software_diagnostic_no_model_selection
+sources:
+  l6a_path: data/validation/v3_22d_target_route_l6a_v1
+  l6a_complete_sha256: 52b9b958b2624df635e7df1bbf29eb226148bb47284eb607013f0d2b522c28f3
+  targets_sha256: f0ec3b207cddf7be89c4202496993cffdd7e13cf999db2c8e43e83b3118a94ce
+  l6b_path: data/validation/v3_22d_target_gate_l6b_gpu6_v1
+  l6b_fit_sha256: 740d9d5b8739beb0801b434b9ac54d6b93ffbf61684e97090afaebea101c2610
+  gate_selection_sha256: 1245d2c969e480bc4c9aa82bfe0fa2d95ba7aad705c45411152bf94b3405617a
+  local_forward_sha256: a1bd0de907c298042e093e59c7a003170c060e02e86db2261eed9ec25eda8564
+  diagnostic_profile_path: config/physics/geometry19_constraint_profile_pipeline_debug_v1.yaml
+  diagnostic_profile_sha256: 5b5d916ae60bdd80fb0a64e0af514206100d4aff2612d8d0261989b1695fa8f3
+identity:
+  design_schema_hash: 856f763c6318fd19b8f5e4914203a0279c36f83d3c11fe828546131965cc77b2
+  physics_bundle_hash: 822220d90af85f75ff36ef418972d5ec75123c246e0dff52e081e6eed177c450
+target_population: old_l6a_selected_15_targets_diagnostic_only
+runtime_target_fields: [target_id, target_performance]
+source_center_id_runtime_available: false
+arms: [gated_top1, gated_top2, nearest_center_without_gate]
+route_policy: mask_to_l6a_eligible_centers_then_rank_else_abstain
+raw_candidates_per_target_per_arm: 256
+physics_evaluations_per_target_per_arm: 8
+top2_allocation: equal_128_each
+local_generation:
+  method: target_and_center_seeded_scrambled_sobol_19d_directions_four_radius_bands
+  radial_bands: [[0.0, 0.02], [0.02, 0.04], [0.04, 0.06], [0.06, 0.08]]
+  sobol_dimension: 20
+  sobol_power: 8
+  seed_salt: v3_l6c_local_sobol_v1
+  integer_policy: fixed_from_routed_center
+  geometry_screen: v2_2_analytic_hard_failure_on_22d_projection
+  invalid_policy: retain_raw_slot_no_resample
+scoring:
+  model: l6b_selected_center_local_ridge
+  objective: max_absolute_relative_error_over_three_targets
+  unique_design_id_before_physics: true
+  tie_break: [predicted_rho, design_id]
+software_hit_relative_tolerance_each_output: 0.05
+f_recompute: best_physics_rho_per_target_and_arm_after_evaluation
+selected_ledger_sealed_before_physics: true
+gate_inference_device: cuda:0
+physical_gpu_index: 6
+formal_use_allowed: false
+deployment_allowed: false
+output_root: data/validation/v3_22d_target_routed_local_l6c_v1

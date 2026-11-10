@@ -1,0 +1,126 @@
+protocol_version: geometry19_v2_2_stable_root_s3_v4_1_physics_acquisition_v1
+status: preregistered_after_v4_1_coordinate_lock_before_physics_labels
+stage: S3_v4_1_development_physics_acquisition_protocol_lock
+scope_definition: post_selected_33root_medoid_covariance_development_only
+formal_use_allowed: false
+deployment_allowed: false
+
+inputs:
+  v4_protocol:
+    path: config/experiments/geometry19_v2_2_stable_root_s3_v4_medoid_covariance_prelabel_v1.yaml
+    sha256: 61ae624acaec961c8e0c7f43006298d5609f2695e26b839c854ac1d6c8bcd136
+  v4_implementation:
+    path: src/ai/geometry19_v2_2_stable_root_s3_v4_medoid.py
+    sha256: e16d0ad56d8dcb3e14029049b923ef343c03269aca48902b4cb6369d1967fa71
+  v4_failure_summary:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/audits/S3_v4_Medoid_Covariance_Prelabel_Summary.json
+    sha256: 3955ada279efa329c973b9b02e91cbb195545caf3a744a40b4c418e710e0ac13
+    required_status: STABLE_ROOT_S3_V4_MEDOID_COVARIANCE_COORDINATE_LOCK_FAIL
+  v4_1_protocol:
+    path: config/experiments/geometry19_v2_2_stable_root_s3_v4_1_boundary_completion_v1.yaml
+    sha256: 72e1ae4df6dfc297cdf60937ce0412050ad288c8cdbfd9d19759685fc07424c3
+  v4_1_implementation:
+    path: src/ai/geometry19_v2_2_stable_root_s3_v4_1_completion.py
+    sha256: 87114e2b0f8b3910183ce8603125ec5e94d7baa056fc3bcbaccc0727f3a06238
+  v4_1_coordinate_summary:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/audits/S3_v4_1_Boundary_Completion_Summary.json
+    sha256: a965d738c92f5e999b06c3873a25e6cc9c9b589e280f1943588550814721a0dc
+    required_status: STABLE_ROOT_S3_V4_1_BOUNDARY_COMPLETION_LOCK_PASS
+  coordinate_ledger:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/fresh_evaluation_v4_1_medoid/S3_v4_1_Combined_Prelabel_Coordinates.jsonl
+    sha256: 81e9b934f1419abed9e5702264447be5f0e809ff894f70b75e20726251170199
+  design_schema:
+    path: config/physics/geometry19_schema_v1.yaml
+    sha256: cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28
+  target_domain:
+    path: config/physics/geometry19_v2_2_development_target_domain_v1.yaml
+    sha256: c3905de3d89c8405954d24172cdc614a3c08423595a33216adb1f2fcccc689f4
+  s2_model_manifest:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/models/S2_Model_Manifest.json
+    sha256: c1da78af5395718c855df9e32df31a4ad3763238b3d746b8374dafd0dcf8358b
+    access_before_acquisition_pass: sha256_only_no_parse
+  sealed_confirmation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+    sha256: a3051cae177d1c9735699ef4b50675f41f5f0ffd7d954b3a233f5ebf1ea8b1fd
+    access: sha256_only_no_parse
+
+execution_order:
+  - verify_all_input_hashes_and_v4_1_coordinate_pass
+  - evaluate_all_3168_coordinates_with_unified_V2_2
+  - write_and_hash_all_shards
+  - seal_complete_physics_ledger_before_any_model_access
+  - apply_frozen_acquisition_gate
+  - stop_on_acquisition_failure
+  - only_after_acquisition_pass_separately_authorize_frozen_model_scoring
+
+physics_labeling:
+  pipeline_profile: v2_2_development
+  expected_coordinates: 3168
+  expected_roots: 33
+  expected_rows_per_root: 96
+  shard_size: 96
+  resume_requires_exact_protocol_coordinate_context_and_shard_hashes: true
+  labeler: unified_geometry19_v2_2_physics_runtime
+  evaluation_eligible_requires:
+    - solver_converged
+    - numerically_valid
+    - physics_domain_valid
+    - finite_positive_three_performance
+    - inside_V2_2_development_target_domain
+  evaluation_rows_may_enter_training: false
+  performance_adaptive_top_up: false
+  coordinate_deletion_after_labeling: false
+
+acquisition_gates:
+  exact_roots: 33
+  exact_evaluations: 3168
+  exact_rows_per_root: 96
+  minimum_evaluation_eligible_per_root: 32
+  minimum_evaluation_eligible_fraction_overall: 0.80
+  minimum_evaluation_eligible_fraction_each_source_target_segment: 0.80
+  require_all_coordinate_design_hashes_preserved_in_order: true
+  require_no_duplicate_design_hashes: true
+  require_all_shards_complete_before_gate: true
+
+post_acquisition_policy:
+  model_scoring_executed_in_this_stage: false
+  acquisition_pass_only_authorizes_separate_scoring_protocol: true
+  failure_action: seal_failure_evidence_and_stop
+  coordinate_or_gate_adaptation_after_results: forbidden
+  inverse_design_authorized: false
+
+claims:
+  permitted:
+    - V2_2_development_acquisition_statistics_on_post_selected_33root_v4_1_coordinates
+    - comparison_with_prior_v3_acquisition_as_development_evidence
+  forbidden:
+    - fresh_confirmation_accuracy
+    - unbiased_generalization
+    - original_38root_accuracy
+    - all_78root_accuracy
+    - unknown_manifold_generalization
+    - inverse_design_readiness
+    - formal_or_deployment_use
+
+artifacts:
+  runtime_root: data/validation/v2_2_stable_root_forward_fresh_eval_v1
+  protocol_lock: audits/S3_v4_1_Physics_Protocol_Lock.json
+  protocol_lock_report: audits/S3_v4_1_Physics_Protocol_Lock_Report.md
+  future_physics_shards: fresh_evaluation_v4_1_medoid/physics_shards
+  future_sealed_physics_ledger: fresh_evaluation_v4_1_medoid/S3_v4_1_Sealed_V2_2_Evaluations.jsonl
+  future_physics_summary: audits/S3_v4_1_Physics_Acquisition_Summary.json
+  future_physics_report: audits/S3_v4_1_Physics_Acquisition_Report.md
+  future_prediction_ledger: fresh_evaluation_v4_1_medoid/S3_v4_1_Frozen_Model_Predictions.jsonl
+
+statuses:
+  protocol_lock_pass: STABLE_ROOT_S3_V4_1_PHYSICS_PROTOCOL_LOCK_PASS
+  acquisition_pass: STABLE_ROOT_S3_V4_1_PHYSICS_ACQUISITION_PASS
+  acquisition_fail: STABLE_ROOT_S3_V4_1_PHYSICS_ACQUISITION_FAIL
+  artifact_fail: STABLE_ROOT_S3_V4_1_PHYSICS_ARTIFACT_FAIL
+
+limitations:
+  - v4_1_is_adaptive_development_after_observing_v3_physics_and_v4_coordinate_failures
+  - coordinates_are_not_fresh_confirmation
+  - four_boundary_roots_hold_one_or_two_integer_axes_fixed
+  - the_33root_scope_remains_post_selected
+  - V2_2_is_a_simplified_software_model_not_real_engine_validation

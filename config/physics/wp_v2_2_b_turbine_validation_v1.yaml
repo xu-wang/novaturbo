@@ -1,0 +1,27 @@
+validation_id: wp_v2_2_b_turbine_validation_v1
+baseline_profile: v2_2_hecc_shadow
+enhanced_profile: v2_2_comp_turb_shadow
+expected_turbine_map_id: synthetic_single_stage_turbine_v1
+dense_map_scan:
+  corrected_speed_samples: 81
+  corrected_mass_flux_samples: 121
+  max_adjacent_efficiency_jump: 0.01
+boundary_classification:
+  probe_fraction_of_capacity_span: 0.001
+root_sweep:
+  shaft_speed_ratios: [0.85, 0.90, 0.95, 1.00, 1.05]
+  minimum_enhanced_converged_fraction: 1.0
+  max_consecutive_mass_flow_relative_jump: 0.20
+  shaft_power_absolute_tolerance_W: 1.0e-6
+runtime_benchmark:
+  shaft_speed_ratios: [0.85, 0.90, 0.95, 1.00, 1.05]
+  warmup_repetitions: 2
+  timed_repetitions: 7
+  max_p50_enhanced_to_baseline_ratio: 2.0
+  max_p95_enhanced_to_baseline_ratio: 2.0
+engineering_blockers:
+  - turbine_map_is_synthetic_software_fixture
+  - no_independent_turbine_rig_or_high_fidelity_validation
+  - no_measured_capacity_or_choke_boundary
+artifacts:
+  default_output_root: data/validation/wp_v2_2_b_turbine_v1

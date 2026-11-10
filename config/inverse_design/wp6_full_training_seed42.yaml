@@ -1,0 +1,15 @@
+version: wp6_full_training_seed42_v1
+target_config: config/inverse_design/targets/target_001.yaml
+
+run_configs:
+  - config/inverse_design/runs/full_training_seed42_random.yaml
+  - config/inverse_design/runs/full_training_seed42_cvae.yaml
+  - config/inverse_design/runs/full_training_seed42_nflows.yaml
+  - config/inverse_design/runs/full_training_seed42_cinn.yaml
+  - config/inverse_design/runs/full_training_seed42_cfm.yaml
+
+reproducibility_run_config: config/inverse_design/runs/full_training_seed42_cvae.yaml
+
+output:
+  directory: data/inverse_design/wp6_full_training_seed42
+  refuse_overwrite: true

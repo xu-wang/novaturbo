@@ -1,0 +1,53 @@
+version: s2_wp3_smoke_v1
+
+data:
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  metrics_config: config/generator_active10d_metrics.yaml
+  target_suite: data/generator_active10d_100k/targets/target_suite_active10d_v1.csv
+  frozen_targets: config/stage2/s2_wp1_end_to_end_targets_v1.yaml
+
+surrogate:
+  seed: 7301
+  hidden_dims: [32, 32]
+  batch_size: 4096
+  num_workers: 0
+  learning_rate: 0.001
+  weight_decay: 0.00001
+  epochs: 2
+  patience: 2
+  min_delta: 0.000001
+  condition_weights: [0.3333333333333333, 0.3333333333333333, 0.3333333333333333]
+
+model_sets:
+  - training_seed: 42
+    models:
+      - model_id: nflows
+        checkpoint_path: data/generator_models/wp3_active10d_full_gpu6_v1/nflows/seed_42/best.pt
+
+experiments:
+  baseline:
+    experiment_id: s2wp3_smoke_raw_v1
+  screening:
+    experiment_id: s2wp3_smoke_screening_v1
+  repair:
+    experiment_id: s2wp3_smoke_repair_v1
+    steps: 2
+    learning_rate: 0.03
+    prior_weight: 0.01
+    boundary_weight: 5.0
+    maximum_latent_displacement: 0.75
+    maximum_initial_abs_design: 10.0
+    gradient_clip_norm: 1.0
+
+runtime:
+  device: cuda
+  sample_seed_base: 20260812
+  candidate_pool_size: 16
+  physical_evaluation_count: 8
+  maximum_targets: 1
+
+output:
+  directory: data/inverse_design/stage2/s2_wp3_smoke_v1
+  refuse_overwrite: true

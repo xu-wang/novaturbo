@@ -1,0 +1,128 @@
+protocol_version: geometry19_v2_2_stable_root_s3_prelabel_v1
+status: preregistered_before_prelabel_coordinate_generation
+stage: S3_generate_and_seal_prelabel_coordinates
+formal_use_allowed: false
+deployment_allowed: false
+
+inputs:
+  parent_forward_protocol:
+    path: config/experiments/geometry19_v2_2_stable_root_forward_fresh_eval_v1.yaml
+    sha256: 0ebe4537162334dd5548fb7354bb7967f9bce2fc52a967ef21ffc69f93603be7
+  s2_training_protocol:
+    path: config/experiments/geometry19_v2_2_stable_root_s2_training_v1.yaml
+    sha256: 92fd23c4d0ac95f92f2918edd92d958cb90274b3354973d7f2b7cb46bf73d20c
+  s2_model_manifest:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/models/S2_Model_Manifest.json
+    sha256: c1da78af5395718c855df9e32df31a4ad3763238b3d746b8374dafd0dcf8358b
+    required_status: STABLE_ROOT_S2_MODEL_MANIFEST_LOCK_PASS
+  s2_regression_authorization:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/audits/S2_Regression_Authorization.json
+    sha256: 2a63288ad46b1f8e03d8e3eb7796ebb22e7309965a999efed90d750320c8cbbf
+    required_status: STABLE_ROOT_S2_REGRESSION_PASS_S3_AUTHORIZED
+  stable_root_registry:
+    path: data/validation/v2_2_stable_root_conditional_surrogate_v1/audits/stable_root_registry.jsonl
+    sha256: eedbc02591bc7b6b044071ecf0d1754d648b4ad9210114887b314e1b964352ad
+  design_schema:
+    path: config/physics/geometry19_schema_v1.yaml
+    sha256: cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28
+  development_dataset:
+    path: data/validation/v2_2_known_manifold_root_discovery_v1/development_dataset.jsonl
+    sha256: cde2c3f6a0cebc91a437f45b7aae5d2ebfe2b8adff952942d05efaae09297134
+    access: design_hash_duplicate_check_only
+  sealed_confirmation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+    sha256: a3051cae177d1c9735699ef4b50675f41f5f0ffd7d954b3a233f5ebf1ea8b1fd
+    access: sha256_only_no_parse
+
+directions:
+  dimension: 19
+  axis_directions: 19
+  sobol_directions: 29
+  sobol_engine: scipy.stats.qmc.Sobol
+  sobol_scramble: true
+  sobol_seed: 20260915
+  sobol_generation: random_base2_m5_take_first_29
+  sobol_transform: two_u_minus_one_then_unit_l2_normalize
+  direction_order: all_19_schema_axes_then_29_sobol
+  positive_negative_order: positive_then_negative
+
+radius_allocation:
+  support_radius_source: frozen_registry_p95_normalized_l2
+  axis_0_to_9_fraction: 0.50
+  axis_10_to_18_fraction: 0.90
+  sobol_0_to_13_fraction: 0.50
+  sobol_14_to_28_fraction: 0.90
+  pairs_at_fraction_0_50_per_root: 24
+  pairs_at_fraction_0_90_per_root: 24
+
+coordinate_conversion:
+  proposal_space: schema_range_normalized
+  float_coordinates: affine_denormalize_float64
+  integer_coordinates: numpy_rint_then_int_within_schema_bounds
+  integer_variable_names: [compressor_blade_count, combustor_injector_count, turbine_blade_count]
+  bounds_check: raw_normalized_proposal_must_be_within_closed_unit_box
+  bounds_failure_action: record_reject_no_clipping
+  canonical_design_hash: sha256_compact_sorted_json_geometry19
+  proposal_hash: sha256_compact_sorted_json_identity_and_raw_normalized_coordinates
+
+ledger:
+  roots: 38
+  pairs_per_root: 48
+  attempts_per_root: 96
+  total_attempts: 3648
+  exactly_one_row_per_attempt: true
+  required_fields:
+    - attempt_id
+    - proposal_hash
+    - root_seed_id
+    - pair_index
+    - direction_family
+    - direction_index
+    - radius_fraction
+    - sign
+    - raw_normalized_geometry19
+    - coordinate_status
+    - rejection_reasons
+    - geometry19
+    - design_hash
+    - label_status
+  label_status: NOT_EVALUATED_PRELABEL_ONLY
+  duplicate_checks: [within_S3_accepted_coordinates, existing_development_design_hash]
+  duplicate_action: record_reject_no_replacement
+  performance_fields_allowed: false
+  physics_evaluation_fields_allowed: false
+
+prelabel_gate:
+  exact_attempt_rows: 3648
+  exact_attempts_per_root: 96
+  minimum_coordinate_eligible_per_root: 80
+  require_unique_eligible_design_hashes: true
+  require_no_eligible_overlap_with_development: true
+  require_all_rejections_recorded: true
+  require_zero_performance_or_physics_fields: true
+  require_model_files_unopened: true
+  require_confirmation_content_unread: true
+
+authorization:
+  physics_labeling_authorized_only_if_prelabel_gate_passes: true
+  model_prediction_authorized: false
+  adaptive_coordinate_revision_authorized: false
+  inverse_design_authorized: false
+  original_local_chart_P4_authorized: false
+
+artifacts:
+  runtime_root: data/validation/v2_2_stable_root_forward_fresh_eval_v1
+  prelabel_ledger: fresh_evaluation/S3_Prelabel_Coordinates.jsonl
+  direction_matrix: fresh_evaluation/S3_Direction_Matrix.npz
+  prelabel_summary: audits/S3_Prelabel_Coordinate_Summary.json
+  prelabel_report: audits/S3_Prelabel_Coordinate_Report.md
+
+statuses:
+  pass: STABLE_ROOT_S3_PRELABEL_COORDINATE_LOCK_PASS
+  fail: STABLE_ROOT_S3_PRELABEL_COORDINATE_LOCK_FAIL
+
+limitations:
+  - coordinate_eligibility_does_not_imply_physics_domain_validity
+  - no_performance_label_or_model_prediction_exists_at_this_stage
+  - integer_rounding_can_break_exact_physical_space_antithetic_symmetry
+  - fresh_coordinate_accuracy_cannot_be_inferred_before_V2_2_labeling

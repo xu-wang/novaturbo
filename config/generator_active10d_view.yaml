@@ -1,0 +1,10 @@
+version: generator_active10d_view_v1
+dataset_version: generator_active10d_expanded100k_v1
+schema: config/generator_active10d_schema.yaml
+source:
+  raw_csv: data/generator_v1_100k/dataset_100000_raw.csv
+  base_valid_csv: data/generator_v1_100k/generator_dataset_v1_valid.csv
+  base_target_suite: data/generator_v1_100k/targets/target_suite_v1.csv
+output:
+  directory: data/generator_active10d_100k
+  refuse_overwrite: true

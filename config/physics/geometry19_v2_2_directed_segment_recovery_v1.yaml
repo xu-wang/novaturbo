@@ -1,0 +1,57 @@
+dataset_version: geometry19_v2_2_directed_segment_recovery_v1
+status: software_development_directed_recovery
+profile: v2_2_development
+purpose: recover_undercovered_target_segments_with_local_19d_performance_sensitivity
+formal_use_allowed: false
+engineering_validation_required: false
+base_expansion:
+  raw_dataset: data/validation/v2_2_segment_balanced_expansion_v1/raw_dataset.jsonl
+  raw_dataset_sha256: f059371e70e2529a4508beb20ae487f2adc123707a4e91fefb8f975b8d0833f2
+  accepted_dataset: data/validation/v2_2_segment_balanced_expansion_v1/accepted_dataset.jsonl
+  accepted_dataset_sha256: a0e004207ae1b9675f2988815a6b00a61d54b7575ce6eed207a22502154c46ef
+sampling:
+  method: root_grouped_local_ridge_jacobian_projection_v1
+  random_seed: 20260913
+  segments:
+    - low_mass_low_to_mid
+    - high_mass_low_to_mid
+    - cross_branch_mid
+    - high_mass_mid_to_high
+  root_model_count: 8
+  minimum_root_models: 3
+  minimum_observations_per_root: 25
+  maximum_observations_per_root: 96
+  ridge: 0.001
+  inverse_ridge: 0.01
+  discrete_step_probability: 0.08
+  rounds:
+    - samples_per_segment: 160
+      trust_radius_fraction: 0.05
+      perturbation_radius_fraction: 0.004
+      step_gain: 0.7
+    - samples_per_segment: 160
+      trust_radius_fraction: 0.03
+      perturbation_radius_fraction: 0.002
+      step_gain: 0.8
+    - samples_per_segment: 160
+      trust_radius_fraction: 0.015
+      perturbation_radius_fraction: 0.001
+      step_gain: 0.9
+acceptance:
+  require_numerically_valid: true
+  require_physics_domain_valid: true
+  require_inside_assigned_segment_corridor: true
+  require_engineering_feasible: false
+  deduplicate_by_design_hash: true
+coverage_gate:
+  minimum_rows_per_segment: 100
+  minimum_root_seeds_per_segment: 3
+split:
+  grouping_keys: [assigned_segment, root_seed_id]
+  train: 0.70
+  validation: 0.15
+  test: 0.15
+limitations:
+  - local_linear_sensitivity_is_a_sampling_controller_not_a_physics_model
+  - simplified_v2_2_software_labels_only
+  - no_real_geometry_or_engineering_feasibility_claim

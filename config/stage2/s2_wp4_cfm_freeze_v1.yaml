@@ -1,0 +1,226 @@
+baseline_id: s2_wp4_cfm_freeze_v1
+manifest_version: stage2_wp4_cfm_freeze_manifest_v1
+immutable: true
+frozen_utc: '2026-08-13T00:00:00Z'
+
+scope:
+  stage: S2-WP4
+  status: completed_and_integrated
+  statement: >-
+    This manifest freezes the CFM architecture, GPU-Sinkhorn training-path,
+    RK4 step-count and Gaussian source-sensitivity experiments after their
+    integration into main. It does not replace nflows as the Stage-II
+    target-accuracy primary model.
+
+code:
+  source_commit: 6e9bc91720e5657843b350bea4bbc29f87f37e3c
+  source_commit_policy: must_be_ancestor_of_current_head
+  branch_at_freeze: main
+  provenance_branch: CFM修正
+  integrated_commit_range:
+    first: 25666a0
+    last: 6e9bc91
+
+runtime:
+  conda_environment: inverse_design_nova
+  physical_gpu: 6
+  gpu_name: NVIDIA GeForce RTX 4090
+
+candidate_contract:
+  protocol: v2_1_fixed_raw
+  raw_candidates: 128
+  reject_before_0d: [non_finite, out_of_bounds, duplicate]
+  keep_rule: 'N_keep = 2^floor(log2(N_valid))'
+  trim_order: immutable_candidate_id
+  refill: false
+  downstream_0d_count: N_keep
+
+frozen_cfm:
+  precision:
+    architecture: film_residual
+    matcher: gpu_sinkhorn
+    sinkhorn_regularization: 0.1
+    sinkhorn_iterations: 50
+    ode_method: rk4
+    ode_steps: 32
+  throughput:
+    same_as_precision_except_ode_steps: true
+    ode_steps: 16
+  checkpoint_seeds: [42, 43]
+  source_seeds:
+    - 20260812
+    - 20260813
+    - 20260814
+    - 20260815
+    - 20260816
+    - 20260817
+    - 20260818
+    - 20260819
+
+decision:
+  cfm_best_error_median: 0.000735
+  nflows_reference_best_error_median: 0.000282
+  cfm_top10_error: 0.001512
+  nflows_reference_top10_error: 0.000625
+  cfm_hit_rate: 0.7911
+  nflows_reference_hit_rate: 0.8964
+  cfm_target_success_rate: 0.9667
+  nflows_reference_target_success_rate: 0.9667
+  cfm_valid_rate: 0.7049
+  nflows_reference_valid_rate: 0.4073
+  primary_model: nflows
+  cfm_role: high-validity complementary generator and strong comparison method
+  further_unbounded_cfm_architecture_search: false
+
+artifacts:
+  - category: target_configuration
+    path: config/experiments/cfm_arch/cfm_generalization_targets_v1.yaml
+    bytes: 875
+    sha256: 3bb518a1b4ee2f738e0b74260d1f17b2818178b2ac715040fd06f01a9cebe894
+  - category: target_suite
+    path: config/experiments/cfm_arch/cfm_0_generalization_targets.csv
+    bytes: 17932
+    sha256: cf588c4613f8ee3f6e0ec45b1edcd213d546fca621353c9351e919e031208f72
+  - category: training_configuration
+    path: config/experiments/cfm_arch/s2_wp4b_cfm_4_ot_train.yaml
+    bytes: 1986
+    sha256: af92fabf4009c840e413d919716f667fefe502b5d304a1d44064b99331f0b790
+  - category: evaluation_configuration
+    path: config/experiments/cfm_arch/s2_wp4b_cfm_4_ot_eval_seed42_v2_1.yaml
+    bytes: 762
+    sha256: c4516386b41fc822893f99d95e1290b015dc55182795055ab2affcdf4a3ba77b
+  - category: evaluation_configuration
+    path: config/experiments/cfm_arch/s2_wp4b_cfm_4_ot_eval_seed43_v2_1.yaml
+    bytes: 762
+    sha256: c196ce13800b518b1b6c026d153e0e39c8d93f039bced23d44a897d3032f6f90
+  - category: throughput_configuration
+    path: config/experiments/cfm_arch/s2_wp4c_steps16_seed42_v2_1.yaml
+    bytes: 765
+    sha256: f523cc367e3870fd86ffbf44cb4aa9f37efc00acd4407b38a2a333f3630bb982
+  - category: throughput_configuration
+    path: config/experiments/cfm_arch/s2_wp4c_steps16_seed43_v2_1.yaml
+    bytes: 765
+    sha256: f75cc0fad45cd50566668a88a80c8b425c1d0c7aa161037ca3f79386db0bed78
+  - category: precision_configuration
+    path: config/experiments/cfm_arch/s2_wp4c_steps32_seed42_v2_1.yaml
+    bytes: 765
+    sha256: 311ad05e6f0634d4097b73eb30d706bca905f9e587a3e65325db8f3d50cec871
+  - category: precision_configuration
+    path: config/experiments/cfm_arch/s2_wp4c_steps32_seed43_v2_1.yaml
+    bytes: 765
+    sha256: d7b036d289a8dcf513ce4485905e501dca95c81b69e5613f2f0da68b15979a20
+  - category: sensitivity_configuration
+    path: config/experiments/cfm_arch/s2_wp4d_random_source_sensitivity.yaml
+    bytes: 1090
+    sha256: 96e922be95766a4560198b480480c6ebcd40d4f6f12787f163e094dfdcf677c3
+  - category: checkpoint
+    path: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_42/best.pt
+    bytes: 1681067
+    sha256: 0199bc31b7f07ac7c78226e8cd454bc2257be1bc39981a7cf5470127fff4e89d
+  - category: checkpoint
+    path: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/cfm/seed_43/best.pt
+    bytes: 1685355
+    sha256: f9dfefc3597e9df1cd2e1a0db2522c9b15f3ea3653072ab4686190fd38c0b664
+  - category: training_record
+    path: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/wp3_manifest.yaml
+    bytes: 2054
+    sha256: 3c4f702840c956f5fca6c755f06651e9d57c8c04ee97d8ddfd53ddae77dfbd1d
+  - category: training_record
+    path: data/generator_models/stage2/cfm_arch/s2_wp4b_cfm_4_gpu_sinkhorn_gpu6_v1/seed_summary.csv
+    bytes: 987
+    sha256: 96bda4396e6cfc426cfe64a8c591fc510c5c7d18a438461cddfb42db5cb3da90
+  - category: architecture_result
+    path: results/s2_arch_cfm/cfm_7/cfm_0_to_7_comparison.csv
+    bytes: 1851
+    sha256: bd8d169fef178eb6094b07a144e850bdd4d96e7cea85078f4a55527ae652db1b
+  - category: architecture_report
+    path: results/s2_arch_cfm/cfm_7/CFM-7阶段与最终结构对照报告.md
+    bytes: 4950
+    sha256: 6f42efe8a568f7ddb8f4c035977849d72c77aa50235ae2fcc6dac2160c49b788
+  - category: wp4b_manifest
+    path: results/stage2/s2_wp4b/manifest.json
+    bytes: 720
+    sha256: 5eb6db6e32a194bf92dad967a6347e84d166a29142dcef1b6544d5a18900e8fa
+  - category: wp4b_result
+    path: results/stage2/s2_wp4b/s2_wp4b_ledger.csv
+    bytes: 65696
+    sha256: 00da7606ba285dd1686ac8f86f75275ba2e83ee939303fd0c2007ae6c9376a7f
+  - category: wp4b_report
+    path: results/stage2/s2_wp4b/S2-WP4B_Plain与GPU-Sinkhorn-OT-CFM对照报告.md
+    bytes: 4213
+    sha256: d793778611ee1ae967dee71447c99f8e74c8ff6234a3a1c7ccc05e3963031437
+  - category: wp4c_manifest
+    path: results/stage2/s2_wp4c/manifest.json
+    bytes: 682
+    sha256: ef4e4174be6f775a21af5e30d4ce29f330fe060ccf450483cad3ba7d37fbf996
+  - category: wp4c_result
+    path: results/stage2/s2_wp4c/s2_wp4c_ledger.csv
+    bytes: 160325
+    sha256: aff55c75aedfffbc20fad988d5fa52467974985ce3eb55c732769e40d93a3ab4
+  - category: wp4c_report
+    path: results/stage2/s2_wp4c/S2-WP4C_ODE步数与推理成本消融报告.md
+    bytes: 3310
+    sha256: 08be5d438c3ba65130b7fedd0db7bee0ee9fa29ca026db2c8c7a78ecdf4cb319
+  - category: wp4d_manifest
+    path: results/stage2/s2_wp4d/manifest.json
+    bytes: 885
+    sha256: ebf04f8a2648ce28475e87b56a3ce6a8200181102d587e801145a1d58dbd9db5
+  - category: wp4d_result
+    path: results/stage2/s2_wp4d/s2_wp4d_ledger.csv
+    bytes: 328008
+    sha256: 7787b191d124126a74b85f4253b20273c79ac0c073df34646604ea6ba56daad5
+  - category: wp4d_report
+    path: results/stage2/s2_wp4d/S2-WP4D_CFM随机源起点敏感性实验报告.md
+    bytes: 3792
+    sha256: 649ff1bca5a7e6da2bdaae061f43026680f57f516bcb00a9b2f93aa54cafe0f7
+  - category: final_report
+    path: docs/CFM网络结构调整与专项实验阶段总结报告.md
+    bytes: 17854
+    sha256: c7f5bc18b6d84725775e83030536ac26f29bb0a4dea01a070fefa59f32fe7203
+
+semantic_checks:
+  - kind: csv
+    path: config/experiments/cfm_arch/cfm_0_generalization_targets.csv
+    row_count: 30
+    value_counts:
+      generalization_group:
+        ID: 10
+        Interpolation: 10
+        Boundary: 10
+  - kind: csv
+    path: results/stage2/s2_wp4b/s2_wp4b_ledger.csv
+    row_count: 60
+    value_counts:
+      seed:
+        '42': 30
+        '43': 30
+      architecture:
+        CFM-4-GPU-SINKHORN: 60
+  - kind: csv
+    path: results/stage2/s2_wp4c/s2_wp4c_ledger.csv
+    row_count: 240
+    value_counts:
+      ode_steps:
+        '8': 60
+        '16': 60
+        '32': 60
+        '64': 60
+      seed:
+        '42': 120
+        '43': 120
+  - kind: csv
+    path: results/stage2/s2_wp4d/s2_wp4d_ledger.csv
+    row_count: 480
+    value_counts:
+      checkpoint_seed:
+        '42': 240
+        '43': 240
+      source_seed:
+        '20260812': 60
+        '20260813': 60
+        '20260814': 60
+        '20260815': 60
+        '20260816': 60
+        '20260817': 60
+        '20260818': 60
+        '20260819': 60

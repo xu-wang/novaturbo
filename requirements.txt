@@ -8,6 +8,7 @@ matplotlib>=3.7.0
 torch>=2.0.0
 PyYAML>=6.0
 trimesh>=3.21.0
+scikit-image>=0.21.0
 coolprop>=6.6.0
 cadquery>=2.3.0
 plotly>=5.14.0
@@ -18,3 +19,9 @@ pyvista>=0.39.0
 flask>=2.3.0
 flask-cors>=4.0.0
 pytest>=7.4.0
+
+# WP3 conditional generator baselines (frozen in config/third_party_models.lock.yaml)
+nflows==0.14
+FrEIA==0.2
+torchcfm==1.0.7
+torchdiffeq==0.2.5

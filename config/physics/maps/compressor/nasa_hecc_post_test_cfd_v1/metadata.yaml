@@ -1,0 +1,57 @@
+map_id: nasa_hecc_post_test_cfd_v1
+map_version: 1.0.0
+component_type: compressor
+formal_use_allowed: false
+source:
+  type: nasa_post_test_cfd_with_independent_rig_comparison
+  reference: NASA/CR-2014-218114/REV1
+  license: US_Government_work_public_use_permitted
+  validation_status: shadow_only_single_measured_speedline
+  document_id: "20180001471"
+  report_url: https://ntrs.nasa.gov/citations/20180001471
+  source_location: Table A.3 CFD map and Table A.4(a) measured 100-percent speedline
+  local_data_file: source_points.csv
+  local_data_sha256: 5a663ca3b59cab10b2456419f499708c7b5fd6f099a790a7c345f03a786feebf
+  extraction_method: manual_double_entry_checked_transcription_from_report_tables
+  archive_url: https://storage.googleapis.com/hecc-data/NASA-HECC-Data-Archive.zip
+  archive_access_status: HTTP_403_anonymous_access_denied_2026-09-10
+coordinates:
+  - name: corrected_speed_ratio
+    definition: corrected shaft speed divided by target-model design corrected speed; source speedlines retain their HECC speed ratios
+    unit: dimensionless
+  - name: flow_coefficient_ratio
+    definition: (corrected inlet flow/design corrected inlet flow)/corrected speed ratio
+    unit: dimensionless
+outputs:
+  - name: work_coefficient
+    definition: actual total enthalpy rise divided by impeller tip speed squared
+    unit: dimensionless
+  - name: total_to_total_efficiency
+    definition: compressor stage total-to-total adiabatic efficiency
+    unit: dimensionless
+boundaries:
+  - name: surge_flow_coefficient_ratio
+    definition: lowest reported flow coefficient on each CFD speedline; not a measured surge line
+    unit: dimensionless
+  - name: choke_flow_coefficient_ratio
+    definition: highest reported flow coefficient on each CFD speedline; not a measured choke line
+    unit: dimensionless
+reference_state:
+  temperature_K: 288.15
+  pressure_Pa: 101325.0
+  corrected_speed_design_rpm: 100000.0
+  phi_design: 0.39518975723971295
+  total_or_static: total
+  mass_flow_basis: air_only_inlet_corrected_flow
+  area_definition: target_model_impeller_exit_effective_area
+  diameter_definition: target_model_impeller_exit_outer_diameter
+  speed_definition: corrected_shaft_rpm
+interpolation: {method: bilinear_v1, boundary_method: linear_v1}
+domain_policy: {diagnostic_extrapolation_limit: 0.04}
+uncertainty:
+  work_coefficient: 0.12
+  total_to_total_efficiency: 0.10
+applicability:
+  geometry_family: small_single_stage_high_work_centrifugal_compressor
+  scaling_basis: corrected_speed_and_flow_coefficient_similarity
+  excluded_uses: [formal_acceptance, production_training_data, certification, surge_prediction, choke_prediction]

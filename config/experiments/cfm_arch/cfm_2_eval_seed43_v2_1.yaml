@@ -1,0 +1,22 @@
+version: s2_arch_cfm_2_eval_seed43_v2_1
+metrics_config: config/generator_active10d_metrics.yaml
+
+data:
+  dataset_csv: data/generator_active10d_100k/generator_active10d_valid.csv
+  schema: config/generator_active10d_schema.yaml
+  normalizer: data/generator_active10d_100k/normalizer_active10d.json
+  target_suite: config/experiments/cfm_arch/cfm_0_generalization_targets.csv
+
+models:
+  cfm: data/generator_models/stage2/cfm_arch/cfm_2_wide_deep_gpu6_v1/cfm/seed_43/best.pt
+
+runtime:
+  device: cuda
+  sample_count: 128
+  sample_seed: 20260812
+  maximum_targets_per_type: null
+  sampling: {policy: v2_1_fixed_raw}
+
+output:
+  directory: data/inverse_design/stage2/cfm_arch/cfm_2_eval_seed43_v2_1
+  refuse_overwrite: true

@@ -1,0 +1,37 @@
+protocol_version: wp19_23_condition_counterfactual_v1
+formal_use_allowed: false
+
+data:
+  target_suite: data/inverse_design/wp19_23_generator_core_oracle_v1/target_suite.jsonl
+
+model:
+  checkpoint: data/generator_models/geometry19/wp19_23_cfm4_bounded_sigmoid_seed43_v1/baseline/best.pt
+  design_dimension: 19
+  condition_dimension: 3
+
+diagnostic:
+  split: development
+  target_count: 12
+  balance_regions: [dense, mid, sparse]
+  modes: [own, shuffled, train_mean]
+  shuffle_offset: 4
+  source_seeds: [20260817, 20260902, 20260903]
+  candidates_per_target: 512
+  sampling_mode: direct
+  discrete_projection: unconditional_nearest_integer
+
+execution:
+  device: cuda:0
+  physics_workers: 16
+  physics_chunksize: 32
+
+gate:
+  minimum_own_vs_shuffled_hit_gain: 0.10
+  require_net_positive_paired_hits: true
+  insufficient_branch: condition_strengthened_cfg_cfm
+  sufficient_branch: tolerance_set_cfm
+
+artifacts:
+  runtime_root: data/inverse_design/wp19_23_condition_counterfactual_v1
+  report: docs/physics/WP19_23_CONDITION_COUNTERFACTUAL_20260904.md
+  refuse_overwrite: true

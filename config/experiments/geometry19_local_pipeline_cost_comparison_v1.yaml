@@ -1,0 +1,10 @@
+version: geometry19_local_pipeline_cost_comparison_v1
+scope: paired_sequential_B_candidates_vs_staged_rescue_development_comparison
+source_campaign: data/validation/v2_2_local_full_pipeline_v1/n3_rank1_miss_screen_v1
+targets: [1, 2, 4, 5, 20, 29, 46, 56, 68, 80, 92, 98]
+candidate_policy: evaluate_all_valid_unique_ranked_B_candidates_keep_missing_slots
+operational_policy: stop_at_first_physics_hit
+maximum_candidates_per_target: 64
+delivery_recalculation_calls: 1
+runtime: geometry19_v2_2_far_precision_v1
+output: data/validation/v2_2_local_full_pipeline_v1/n4_cost_comparison_v1

@@ -1,0 +1,61 @@
+version: wp7_b0_run_v1
+run_id: wp7_template
+mode: hybrid
+
+model:
+  model_id: cvae
+  checkpoint_path: data/generator_models/wp3_v1_gpu6/cvae/seed_42/best.pt
+
+data:
+  dataset_csv: data/generator_v1_100k/generator_dataset_v1_valid.csv
+  dataset_version: generator_v1_expanded100k_v1
+  schema: config/generator_v1_schema.yaml
+  normalizer: data/generator_v1_100k/normalizer_v1.json
+  normalizer_version: generator_v1_train_79945
+  normalizer_sha256: 8a93e7da2e8704a348d5304bc5e81eb4ecec5fe9a48e9408ee1bff6d4d734f5f
+  metrics_config: config/generator_wp4_metrics.yaml
+
+seeds:
+  generator: 20250813
+  optimizer: 42
+  background: 42
+
+generation:
+  n_generated: 256
+
+selection:
+  strategy: physics_error_diverse
+  selected_count: 40
+
+population:
+  generator_ratio: 0.7
+  background_method: random
+  duplicate_tolerance: 1.0e-9
+
+optimizer:
+  seed: 42
+  population_size: 40
+  n_generations: 15
+  crossover_rate: 0.9
+  mutation_rate: 0.1
+  mutation_scale: 0.1
+  tournament_size: 3
+  objectives:
+    - thrust_N
+    - tsfc_kg_N_s
+    - total_mass_kg
+    - thrust_to_weight
+  maximize: [true, false, false, true]
+  min_thrust_N: 30.0
+  max_tsfc: 0.00005
+  max_mass_kg: 3.0
+  use_surrogate: false
+  surrogate_model_path: null
+  warm_start_out_of_bounds_policy: reject
+
+runtime:
+  device: cuda
+
+output:
+  root: data/inverse_design/wp7_b0/runs
+  refuse_overwrite: true

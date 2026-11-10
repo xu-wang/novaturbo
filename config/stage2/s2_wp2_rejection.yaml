@@ -1,0 +1,21 @@
+version: s2_wp2_rejection10d_v1
+baseline_manifest: config/stage2/active10d_baseline_v1.yaml
+wp1_config: config/stage2/s2_wp1.yaml
+wp1_output: data/inverse_design/stage2/s2_wp1_baseline_v1
+smooth_bounded_output: data/inverse_design/stage2/s2_wp2_bounded10d_matched_seed_v1
+
+rejection_contract:
+  policy: bounded_rejection
+  lower_bound: -1.0
+  upper_bound: 1.0
+  tolerance: 0.0
+  accepted_candidate_count: 256
+  batch_size: 256
+  max_draw_multiplier: 64
+  maximum_ordinary_error_regression: 0.0
+  minimum_ordinary_target_non_regression_rate: 1.0
+  minimum_diversity_retention: 0.90
+
+output:
+  directory: data/inverse_design/stage2/s2_wp2_rejection10d_v1
+  refuse_overwrite: true

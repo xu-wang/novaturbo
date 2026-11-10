@@ -1,0 +1,53 @@
+domain_version: geometry19_v2_2_development_target_domain_v1
+status: software_validated_development_only
+intended_use: simplified_v2_2_pipeline_target_preflight
+formal_use_allowed: false
+engineering_validated: false
+interpolation_only: true
+extrapolation_allowed: false
+coordinate_transform: natural_log_all_positive_axes
+distance_metric: minimum_segment_linf_scaled_by_diagnostic_relative_tolerance
+maximum_normalized_distance: 1.0
+axes:
+  thrust_N: {relative_tolerance: 0.0274514502151586, unit: N}
+  tsfc_kg_N_s: {relative_tolerance: 0.008573042420144972, unit: kg/(N*s)}
+  mass_kg: {relative_tolerance: 0.01170710896944147, unit: kg}
+observed_vertex_bounds:
+  thrust_N: [47.70329908631581, 105.20929120393515]
+  tsfc_kg_N_s: [0.000050897716754513317, 0.00007620327791193297]
+  mass_kg: [1.7233923962229651, 2.2299889738875605]
+nodes:
+  low_mass_low: [47.70329908631581, 0.00007620327791193297, 1.7233923962229651]
+  high_mass_low: [56.68326508823853, 0.00006778814891063123, 2.1902924161788118]
+  low_mass_mid: [70.12363839705691, 0.0000625939263850248, 1.7952017962722595]
+  high_mass_mid: [77.5116082382393, 0.00006005256199496589, 2.1136544858730604]
+  low_mass_high: [96.19851046377272, 0.00006104065964519766, 1.7719701554270613]
+  high_mass_high: [105.20929120393515, 0.000050897716754513317, 2.2299889738875605]
+segments:
+  - {id: low_mass_low_to_mid, start: low_mass_low, end: low_mass_mid, validated_midpoint: low_mass_low_mid}
+  - {id: high_mass_low_to_mid, start: high_mass_low, end: high_mass_mid, validated_midpoint: high_mass_low_mid}
+  - {id: cross_branch_mid, start: low_mass_mid, end: high_mass_mid, validated_midpoint: cross_branch_mid}
+  - {id: low_mass_mid_to_high, start: low_mass_mid, end: low_mass_high, validated_midpoint: low_mass_mid_high}
+  - {id: high_mass_mid_to_high, start: high_mass_mid, end: high_mass_high, validated_midpoint: high_mass_mid_high}
+out_of_domain:
+  status: OUTSIDE_V2_2_DEVELOPMENT_TARGET_DOMAIN
+  run_pipeline: false
+  allow_diagnostic_override: false
+evidence:
+  vertex_campaign:
+    path: data/validation/v2_2_target_domain_candidate_v1/summary.json
+    sha256: a3f9e8cbf1dbe23dabda6cebafcbcfdf478c2102676802bd4862118654d40584
+    pipeline_pass: 6
+    target_count: 6
+    targets_with_physics_acceptable: 6
+  interpolation_campaign:
+    path: data/validation/v2_2_target_domain_interpolation_v1/summary.json
+    sha256: 491fdf468f2001ca31f92df05693dfd6ba7bc45d5a382cfdd42cefa5eae415fa
+    pipeline_pass: 5
+    target_count: 5
+    targets_with_physics_acceptable: 5
+limitations:
+  - software_validation_only_not_experimental_envelope
+  - segment_corridor_not_axis_aligned_box
+  - no_extrapolation_beyond_validated_segments
+  - existing_v2_1_generator_used_only_for_candidate_proposal

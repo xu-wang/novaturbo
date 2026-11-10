@@ -1,0 +1,18 @@
+policy_version: geometry19_operating_point_policy_reference_continuation_v1
+solver_policy: reference_continuation_high_flow_v1
+scope: exploratory_geometry19_gate_e_and_downstream_doe
+description: >-
+  Preserve unique roots unchanged. When more than one valid whole-engine root
+  exists, select the highest-air-mass-flow root as the deterministic branch
+  continuous with the frozen reference design. Preserve every detected root
+  and the selected index in the operating-point diagnostics.
+multiple_root_action: select_highest_mass_flow
+no_root_action: reject_with_NO_FLOW_MATCH
+formal_unique_root_acceptance_unchanged: true
+expected_boundary_no_flow_match_cases:
+  - 01_compressor_impeller_exit_diameter_m_high
+  - 02_compressor_inducer_tip_diameter_m_low
+rationale:
+  - The selected root is the root nearest the reference-design branch in all ten WP19-18 multi-root one-at-a-time cases.
+  - The lower-flow roots remain recorded and are not deleted or relabelled.
+  - No-flow-match cases are not repaired by extending the frozen inlet-capacity search domain.

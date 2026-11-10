@@ -1,0 +1,205 @@
+protocol_version: geometry19_v2_2_stable_root_forward_fresh_eval_v1
+status: preregistered_before_S2_training_and_S3_coordinate_generation
+stage: S2_S3_forward_model_and_fresh_evaluation_protocol_lock
+scope: stable_root_conditional_forward_surrogate
+formal_use_allowed: false
+deployment_allowed: false
+default_pipeline_modified: false
+
+inputs:
+  stable_root_parent_protocol:
+    path: config/experiments/geometry19_v2_2_stable_root_conditional_surrogate_v1.yaml
+    sha256: e3f5ebe068a2f690b3bc0e0add80252a9eaadcc280e0a5034e8c67744cf04acc
+  stable_root_support_summary:
+    path: data/validation/v2_2_stable_root_conditional_surrogate_v1/audits/stable_root_support_summary.json
+    sha256: 20073437d8780045c9fda7f78e27da69407dcde22d4b3fd20e72e10d7b406f6c
+    required_status: STABLE_ROOT_S1_ANCHORED_AND_BLIND_SUPPORT_PASS
+  stable_root_registry:
+    path: data/validation/v2_2_stable_root_conditional_surrogate_v1/audits/stable_root_registry.jsonl
+    sha256: eedbc02591bc7b6b044071ecf0d1754d648b4ad9210114887b314e1b964352ad
+  stable_support_audit:
+    path: data/validation/v2_2_stable_root_conditional_surrogate_v1/audits/S1_Stable_Support_Audit.json
+    sha256: 68b832585d239294041652948cd4100d30396902ce674d932a7497618de97789
+  design_schema:
+    path: config/physics/geometry19_schema_v1.yaml
+    sha256: cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28
+  target_domain:
+    path: config/physics/geometry19_v2_2_development_target_domain_v1.yaml
+    sha256: c3905de3d89c8405954d24172cdc614a3c08423595a33216adb1f2fcccc689f4
+  development_dataset:
+    path: data/validation/v2_2_known_manifold_root_discovery_v1/development_dataset.jsonl
+    sha256: cde2c3f6a0cebc91a437f45b7aae5d2ebfe2b8adff952942d05efaae09297134
+    use: S2_training_and_selection_only
+  sealed_confirmation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+    sha256: a3051cae177d1c9735699ef4b50675f41f5f0ffd7d954b3a233f5ebf1ea8b1fd
+    access: sha256_only_no_parse
+
+population:
+  stable_roots: 38
+  stable_development_rows: 2935
+  all_root_comparator_roots: 78
+  all_root_comparator_rows: 4529
+  target_segment_root_memberships:
+    low_mass_low_to_mid: 25
+    low_mass_mid_to_high: 17
+  root_identity_available_in_anchored_mode: true
+  source_root_segments_are_frozen_evaluation_strata: true
+  performance_reassigned_segments_are_diagnostic_only: true
+
+S2_model_development:
+  inputs: schema_range_normalized_geometry19
+  outputs: [thrust_N, tsfc_kg_N_s, mass_kg]
+  output_transform: natural_log
+  sample_weighting: equal_total_weight_per_root
+  selection_data: existing_development_only
+  fresh_evaluation_visible_during_selection: false
+  inner_split:
+    method: deterministic_stratified_within_root_four_fold
+    grouping_key: design_hash
+    assignment: sort_unique_design_hashes_within_each_root_then_round_robin
+    keep_each_stable_root_represented_in_each_training_fold: true
+    exact_design_duplicates_may_cross_folds: false
+    parent_seed_id_overlap_report_required: true
+    parent_seed_id_not_used_reason: 28_of_38_stable_roots_have_fewer_than_4_parent_groups
+    final_claim_depends_on_fresh_S3_not_inner_scores: true
+  ridge_alpha_candidates: [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0]
+  primary_inner_metric: worst_stable_root_rho_p95
+  tie_breakers:
+    - low_mass_low_to_mid_worst_root_rho_p95
+    - low_mass_mid_to_high_worst_root_rho_p95
+    - model_complexity
+    - deterministic_arm_id
+  arms:
+    - id: all_78_global_root_balanced_ridge
+      training_roots: all_78
+      routing: none
+      role: frozen_no_change_comparator
+    - id: stable_38_pooled_root_balanced_ridge
+      training_roots: stable_38
+      routing: none
+      role: stable_population_baseline
+    - id: stable_38_nearest_root_local_ridge
+      training_roots: stable_38
+      routing: nearest_stable_design_center
+      role: deployable_blind_input_candidate
+    - id: stable_38_oracle_root_local_ridge
+      training_roots: stable_38
+      routing: source_root_id
+      role: anchored_upper_bound_diagnostic
+    - id: stable_38_global_plus_root_residual_ridge
+      training_roots: stable_38
+      routing: supplied_root_id_in_anchored_mode
+      role: primary_anchored_candidate
+  forbidden_models: [chart_moe, learned_gate, mlp, rbf_grid, inverse_model]
+  exact_reload_required: true
+
+S3_fresh_evaluation:
+  generation_order: after_S2_models_and_support_rules_are_frozen_and_hashed
+  roots: frozen_stable_38
+  attempts_per_root: 96
+  maximum_attempts_total: 3648
+  antithetic_pairs_per_root: 48
+  direction_families:
+    schema_axis_pairs: 19
+    deterministic_sobol_mixed_pairs: 29
+  sobol_seed: 20260915
+  normalized_radius_shells:
+    - {support_radius_fraction: 0.50, pairs_per_root: 24}
+    - {support_radius_fraction: 0.90, pairs_per_root: 24}
+  center: frozen_S1_normalized_design_center
+  scale: frozen_S1_support_radius_p95
+  discrete_coordinates: symmetric_round_to_legal_integer_then_rehash
+  bounds_action: record_reject_no_clipping
+  duplicate_action: record_reject_no_replacement
+  prelabel_coordinate_ledger_required: true
+  prelabel_design_hash_freeze_required: true
+  labeler: unified_geometry19_v2_2_physics_model
+  local_linear_model_use: proposal_only_never_final_label
+  record_all_attempts_and_failures: true
+  valid_points_target_per_root: 64
+  valid_points_minimum_per_root: 32
+  adaptive_performance_error_top_up: forbidden
+  evaluation_rows_may_enter_training: false
+  evaluation_visible_during_model_selection: false
+
+metrics:
+  rho_definition: max_axis_absolute_relative_error_divided_by_frozen_target_relative_tolerance
+  primary: worst_stable_root_rho_p95
+  target_segments: [low_mass_low_to_mid, low_mass_mid_to_high]
+  report_by:
+    - stable_root_id
+    - frozen_source_root_segment
+    - radius_shell
+    - design_variable_direction_family
+    - support_acceptance
+    - routing_mode
+  rejected_rows_cannot_be_silently_removed_from_coverage_denominator: true
+  common_supported_row_comparison_required: true
+
+gates:
+  artifact:
+    require_all_input_hashes: true
+    require_prelabel_coordinate_hashes: true
+    require_no_training_evaluation_design_hash_overlap: true
+    require_exact_model_reload: true
+    require_confirmation_content_unread: true
+    require_all_predictions_finite_positive: true
+    require_full_regression_pass: true
+  acquisition:
+    require_all_38_roots: true
+    minimum_valid_points_per_root: 32
+    minimum_stable_support_acceptance_overall: 0.80
+    minimum_stable_support_acceptance_each_target_segment: 0.80
+  readiness:
+    maximum_worst_stable_root_rho_p95: 5.0
+    maximum_low_mass_low_to_mid_worst_root_rho_p95: 5.0
+    maximum_low_mass_mid_to_high_worst_root_rho_p95: 5.0
+  advancement_vs_all_78_global_ridge:
+    minimum_worst_root_rho_p95_reduction: 0.15
+    minimum_each_target_segment_reduction: 0.10
+    maximum_any_target_segment_regression: 0.10
+  routing:
+    maximum_nearest_vs_oracle_relative_rho_p95_gap: 0.20
+    always_unreliable_challenge_false_acceptance_maximum: 0.20
+
+execution_order:
+  - lock_this_protocol_and_all_inputs
+  - train_select_reload_and_hash_all_S2_models_using_development_only
+  - freeze_model_manifest_and_support_rules
+  - generate_and_hash_S3_prelabel_coordinates
+  - evaluate_all_attempts_with_unified_V2_2_physics
+  - seal_fresh_evaluation_before_prediction_scoring
+  - score_all_frozen_models_once
+  - apply_artifact_acquisition_accuracy_advancement_and_routing_gates
+
+authorization:
+  S2_training_authorized_after_protocol_lock: true
+  S3_coordinate_generation_authorized_only_after_S2_model_manifest_lock: true
+  inverse_design_authorized: false
+  original_local_chart_P4_authorized: false
+
+artifacts:
+  runtime_root: data/validation/v2_2_stable_root_forward_fresh_eval_v1
+  protocol_lock: audits/S2_S3_Protocol_Lock.json
+  protocol_lock_report: audits/S2_S3_Protocol_Lock_Report.md
+  future_model_manifest: models/S2_Model_Manifest.json
+  future_prelabel_ledger: fresh_evaluation/S3_Prelabel_Coordinates.jsonl
+  future_evaluation_ledger: fresh_evaluation/S3_Sealed_V2_2_Evaluations.jsonl
+  future_evaluation_summary: audits/S3_Fresh_Evaluation_Summary.json
+
+statuses:
+  lock_pass: STABLE_ROOT_S2_S3_PROTOCOL_LOCK_PASS
+  artifact_fail: STABLE_ROOT_S2_S3_ARTIFACT_FAIL
+  acquisition_fail: STABLE_ROOT_S3_ACQUISITION_FAIL
+  no_advancement: STABLE_ROOT_CONDITIONAL_NO_ADVANCEMENT
+  anchored_pass: STABLE_ROOT_CONDITIONAL_SURROGATE_PASS
+  blind_pass: STABLE_ROOT_BLIND_SUPPORT_PASS
+
+limitations:
+  - this_protocol_is_conditional_on_the_post_selected_38_stable_roots
+  - fresh_S3_evidence_is_required_for_any_accuracy_claim
+  - anchored_mode_does_not_claim_root_identity_can_be_inferred
+  - blind_mode_must_pass_the_separate_routing_and_negative_challenge_gates
+  - no_unknown_root_or_all_78_root_accuracy_claim
+  - no_real_geometry_engineering_formal_or_deployment_claim

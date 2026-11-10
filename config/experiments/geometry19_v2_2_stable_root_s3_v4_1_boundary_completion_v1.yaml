@@ -1,0 +1,120 @@
+protocol_version: geometry19_v2_2_stable_root_s3_v4_1_boundary_completion_v1
+status: preregistered_after_v4_coordinate_failure_before_completion
+stage: S3_v4_1_complete_medoid_coordinates_in_bilateral_tangent_subspace
+scope_definition: post_selected_33root_development_only
+formal_use_allowed: false
+deployment_allowed: false
+
+inputs:
+  v4_protocol:
+    path: config/experiments/geometry19_v2_2_stable_root_s3_v4_medoid_covariance_prelabel_v1.yaml
+    sha256: 61ae624acaec961c8e0c7f43006298d5609f2695e26b839c854ac1d6c8bcd136
+  v4_implementation:
+    path: src/ai/geometry19_v2_2_stable_root_s3_v4_medoid.py
+    sha256: e16d0ad56d8dcb3e14029049b923ef343c03269aca48902b4cb6369d1967fa71
+  v4_failure_summary:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/audits/S3_v4_Medoid_Covariance_Prelabel_Summary.json
+    sha256: 3955ada279efa329c973b9b02e91cbb195545caf3a744a40b4c418e710e0ac13
+    required_status: STABLE_ROOT_S3_V4_MEDOID_COVARIANCE_COORDINATE_LOCK_FAIL
+  v4_accepted_ledger:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/fresh_evaluation_v4_medoid/S3_v4_Prelabel_Coordinates.jsonl
+    sha256: 9d33b0f10c059f2016916bb34e323dbeb0b9def1945cb03724baccf7b087b8ce
+    expected_rows: 2784
+  v4_anchor_registry:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/audits/S3_v4_Medoid_Anchor_Registry.jsonl
+    sha256: ff151789ca38e04d06ba7cfea479727531974eb0b341393412f659852d11de2f
+  stable_root_registry:
+    path: data/validation/v2_2_stable_root_conditional_surrogate_v1/audits/stable_root_registry.jsonl
+    sha256: eedbc02591bc7b6b044071ecf0d1754d648b4ad9210114887b314e1b964352ad
+  design_schema:
+    path: config/physics/geometry19_schema_v1.yaml
+    sha256: cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28
+  development_dataset:
+    path: data/validation/v2_2_known_manifold_root_discovery_v1/development_dataset.jsonl
+    sha256: cde2c3f6a0cebc91a437f45b7aae5d2ebfe2b8adff952942d05efaae09297134
+    coordinate_generation_access: geometry_and_design_hash_only
+  sealed_confirmation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+    sha256: a3051cae177d1c9735699ef4b50675f41f5f0ffd7d954b3a233f5ebf1ea8b1fd
+    access: sha256_only_no_parse
+  s2_model_manifest:
+    path: data/validation/v2_2_stable_root_forward_fresh_eval_v1/models/S2_Model_Manifest.json
+    sha256: c1da78af5395718c855df9e32df31a4ad3763238b3d746b8374dafd0dcf8358b
+    access: sha256_only_no_parse
+
+completion_scope:
+  carry_forward_complete_v4_roots: 29
+  complete_missing_roots: 4
+  missing_root_ids:
+    - 3c07722b780cb8293536c48d3df552bfffbf611dca2033379f314590b5815bce
+    - 6a1c74bbb1bc89aeaf46e44bc6aa476176e3ddb95d26f56267a126e4507c9d30
+    - a66e86698e6380ef6ac620bb627dfdaa8671ab42e734dbc66553a6f9f77b7b03
+    - e93d28a84d537a70b7823c2ffa7cb0a3f227d64441daab0a3a8ef890d6f15ee8
+  selection_rule: roots_with_zero_v4_pairs_due_to_medoid_at_discrete_schema_upper_bound
+
+bilateral_tangent_subspace:
+  fixed_axis_rule: normalized_medoid_exactly_zero_or_one
+  fixed_axes_must_be_integer_variables: true
+  action: set_direction_components_on_fixed_axes_to_zero_then_unit_l2_normalize
+  physical_interpretation: conditional_local_variation_with_boundary_integer_counts_held_fixed
+  one_sided_variation_allowed: false
+
+local_direction_model:
+  input_space: schema_range_normalized_geometry19
+  rows: unique_development_design_hashes_from_same_root
+  performance_values_read: false
+  center_for_covariance: frozen_medoid_coordinate
+  shrinkage_fraction_to_isotropic_trace: 0.05
+  direction_transform: covariance_square_root_times_sobol_then_project_fixed_axes_then_unit_l2
+  primary_count_per_root: 48
+  primary_seed_base: 20260921
+  primary_generation: root_seed_xor_first_8_hex_then_random_base2_m6_take_first_48
+  reserve_count_per_root: 256
+  reserve_seed_base: 20260922
+  reserve_generation: root_seed_xor_first_8_hex_then_random_base2_m8_take_all_256
+  shell_assignment: even_index_to_0_10_odd_index_to_0_20
+
+scaling:
+  reference_radius: frozen_support_radius_p95_normalized_l2
+  shell_fractions: [0.10, 0.20]
+  target_pairs_per_shell_per_missing_root: 24
+  common_two_sided_schema_safety_factor: 0.95
+  minimum_actual_to_desired_step_ratio: 0.25
+  clipping_allowed: false
+  integer_variables_rounded_with_numpy_rint: true
+
+combined_gate:
+  exact_roots: 33
+  exact_pairs_per_root: 48
+  exact_rows_per_root: 96
+  exact_rows_total: 3168
+  require_design_hashes_unique: true
+  require_no_overlap_with_development_or_S3_v1_v2_v3: true
+  require_all_coordinates_inside_schema: true
+  require_all_integer_variables_stored_as_integers: true
+
+authorization:
+  coordinate_completion_authorized_now: true
+  physics_evaluation_executed_now: false
+  model_prediction_authorized: false
+  inverse_design_authorized: false
+  future_physics_requires_separate_protocol_after_combined_gate: true
+
+artifacts:
+  runtime_root: data/validation/v2_2_stable_root_forward_fresh_eval_v1
+  completion_screening_ledger: fresh_evaluation_v4_1_medoid/S3_v4_1_Boundary_Completion_Screening.jsonl
+  completion_coordinates: fresh_evaluation_v4_1_medoid/S3_v4_1_Boundary_Completion_Coordinates.jsonl
+  combined_coordinates: fresh_evaluation_v4_1_medoid/S3_v4_1_Combined_Prelabel_Coordinates.jsonl
+  direction_matrix: fresh_evaluation_v4_1_medoid/S3_v4_1_Boundary_Direction_Matrices.npz
+  summary: audits/S3_v4_1_Boundary_Completion_Summary.json
+  report: audits/S3_v4_1_Boundary_Completion_Report.md
+
+statuses:
+  pass: STABLE_ROOT_S3_V4_1_BOUNDARY_COMPLETION_LOCK_PASS
+  fail: STABLE_ROOT_S3_V4_1_BOUNDARY_COMPLETION_LOCK_FAIL
+
+limitations:
+  - v4_1_is_adaptive_development_work_after_observing_v4_coordinate_failure
+  - fixed_boundary_integer_axes_are_not_locally_varied_or_identifiable
+  - combined_coordinates_are_not_fresh_confirmation
+  - coordinate_success_does_not_guarantee_V2_2_target_domain_retention

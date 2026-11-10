@@ -1,0 +1,79 @@
+protocol_version: geometry19_performance_gated_g0c_physics_v1
+stage: G0c_physics_acquisition_protocol_lock
+inputs:
+  coordinate_protocol:
+    path: config/experiments/geometry19_performance_gated_g0b_coordinates_v1.yaml
+    sha256: 449d4b1f436ec2f3d42dc998e66d9e38d96c81ea8127ce835e6b2973ee8371ba
+  coordinate_lock:
+    path: data/validation/v2_2_performance_gated_local_cfm_v1/training_coordinates/g0b_v1/Coordinate_Lock.json
+    sha256: 682b9f78c91011679a69c50cf4f3d4c7068e445bade06280c5de2c0162a3c841
+  row_evaluator:
+    path: src/physics/geometry19_v2_2_dataset.py
+    sha256: 84d86fccf4fb6e38636c3e40cc9140224254d230b97e3b35aeda04d53bc8828d
+physics:
+  profile: v2_2_development
+  context_sha256: eceabddbd243ddd72427b714fecc68276ed439a5ece19018cb4ddcab2d6c624a
+  bundle_sha256: 299170ae078b2948243b6035c3c8ffc7170c93e0185fe81425c70d0038f5a85f
+  model_version: geometry19_map_enhanced_v2_2_full_variable_thermo_shadow
+  evaluation_function: src.physics.geometry19_v2_2_dataset._evaluate_row
+  worker_policy: sequential_cpu_one_context
+population:
+  rows: 16896
+  roots: 33
+  bands_per_root: 4
+  rows_per_root: 512
+  train_rows_per_root: 408
+  validation_rows_per_root: 104
+  shards: 132
+  rows_per_shard: 128
+  train_rows_per_shard: 102
+  validation_rows_per_shard: 26
+  order: frozen_G0b_root_band_pair_plus_minus_sequence
+eligibility:
+  physics_eligible_requires: [solver_converged, numerically_valid, physics_domain_valid, finite_positive_three_performance, inside_target_domain]
+  training_eligible: physics_eligible_and_frozen_split_train
+  validation_eligible: physics_eligible_and_frozen_split_validation
+  override_legacy_training_candidate: equal_training_eligible
+  preserve_all_rejected_rows: true
+  split_reassignment: forbidden
+gates:
+  each_root_minimum_valid_train: 256
+  each_root_minimum_valid_validation: 64
+  each_root_band_minimum_valid_train: 32
+  each_root_band_minimum_valid_validation: 8
+  require_all_33_roots_and_132_shards: true
+  failure_action: seal_failure_and_stop_no_training
+  pass_action: separate_gate_and_generator_training_protocol_required
+execution:
+  order: [verify_execution_authorization_and_all_hashes, evaluate_frozen_rows_in_order, seal_all_shards, seal_complete_ledger_and_manifest, apply_data_gates, write_pass_or_failure_report]
+  models_or_targets_used_during_evaluation: false
+  adaptive_top_up: false
+  nonconvergence_retry: false
+  physics_result_based_coordinate_changes: false
+  nominal_logical_evaluations: 16896
+  record_actual_calls_and_infrastructure_replays: true
+  resume_identity: [protocol_sha256, execution_manifest_sha256, coordinate_ledger_sha256, split_registry_sha256, pipeline_context_sha256, shard_input_sha256, shard_output_sha256]
+  resume_complete_shard: verify_hashes_row_identity_and_split_then_skip
+  orphan_partial_shard: abort_preserve_files_require_explicit_recovery_no_overwrite
+  infrastructure_exception: abort_and_preserve_evidence
+  sealed_run_resume: verify_and_return_no_new_physics
+  immutable_row_fields: all_G0b_coordinate_fields_except_label_status
+  future_row_label_status: V2_2_EVALUATED
+  future_runner_implementation_hash_required_before_execution: true
+authorization:
+  protocol_lock_authorized: true
+  physics_acquisition_authorized_now: false
+  model_training_authorized: false
+  model_prediction_authorized: false
+  inverse_design_authorized: false
+  confirmation_content_access: false
+  formal_use_allowed: false
+  deployment_allowed: false
+artifacts:
+  output_root: data/validation/v2_2_performance_gated_local_cfm_v1/audits/g0c_physics_protocol_v1
+  shard_registry: Shard_Registry.jsonl
+  runtime_context: Runtime_Context.json
+  report: Physics_Protocol_Lock_Report.md
+  lock: Physics_Protocol_Lock.json
+  future_physics_root: data/validation/v2_2_performance_gated_local_cfm_v1/training_physics/g0c_v1
+  future_outputs: [execution_manifest.json, shards, Sealed_Evaluations.jsonl, Acquisition_Manifest.json, Acquisition_Summary.json, Acquisition_Report.md]
