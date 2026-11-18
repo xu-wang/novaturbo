@@ -1,0 +1,27 @@
+validation_id: wp_v2_2_c1_inlet_validation_v1
+baseline_profile: v2_2_comp_turb_shadow
+enhanced_profile: v2_2_comp_turb_inlet_shadow
+expected_inlet_map_id: synthetic_subsonic_inlet_v1
+dense_map_scan:
+  flight_mach_samples: 61
+  capture_area_ratio_samples: 91
+  max_adjacent_pressure_recovery_jump: 0.005
+  max_adjacent_discharge_coefficient_jump: 0.008
+boundary_classification:
+  probe_fraction_of_capture_span: 0.001
+operating_sweep:
+  flight_mach_values: [0.00, 0.10, 0.20, 0.30]
+  maximum_consecutive_mass_flow_relative_jump: 0.10
+  total_enthalpy_absolute_tolerance_J_kg: 1.0e-8
+runtime_benchmark:
+  flight_mach_values: [0.00, 0.10, 0.20, 0.30]
+  warmup_repetitions: 2
+  timed_repetitions: 7
+  max_p50_enhanced_to_baseline_ratio: 2.0
+  max_p95_enhanced_to_baseline_ratio: 2.0
+engineering_blockers:
+  - inlet_map_is_synthetic_software_fixture
+  - no_independent_inlet_rig_or_high_fidelity_validation
+  - no_measured_distortion_or_separation_boundary
+artifacts:
+  default_output_root: data/validation/wp_v2_2_c1_inlet_v1

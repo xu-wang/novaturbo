@@ -1,0 +1,91 @@
+contract_version: geometry19_constraint_dominance_v1
+status: frozen_wp19_23_development_v1
+description: >-
+  Frozen Deb-style constraint-dominance contract for WP19-23. Numerical or
+  physics-domain failure receives a hard penalty. Converged candidates use the
+  positive part of every frozen engineering residual divided by its physical
+  scale; the normalized components are capped and summed.
+
+feasibility_rule: physics_acceptable_and_all_frozen_residuals_nonpositive
+infeasible_comparison: lower_total_normalized_violation
+feasible_comparison: three_axis_pareto
+aggregation: capped_positive_part_l1_sum
+hard_failure_penalty: 1000000.0
+normalized_component_cap: 1000.0
+zero_tolerance: 1.0e-12
+
+normalization_scales:
+  thermodynamic:
+    compressor_phi_min: 0.08
+    compressor_phi_max: 0.45
+    compressor_psi_min: 0.35
+    compressor_psi_max: 0.95
+    compressor_tip_mach_max: 1.5
+    compressor_efficiency_min: 0.6
+    combustor_primary_residence_time_min: 0.002
+    combustor_equivalence_ratio_min: 0.15
+    combustor_equivalence_ratio_max: 0.45
+    combustor_injector_capacity: 0.001
+    combustor_injector_pitch_min: 0.015
+    combustor_pressure_loss_fraction_max: 0.08
+    turbine_phi_min: 0.05
+    turbine_phi_max: 0.35
+    turbine_psi_max: 1.8
+    turbine_solidity_min: 0.35
+    turbine_solidity_max: 1.2
+    turbine_mean_radius_mach_max: 0.9
+    turbine_efficiency_min: 0.6
+    turbine_corrected_mass_flux_min: 10.0
+    turbine_corrected_mass_flux_max: 80.0
+    nozzle_total_pressure_usable: 101325.0
+    whole_engine_flow_match: 1.0e-5
+    positive_thrust: 1.0
+    positive_tsfc: 1.0e-4
+  assembly:
+    diffuser_to_combustor_area: 0.2
+    combustor_to_turbine_outer_diameter: 0.35
+    shaft_clearance: 0.003
+    turbine_to_nozzle: 0.15
+  structural:
+    compressor_tip_speed_limit: 500.0
+    turbine_tip_speed_limit: 500.0
+    compressor_rotating_stress: 1.0
+    turbine_rotating_stress: 1.0
+    combustor_liner_hoop_stress: 1.0
+  thermal:
+    compressor_metal_temperature: 673.0
+    combustor_metal_temperature: 973.0
+    turbine_metal_temperature: 973.0
+    turbine_inlet_temperature_min: 800.0
+    turbine_inlet_temperature_max: 1200.0
+  manufacturing:
+    lattice_relative_density_min: 0.15
+    lattice_relative_density_max: 0.55
+    lattice_cell_size_min: 0.004
+    lattice_cells_across_region_min: 3.0
+    combustor_lattice_skin_thickness_min: 0.0005
+    nozzle_lattice_skin_thickness_min: 0.0005
+
+delivery_ranking:
+  contract_version: geometry19_delivery_ranking_v1
+  deduplicate_by: design_hash
+  order:
+    - development_diagnostic_hit_desc
+    - constraint_feasible_desc
+    - total_normalized_constraint_violation_asc
+    - unique_root_desc
+    - total_true_error_asc
+    - maximum_axis_relative_error_asc
+    - normalized_geometry_diversity_desc
+    - evaluation_id_asc
+
+disposition_codes:
+  delivered_hit: DELIVERED_DIAGNOSTIC_HIT
+  delivered_approximation: DELIVERED_BEST_APPROXIMATION
+  invalid_physics: REJECTED_TRUE_PHYSICS_INVALID
+  duplicate_design: REJECTED_DUPLICATE_DESIGN
+  hit_not_selected: NOT_DELIVERED_DELIVERY_LIMIT
+  nonhit_when_hit_exists: NOT_DELIVERED_DIAGNOSTIC_HIT_PREFERRED
+  forwarded_refinement: FORWARDED_TO_REFINEMENT
+  forwarded_nsga2: FORWARDED_TO_NSGA2
+  ranked_below_limit: NOT_DELIVERED_RANKED_BELOW_LIMIT

@@ -1,0 +1,1191 @@
+pack_version: geometry19_calibration_bootstrap_v1
+calibration_schema_version: geometry19_calibration_schema_v1
+physics_spec_version: geometry19_closed_v2_1
+design_schema_version: geometry19_schema_v1
+status: bootstrap_candidate
+formal_dataset_generation_ready: false
+notes: >-
+  Non-null implementation candidate values for coding and validation only.
+  PROJECT_BOOTSTRAP_ASSUMPTION records are hypotheses, not validated truth.
+  Literature-screening revision 2026-08-24 records definition and provenance
+  findings, but its trial numerical limits were rolled back. Exact
+  bibliographic records and component-specific validation remain required
+  before any numerical constraint changes are frozen.
+reference_states:
+  turbine_corrected_mass_flux:
+    temperature_K: 288.15
+    pressure_Pa: 101325.0
+    unit: kg/(s*m^2)
+parameter_groups:
+  thermo:
+    - name: enthalpy_reference_temperature_K
+      value: 298.15
+      unit: "K"
+      valid_range: [273.15, 350]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 section 4"
+      physical_meaning: "Common sensible-enthalpy reference temperature."
+      calibration_target: "Fuel/air/gas energy bookkeeping."
+    - name: gas_constant_cold_J_kg_K
+      value: 287.05
+      unit: "J/(kg*K)"
+      valid_range: [285, 289]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/default_engine.yaml ambient.R_air"
+      physical_meaning: "Cold-side specific gas constant."
+      calibration_target: "Cold-side state and compressible-flow relations."
+    - name: gas_constant_hot_J_kg_K
+      value: 287.05
+      unit: "J/(kg*K)"
+      valid_range: [280, 300]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/default_engine.yaml fuel.gamma_hot/cp_gas"
+      physical_meaning: "Hot-gas specific gas constant bootstrap value."
+      calibration_target: "Hot-side state and nozzle relations."
+    - name: cp_cold_J_kg_K
+      value: 1005
+      unit: "J/(kg*K)"
+      valid_range: [995, 1020]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/default_engine.yaml ambient.cp_air"
+      physical_meaning: "Cold-side constant-pressure heat capacity."
+      calibration_target: "Compressor work and cold enthalpy."
+    - name: cp_hot_J_kg_K
+      value: 1150
+      unit: "J/(kg*K)"
+      valid_range: [1080, 1250]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/default_engine.yaml fuel.cp_gas"
+      physical_meaning: "Hot-side constant-pressure heat capacity."
+      calibration_target: "Combustor, turbine, and nozzle enthalpy."
+    - name: gamma_cold
+      value: 1.4
+      unit: "dimensionless"
+      valid_range: [1.38, 1.41]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/default_engine.yaml ambient.gamma"
+      physical_meaning: "Cold-side heat-capacity ratio."
+      calibration_target: "Cold isentropic relations."
+    - name: gamma_hot
+      value: 1.33
+      unit: "dimensionless"
+      valid_range: [1.28, 1.36]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/default_engine.yaml fuel.gamma_hot"
+      physical_meaning: "Hot-side heat-capacity ratio."
+      calibration_target: "Hot isentropic and choked-flow relations."
+    - name: fuel_lower_heating_value_J_kg
+      value: 43000000
+      unit: "J/kg"
+      valid_range: [42000000, 44000000]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/default_engine.yaml fuel.lower_heating_value_MJ_kg"
+      physical_meaning: "Jet-A1 lower heating value."
+      calibration_target: "Combustor fuel-flow energy balance."
+    - name: fuel_sensible_enthalpy_at_reference_J_kg
+      value: 0
+      unit: "J/kg"
+      valid_range: [-500000, 500000]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 common-reference convention"
+      physical_meaning: "Fuel sensible enthalpy at the frozen reference condition."
+      calibration_target: "Combustor energy bookkeeping."
+    - name: stoichiometric_fuel_air_ratio
+      value: 0.068
+      unit: "kg/kg"
+      valid_range: [0.065, 0.07]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Jet-A1 bootstrap chemistry assumption"
+      physical_meaning: "Stoichiometric fuel-to-air mass ratio."
+      calibration_target: "Global equivalence-ratio constraint."
+    - name: dynamic_viscosity_cold_reference_Pa_s
+      value: 1.716e-5
+      unit: "Pa*s"
+      valid_range: [1.5e-5, 2.0e-5]
+      source_type: TEXTBOOK_RELATION
+      source_reference: "Sutherland air-viscosity reference at 273.15 K"
+      physical_meaning: "Cold-side dynamic viscosity at the Sutherland reference temperature."
+      calibration_target: "Compressor Reynolds-number calculation."
+    - name: sutherland_cold_reference_temperature_K
+      value: 273.15
+      unit: "K"
+      valid_range: [250, 300]
+      source_type: TEXTBOOK_RELATION
+      source_reference: "Sutherland air-viscosity reference state"
+      physical_meaning: "Cold-side reference temperature for the viscosity law."
+      calibration_target: "Compressor Reynolds-number calculation."
+    - name: sutherland_cold_constant_K
+      value: 110.4
+      unit: "K"
+      valid_range: [100, 125]
+      source_type: TEXTBOOK_RELATION
+      source_reference: "Sutherland constant for air"
+      physical_meaning: "Cold-side Sutherland viscosity constant."
+      calibration_target: "Compressor Reynolds-number calculation."
+    - name: dynamic_viscosity_hot_reference_Pa_s
+      value: 1.716e-5
+      unit: "Pa*s"
+      valid_range: [1.5e-5, 2.5e-5]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Air-like hot-gas viscosity bootstrap at 273.15 K"
+      physical_meaning: "Hot-side dynamic viscosity at the Sutherland reference temperature."
+      calibration_target: "Turbine Reynolds-number calculation."
+    - name: sutherland_hot_reference_temperature_K
+      value: 273.15
+      unit: "K"
+      valid_range: [250, 350]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Air-like hot-gas viscosity bootstrap"
+      physical_meaning: "Hot-side reference temperature for the viscosity law."
+      calibration_target: "Turbine Reynolds-number calculation."
+    - name: sutherland_hot_constant_K
+      value: 110.4
+      unit: "K"
+      valid_range: [90, 180]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Air-like hot-gas viscosity bootstrap"
+      physical_meaning: "Hot-side Sutherland viscosity constant."
+      calibration_target: "Turbine Reynolds-number calculation."
+  inlet:
+    - name: inlet_total_pressure_recovery
+      value: 0.98
+      unit: "dimensionless"
+      valid_range: [0.9, 1]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/default_engine.yaml inlet.pressure_recovery"
+      physical_meaning: "Inlet total-pressure recovery."
+      calibration_target: "Station-2 total pressure."
+    - name: inlet_discharge_coefficient
+      value: 0.98
+      unit: "dimensionless"
+      valid_range: [0.9, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 inlet-capacity closure"
+      physical_meaning: "Effective compressor-eye flow coefficient."
+      calibration_target: "Airflow root-search upper bound."
+  theta_c:
+    - name: compressor_blade_thickness_ratio
+      value: 0.2
+      unit: "dimensionless"
+      valid_range: [0.08, 0.3]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "src/geometry/compressor.py default thickness and width"
+      physical_meaning: "Outlet blade thickness divided by impeller exit width."
+      calibration_target: "Compressor outlet blockage."
+    - name: compressor_inlet_blockage_factor
+      value: 0.95
+      unit: "dimensionless"
+      valid_range: [0.85, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 inlet-area closure"
+      physical_meaning: "Effective-to-geometric inducer-eye area ratio."
+      calibration_target: "Inlet choked-capacity bracket."
+    - name: stanitz_slip_coefficient
+      value: 0.63
+      unit: "dimensionless"
+      valid_range: [0.55, 0.75]
+      source_type: NASA_NACA_CORRELATION
+      source_reference: "Stanitz slip-factor baseline cited by V2.1"
+      physical_meaning: "Coefficient in sigma_s=1-k*pi/Z."
+      calibration_target: "Finite-blade compressor slip."
+    - name: compressor_eta_design
+      value: 0.78
+      unit: "dimensionless"
+      valid_range: [0.65, 0.88]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/default_engine.yaml compressor.isentropic_efficiency"
+      physical_meaning: "Whole-compressor total-to-total design efficiency."
+      calibration_target: "Efficiency closure centre."
+    - name: compressor_phi_design
+      value: 0.25
+      unit: "dimensionless"
+      valid_range: [0.08, 0.45]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Reference-geometry calculation"
+      physical_meaning: "Equivalent design flow coefficient."
+      calibration_target: "Efficiency closure centre."
+    - name: compressor_psi_design
+      value: 0.72
+      unit: "dimensionless"
+      valid_range: [0.35, 0.95]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Reference-geometry Euler calculation"
+      physical_meaning: "Design loading coefficient."
+      calibration_target: "Efficiency closure centre."
+    - name: compressor_tip_mach_penalty_start
+      value: 1.3
+      unit: "dimensionless"
+      valid_range: [0.8, 1.5]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap low-order domain"
+      physical_meaning: "Tip Mach at which efficiency penalty starts."
+      calibration_target: "Compressibility efficiency loss."
+    - name: compressor_reynolds_design
+      value: 2200000
+      unit: "dimensionless"
+      valid_range: [500000, 5000000]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Reference-geometry Reynolds estimate"
+      physical_meaning: "Reference Reynolds number."
+      calibration_target: "Low-Re efficiency loss."
+    - name: compressor_efficiency_phi_penalty
+      value: 0.08
+      unit: "dimensionless"
+      valid_range: [0, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "NovaTurbo quadratic closure"
+      physical_meaning: "Penalty for normalized flow-coefficient departure."
+      calibration_target: "Whole-compressor efficiency calibration."
+    - name: compressor_efficiency_psi_penalty
+      value: 0.08
+      unit: "dimensionless"
+      valid_range: [0, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "NovaTurbo quadratic closure"
+      physical_meaning: "Penalty for normalized loading departure."
+      calibration_target: "Whole-compressor efficiency calibration."
+    - name: compressor_efficiency_mach_penalty
+      value: 0.15
+      unit: "dimensionless"
+      valid_range: [0, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "NovaTurbo quadratic closure"
+      physical_meaning: "Penalty for tip-Mach excess."
+      calibration_target: "Whole-compressor efficiency calibration."
+    - name: compressor_efficiency_reynolds_penalty
+      value: 0.03
+      unit: "dimensionless"
+      valid_range: [0, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "NovaTurbo quadratic closure"
+      physical_meaning: "Penalty for Reynolds-number shortfall."
+      calibration_target: "Whole-compressor efficiency calibration."
+    - name: compressor_phi_min
+      value: 0.08
+      unit: "dimensionless"
+      valid_range: [0.02, 0.25]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap equivalent coefficient domain; literature convention audit pending"
+      physical_meaning: "Minimum equivalent Vm/U flow coefficient in the NovaTurbo definition."
+      calibration_target: "Compressor feasibility classification."
+      notes: >-
+        Published centrifugal-compressor values near 0.03-0.05 commonly use a
+        different area/diameter normalization and are not applied directly.
+    - name: compressor_phi_max
+      value: 0.45
+      unit: "dimensionless"
+      valid_range: [0.25, 0.8]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap equivalent coefficient domain; literature convention audit pending"
+      physical_meaning: "Maximum equivalent Vm/U flow coefficient in the NovaTurbo definition."
+      calibration_target: "Compressor feasibility classification."
+      notes: >-
+        Published centrifugal-compressor values near 0.03-0.05 commonly use a
+        different area/diameter normalization and are not applied directly.
+    - name: compressor_psi_min
+      value: 0.35
+      unit: "dimensionless"
+      valid_range: [0.1, 0.7]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap compressor domain"
+      physical_meaning: "Minimum calibrated loading coefficient."
+      calibration_target: "Compressor feasibility classification."
+    - name: compressor_psi_max
+      value: 0.95
+      unit: "dimensionless"
+      valid_range: [0.6, 1.3]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap compressor domain"
+      physical_meaning: "Maximum calibrated loading coefficient."
+      calibration_target: "Compressor feasibility classification."
+    - name: compressor_tip_mach_max
+      value: 1.5
+      unit: "dimensionless"
+      valid_range: [1, 2]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap compressor domain"
+      physical_meaning: "Maximum accepted blade-speed Mach proxy."
+      calibration_target: "Compressor feasibility classification."
+    - name: compressor_efficiency_min
+      value: 0.6
+      unit: "dimensionless"
+      valid_range: [0.4, 0.75]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap compressor domain"
+      physical_meaning: "Minimum feasible total-to-total efficiency."
+      calibration_target: "Compressor feasibility classification."
+    - name: compressor_tip_speed_limit_m_s
+      value: 500
+      unit: "m/s"
+      valid_range: [350, 700]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/constraints.yaml safety.max_tip_speed_m_s"
+      physical_meaning: "Maximum compressor impeller tip speed."
+      calibration_target: "Rotordynamic/structural feasibility."
+  theta_b:
+    - name: combustion_efficiency
+      value: 0.95
+      unit: "dimensionless"
+      valid_range: [0.85, 0.995]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/default_engine.yaml combustor.combustion_efficiency"
+      physical_meaning: "Fraction of fuel LHV released into the modeled gas."
+      calibration_target: "Fuel-flow energy balance."
+    - name: combustor_pressure_loss_K0
+      value: 70
+      unit: "dimensionless"
+      valid_range: [0, 300]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "NovaTurbo combustor pressure-loss closure"
+      physical_meaning: "Baseline reference-dynamic-head loss coefficient."
+      calibration_target: "Reference combustor pressure loss."
+    - name: combustor_pressure_loss_K_LD
+      value: 20
+      unit: "dimensionless"
+      valid_range: [0, 100]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "NovaTurbo combustor pressure-loss closure"
+      physical_meaning: "Length-to-hydraulic-diameter pressure-loss coefficient."
+      calibration_target: "Combustor geometry pressure loss."
+    - name: combustor_pressure_loss_K_area
+      value: 40
+      unit: "dimensionless"
+      valid_range: [0, 200]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "NovaTurbo combustor pressure-loss closure"
+      physical_meaning: "Diffuser-to-combustor area-mismatch coefficient."
+      calibration_target: "Combustor entry pressure loss."
+    - name: combustor_primary_volume_fraction
+      value: 0.3
+      unit: "dimensionless"
+      valid_range: [0.15, 0.5]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "src/geometry/combustor.py primary_zone_fraction"
+      physical_meaning: "Fraction of combustor volume assigned to the primary zone."
+      calibration_target: "Primary-zone residence time."
+    - name: combustor_primary_air_fraction
+      value: 0.25
+      unit: "dimensionless"
+      valid_range: [0.1, 0.5]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Primary-zone bootstrap allocation"
+      physical_meaning: "Fraction of compressor air assigned to the primary zone."
+      calibration_target: "Primary-zone residence time."
+    - name: combustor_primary_residence_time_min_s
+      value: 0.002
+      unit: "s"
+      valid_range: [0.0005, 0.01]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Micro-combustor bootstrap screening limit"
+      physical_meaning: "Minimum primary-zone residence time."
+      calibration_target: "Combustion-stability feasibility."
+      notes: >-
+        Industrial gas-turbine NOx residence times of 30-120 ms are not
+        scale-comparable; 2 ms remains a micro-combustor screening hypothesis.
+    - name: equivalence_ratio_min
+      value: 0.15
+      unit: "dimensionless"
+      valid_range: [0.05, 0.3]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "Former AFR range 40-80 mapped with f_st"
+      physical_meaning: "Minimum overall equivalence ratio."
+      calibration_target: "Combustor feasibility classification."
+      notes: "Global total-air equivalence ratio, not local primary-zone equivalence ratio."
+    - name: equivalence_ratio_max
+      value: 0.45
+      unit: "dimensionless"
+      valid_range: [0.3, 0.8]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "Former AFR range 40-80 mapped with f_st"
+      physical_meaning: "Maximum overall equivalence ratio."
+      calibration_target: "Combustor feasibility classification."
+      notes: "Global total-air equivalence ratio, not local primary-zone equivalence ratio."
+    - name: injector_discharge_coefficient
+      value: 0.7
+      unit: "dimensionless"
+      valid_range: [0.5, 0.9]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Fuel-orifice bootstrap model"
+      physical_meaning: "Fuel injector orifice discharge coefficient."
+      calibration_target: "Per-injector flow capacity."
+    - name: injector_effective_orifice_area_m2
+      value: 7.07e-8
+      unit: "m^2"
+      valid_range: [1.0e-8, 5.0e-7]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Equivalent 0.3 mm circular fuel orifice"
+      physical_meaning: "Effective metering area per injector."
+      calibration_target: "Per-injector flow capacity."
+    - name: fuel_density_kg_m3
+      value: 800
+      unit: "kg/m^3"
+      valid_range: [750, 850]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/default_engine.yaml fuel.density_kg_m3"
+      physical_meaning: "Liquid Jet-A1 density."
+      calibration_target: "Per-injector flow capacity."
+    - name: injector_fuel_pressure_drop_Pa
+      value: 300000
+      unit: "Pa"
+      valid_range: [100000, 1000000]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Fuel-system bootstrap pressure budget"
+      physical_meaning: "Fuel pressure drop across each injector orifice."
+      calibration_target: "Per-injector flow capacity."
+    - name: injector_pitch_min_m
+      value: 0.015
+      unit: "m"
+      valid_range: [0.005, 0.03]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "DMLS and annular-layout bootstrap limit"
+      physical_meaning: "Minimum circumferential injector pitch."
+      calibration_target: "Injector packaging feasibility."
+    - name: combustor_total_pressure_loss_fraction_max
+      value: 0.08
+      unit: "dimensionless"
+      valid_range: [0.03, 0.15]
+      source_type: PUBLISHED_LITERATURE
+      source_reference: "Gas-turbine combustor literature envelope 2-10%; typical total-pressure loss 3-6%"
+      physical_meaning: "Maximum feasible combustor total-pressure loss fraction."
+      calibration_target: "Combustor feasibility classification."
+      notes: "The 8% limit is retained as a literature-consistent but permissive screening upper bound."
+  shaft:
+    - name: shaft_mechanical_efficiency
+      value: 0.99
+      unit: "dimensionless"
+      valid_range: [0.95, 0.999]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Single-shaft bootstrap model"
+      physical_meaning: "Mechanical power-transfer efficiency."
+      calibration_target: "Compressor-turbine shaft balance."
+    - name: shaft_auxiliary_power_W
+      value: 0
+      unit: "W"
+      valid_range: [0, 1000]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "Current Brayton baseline assumes no extraction"
+      physical_meaning: "Fixed accessory power extraction."
+      calibration_target: "Compressor-turbine shaft balance."
+  theta_t:
+    - name: turbine_aspect_ratio
+      value: 1.5
+      unit: "dimensionless"
+      valid_range: [0.8, 3]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/default_engine.yaml turbine.aspect_ratio"
+      physical_meaning: "Blade height divided by chord."
+      calibration_target: "Derived turbine chord and solidity."
+    - name: turbine_eta_design
+      value: 0.82
+      unit: "dimensionless"
+      valid_range: [0.65, 0.9]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/default_engine.yaml turbine.isentropic_efficiency"
+      physical_meaning: "Design total-to-total turbine efficiency."
+      calibration_target: "Efficiency closure centre."
+    - name: turbine_phi_design
+      value: 0.14
+      unit: "dimensionless"
+      valid_range: [0.05, 0.35]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Reference-geometry calculation"
+      physical_meaning: "Design axial-flow coefficient."
+      calibration_target: "Efficiency closure centre."
+    - name: turbine_psi_design
+      value: 0.9
+      unit: "dimensionless"
+      valid_range: [0.4, 1.8]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Reference shaft-work calculation"
+      physical_meaning: "Design turbine loading coefficient."
+      calibration_target: "Efficiency closure centre."
+    - name: turbine_solidity_design
+      value: 0.65
+      unit: "dimensionless"
+      valid_range: [0.35, 1.2]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Reference-geometry calculation"
+      physical_meaning: "Design rotor solidity."
+      calibration_target: "Efficiency closure centre."
+    - name: turbine_mean_radius_mach_penalty_start
+      value: 0.75
+      unit: "dimensionless"
+      valid_range: [0.5, 1.1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap turbine domain"
+      physical_meaning: "Mean-radius blade-speed Mach at which efficiency penalty starts."
+      calibration_target: "Turbine efficiency calibration."
+    - name: turbine_reynolds_design
+      value: 20000
+      unit: "dimensionless"
+      valid_range: [5000, 200000]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Reference micro-turbine estimate"
+      physical_meaning: "Reference chord Reynolds number."
+      calibration_target: "Low-Re turbine efficiency loss."
+    - name: turbine_efficiency_phi_penalty
+      value: 0.08
+      unit: "dimensionless"
+      valid_range: [0, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "NovaTurbo quadratic closure"
+      physical_meaning: "Penalty for normalized flow-coefficient departure."
+      calibration_target: "Turbine efficiency calibration."
+    - name: turbine_efficiency_psi_penalty
+      value: 0.08
+      unit: "dimensionless"
+      valid_range: [0, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "NovaTurbo quadratic closure"
+      physical_meaning: "Penalty for normalized loading departure."
+      calibration_target: "Turbine efficiency calibration."
+    - name: turbine_efficiency_solidity_penalty
+      value: 0.05
+      unit: "dimensionless"
+      valid_range: [0, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "NovaTurbo quadratic closure"
+      physical_meaning: "Penalty for normalized solidity departure."
+      calibration_target: "Turbine efficiency calibration."
+    - name: turbine_efficiency_mach_penalty
+      value: 0.15
+      unit: "dimensionless"
+      valid_range: [0, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "NovaTurbo quadratic closure"
+      physical_meaning: "Penalty for blade-speed Mach excess."
+      calibration_target: "Turbine efficiency calibration."
+    - name: turbine_efficiency_reynolds_penalty
+      value: 0.03
+      unit: "dimensionless"
+      valid_range: [0, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "NovaTurbo quadratic closure"
+      physical_meaning: "Penalty for Reynolds-number shortfall."
+      calibration_target: "Turbine efficiency calibration."
+    - name: turbine_phi_min
+      value: 0.05
+      unit: "dimensionless"
+      valid_range: [0.02, 0.2]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap turbine domain"
+      physical_meaning: "Minimum calibrated flow coefficient."
+      calibration_target: "Turbine feasibility classification."
+      notes: >-
+        The 0.2-0.3 literature interval is an optimum region, not a validated
+        hard map boundary; the broad screening lower limit is retained.
+    - name: turbine_phi_max
+      value: 0.35
+      unit: "dimensionless"
+      valid_range: [0.15, 0.6]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap turbine domain"
+      physical_meaning: "Maximum calibrated flow coefficient."
+      calibration_target: "Turbine feasibility classification."
+      notes: >-
+        The 0.2-0.3 literature interval is an optimum region, not a validated
+        hard map boundary; the broad screening upper limit is retained.
+    - name: turbine_psi_max
+      value: 1.8
+      unit: "dimensionless"
+      valid_range: [0.8, 3]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap turbine domain"
+      physical_meaning: "Maximum calibrated loading coefficient."
+      calibration_target: "Turbine feasibility classification."
+    - name: turbine_solidity_min
+      value: 0.35
+      unit: "dimensionless"
+      valid_range: [0.2, 0.7]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap turbine domain"
+      physical_meaning: "Minimum calibrated rotor solidity."
+      calibration_target: "Turbine feasibility classification."
+    - name: turbine_solidity_max
+      value: 1.2
+      unit: "dimensionless"
+      valid_range: [0.7, 2]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap turbine domain"
+      physical_meaning: "Maximum calibrated rotor solidity."
+      calibration_target: "Turbine feasibility classification."
+    - name: turbine_mean_radius_mach_max
+      value: 0.9
+      unit: "dimensionless"
+      valid_range: [0.6, 1.2]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap turbine domain"
+      physical_meaning: "Maximum accepted mean-radius blade-speed Mach."
+      calibration_target: "Turbine feasibility classification."
+    - name: turbine_efficiency_min
+      value: 0.6
+      unit: "dimensionless"
+      valid_range: [0.4, 0.75]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap turbine domain"
+      physical_meaning: "Minimum feasible total-to-total efficiency."
+      calibration_target: "Turbine feasibility classification."
+    - name: turbine_corrected_mass_flux_min
+      value: 10
+      unit: "kg/(s*m^2)"
+      valid_range: [1, 40]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Reference corrected-mass-flux estimate"
+      physical_meaning: "Minimum corrected turbine swallowing-capacity indicator."
+      calibration_target: "Formal turbine feasibility classification."
+    - name: turbine_corrected_mass_flux_max
+      value: 80
+      unit: "kg/(s*m^2)"
+      valid_range: [40, 200]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Reference corrected-mass-flux estimate"
+      physical_meaning: "Maximum corrected turbine swallowing-capacity indicator."
+      calibration_target: "Formal turbine feasibility classification."
+    - name: turbine_tip_speed_limit_m_s
+      value: 500
+      unit: "m/s"
+      valid_range: [350, 700]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/constraints.yaml safety.max_tip_speed_m_s"
+      physical_meaning: "Maximum turbine blade tip speed."
+      calibration_target: "Rotordynamic/structural feasibility."
+  theta_n:
+    - name: nozzle_total_pressure_recovery
+      value: 0.98
+      unit: "dimensionless"
+      valid_range: [0.9, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 consistent nozzle-loss model"
+      physical_meaning: "Nozzle total-pressure recovery sigma_n."
+      calibration_target: "Nozzle capacity and exit state."
+    - name: nozzle_discharge_coefficient
+      value: 0.98
+      unit: "dimensionless"
+      valid_range: [0.9, 1]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/default_engine.yaml nozzle.discharge_coefficient"
+      physical_meaning: "Effective-area flow coefficient only."
+      calibration_target: "Nozzle mass-flow capacity without duplicate pressure loss."
+  theta_m:
+    - name: compressor_hub_thickness_ratio
+      value: 0.8
+      unit: "dimensionless"
+      valid_range: [0.2, 2]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 compressor mass closure"
+      physical_meaning: "Hub/backplate thickness divided by exit width."
+      calibration_target: "Compressor mass."
+    - name: compressor_hub_fill_factor
+      value: 0.65
+      unit: "dimensionless"
+      valid_range: [0.2, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 compressor mass closure"
+      physical_meaning: "Solid fill factor of the hub/backplate envelope."
+      calibration_target: "Compressor mass."
+    - name: compressor_blade_length_factor
+      value: 1.2
+      unit: "dimensionless"
+      valid_range: [0.7, 1.8]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 compressor mass closure"
+      physical_meaning: "Meridional blade-length correction."
+      calibration_target: "Compressor blade mass."
+    - name: compressor_blade_height_factor
+      value: 0.5
+      unit: "dimensionless"
+      valid_range: [0.2, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 compressor mass closure"
+      physical_meaning: "Average blade-height correction."
+      calibration_target: "Compressor blade mass."
+    - name: compressor_mass_blade_thickness_ratio
+      value: 0.2
+      unit: "dimensionless"
+      valid_range: [0.05, 0.3]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "src/geometry/compressor.py default thickness/width"
+      physical_meaning: "Blade thickness used by the mass closure."
+      calibration_target: "Compressor blade mass."
+    - name: compressor_length_ratio
+      value: 0.4
+      unit: "dimensionless"
+      valid_range: [0.2, 0.8]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "src/geometry/compressor.py axial length / diameter"
+      physical_meaning: "Compressor assembly length divided by impeller diameter."
+      calibration_target: "Compressor casing and shaft length."
+    - name: compressor_casing_factor
+      value: 1
+      unit: "dimensionless"
+      valid_range: [0.5, 2]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 compressor mass closure"
+      physical_meaning: "Casing area correction factor."
+      calibration_target: "Compressor casing mass."
+    - name: compressor_casing_thickness_m
+      value: 0.0015
+      unit: "m"
+      valid_range: [0.0005, 0.004]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "src/ai/dataset.py shell wall thickness"
+      physical_meaning: "Equivalent compressor casing thickness."
+      calibration_target: "Compressor casing mass."
+    - name: combustor_dome_factor
+      value: 1.15
+      unit: "dimensionless"
+      valid_range: [1, 2]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 combustor mass closure"
+      physical_meaning: "Dome and connection volume multiplier."
+      calibration_target: "Combustor mass."
+    - name: injector_unit_mass_kg
+      value: 0.01
+      unit: "kg"
+      valid_range: [0.002, 0.05]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap injector BOM allowance"
+      physical_meaning: "Mass per complete injector assembly."
+      calibration_target: "Engine and combustor mass."
+    - name: turbine_disk_thickness_ratio
+      value: 0.12
+      unit: "dimensionless"
+      valid_range: [0.05, 0.25]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 turbine mass closure"
+      physical_meaning: "Rotor disk thickness divided by turbine diameter."
+      calibration_target: "Turbine disk mass."
+    - name: turbine_disk_fill_factor
+      value: 0.6
+      unit: "dimensionless"
+      valid_range: [0.3, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 turbine mass closure"
+      physical_meaning: "Solid fill factor of the disk envelope."
+      calibration_target: "Turbine disk mass."
+    - name: turbine_blade_thickness_ratio
+      value: 0.12
+      unit: "dimensionless"
+      valid_range: [0.05, 0.25]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "src/geometry/turbine.py blade_thickness_ratio"
+      physical_meaning: "Mean rotor blade thickness divided by chord."
+      calibration_target: "Turbine blade mass."
+    - name: turbine_ngv_volume_factor
+      value: 0.9
+      unit: "dimensionless"
+      valid_range: [0.3, 1.5]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 turbine mass closure"
+      physical_meaning: "NGV volume relative to rotor blade volume."
+      calibration_target: "Turbine stage mass."
+    - name: turbine_length_ratio
+      value: 2
+      unit: "dimensionless"
+      valid_range: [1, 4]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "src/geometry/turbine.py stage length / blade height"
+      physical_meaning: "Stage axial length divided by blade height."
+      calibration_target: "Turbine casing and shaft length."
+    - name: turbine_casing_factor
+      value: 1
+      unit: "dimensionless"
+      valid_range: [0.5, 2]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 turbine mass closure"
+      physical_meaning: "Turbine casing area correction."
+      calibration_target: "Turbine casing mass."
+    - name: turbine_casing_thickness_m
+      value: 0.0015
+      unit: "m"
+      valid_range: [0.0005, 0.004]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "src/ai/dataset.py shell wall thickness"
+      physical_meaning: "Equivalent turbine casing thickness."
+      calibration_target: "Turbine casing mass."
+    - name: nozzle_inlet_ratio
+      value: 1.55
+      unit: "dimensionless"
+      valid_range: [1.1, 2.5]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/default_engine.yaml turbine/nozzle diameters"
+      physical_meaning: "Nozzle inlet diameter divided by throat diameter."
+      calibration_target: "Nozzle geometry, mass, and assembly."
+    - name: nozzle_length_ratio
+      value: 0.91
+      unit: "dimensionless"
+      valid_range: [0.5, 2]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "src/geometry/nozzle.py length / exit diameter"
+      physical_meaning: "Nozzle length divided by throat diameter."
+      calibration_target: "Nozzle mass."
+    - name: nozzle_thickness_ratio
+      value: 0.027
+      unit: "dimensionless"
+      valid_range: [0.01, 0.06]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "src/geometry/nozzle.py wall / exit diameter"
+      physical_meaning: "Nozzle wall thickness divided by throat diameter."
+      calibration_target: "Nozzle mass."
+    - name: shaft_radius_ratio
+      value: 0.2
+      unit: "dimensionless"
+      valid_range: [0.1, 0.4]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 shaft mass closure"
+      physical_meaning: "Shaft radius divided by turbine hub radius."
+      calibration_target: "Shaft mass and combustor clearance."
+    - name: shaft_length_factor
+      value: 1.1
+      unit: "dimensionless"
+      valid_range: [0.8, 1.5]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 shaft mass closure"
+      physical_meaning: "Shaft length correction relative to component stack."
+      calibration_target: "Shaft mass."
+    - name: fixed_accessory_mass_kg
+      value: 0.25
+      unit: "kg"
+      valid_range: [0, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap accessory BOM allowance"
+      physical_meaning: "Fixed bearing, starter, lines, and controls allowance."
+      calibration_target: "Total engine mass."
+    - name: bearing_accessory_mass_factor
+      value: 0.15
+      unit: "dimensionless"
+      valid_range: [0, 0.5]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 accessory mass closure"
+      physical_meaning: "Variable accessory mass fraction of rotating assembly mass."
+      calibration_target: "Total engine mass."
+  theta_s:
+    - name: compressor_material_density_kg_m3
+      value: 4430
+      unit: "kg/m^3"
+      valid_range: [4300, 4600]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/materials.yaml ti6al4v"
+      physical_meaning: "Density rho_mat,c."
+      calibration_target: "Compressor and total mass."
+    - name: combustor_material_density_kg_m3
+      value: 8190
+      unit: "kg/m^3"
+      valid_range: [7800, 8500]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/materials.yaml inconel_718"
+      physical_meaning: "Density rho_mat,b."
+      calibration_target: "Combustor and total mass."
+    - name: turbine_material_density_kg_m3
+      value: 8190
+      unit: "kg/m^3"
+      valid_range: [7800, 8500]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/materials.yaml inconel_718"
+      physical_meaning: "Density rho_mat,t."
+      calibration_target: "Turbine and total mass."
+    - name: nozzle_material_density_kg_m3
+      value: 8190
+      unit: "kg/m^3"
+      valid_range: [7800, 8500]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/materials.yaml inconel_718"
+      physical_meaning: "Density rho_mat,n."
+      calibration_target: "Nozzle and total mass."
+    - name: shaft_material_density_kg_m3
+      value: 7990
+      unit: "kg/m^3"
+      valid_range: [7600, 8300]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/materials.yaml ss316l"
+      physical_meaning: "Density rho_mat,s."
+      calibration_target: "Shaft and total mass."
+    - name: compressor_yield_strength_room_Pa
+      value: 880000000
+      unit: "Pa"
+      valid_range: [500000000, 1200000000]
+      source_type: MATERIAL_STANDARD
+      source_reference: "ASM Ti-6Al-4V annealed data: yield >=828 MPa; 880 MPa retained as a conservative literature-supported value"
+      physical_meaning: "Room-temperature compressor material yield strength."
+      calibration_target: "Rotating-stress screening."
+    - name: hot_section_yield_strength_room_Pa
+      value: 1034000000
+      unit: "Pa"
+      valid_range: [500000000, 1400000000]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/materials.yaml inconel_718"
+      physical_meaning: "Room-temperature hot-section material yield strength."
+      calibration_target: "Rotating and liner stress bootstrap screening."
+    - name: compressor_material_temperature_max_K
+      value: 673
+      unit: "K"
+      valid_range: [550, 800]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/materials.yaml ti6al4v.max_service_temp_K"
+      physical_meaning: "Maximum compressor material service temperature."
+      calibration_target: "Thermal feasibility."
+      notes: >-
+        Literature recommendations can be near 623 K (350 C); the inherited
+        673 K limit is retained pending alloy-condition and life definition.
+    - name: combustor_material_temperature_max_K
+      value: 973
+      unit: "K"
+      valid_range: [800, 1300]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/materials.yaml inconel_718.max_service_temp_K"
+      physical_meaning: "Maximum combustor material service temperature."
+      calibration_target: "Combustor metal-temperature feasibility."
+    - name: turbine_material_temperature_max_K
+      value: 973
+      unit: "K"
+      valid_range: [800, 1300]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/materials.yaml inconel_718.max_service_temp_K"
+      physical_meaning: "Maximum turbine material service temperature."
+      calibration_target: "Turbine metal-temperature feasibility."
+    - name: compressor_rotating_stress_factor
+      value: 0.5
+      unit: "dimensionless"
+      valid_range: [0.1, 2]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 rotating-stress proxy"
+      physical_meaning: "Geometry coefficient multiplying rho_mat,c*U^2."
+      calibration_target: "Compressor structural screening."
+    - name: turbine_rotating_stress_factor
+      value: 0.5
+      unit: "dimensionless"
+      valid_range: [0.1, 2]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 rotating-stress proxy"
+      physical_meaning: "Geometry coefficient multiplying rho_mat,t*U^2."
+      calibration_target: "Turbine structural screening."
+    - name: combustor_liner_pressure_factor
+      value: 1
+      unit: "dimensionless"
+      valid_range: [0.1, 5]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 liner-stress proxy"
+      physical_meaning: "Fraction/multiplier mapping total pressure loss to liner differential."
+      calibration_target: "Combustor liner stress screening."
+    - name: compressor_safety_factor
+      value: 1.5
+      unit: "dimensionless"
+      valid_range: [1.1, 3]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/constraints.yaml burst_safety_factor"
+      physical_meaning: "Yield-utilization safety factor for the compressor stress proxy."
+      calibration_target: "Compressor structural feasibility."
+      notes: "Not a burst-speed or redline-speed multiplier; FAA/EASA 1.2-1.25 speed margins are not definition-equivalent."
+    - name: turbine_safety_factor
+      value: 1.5
+      unit: "dimensionless"
+      valid_range: [1.1, 3]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/constraints.yaml burst_safety_factor"
+      physical_meaning: "Yield-utilization safety factor for the turbine stress proxy."
+      calibration_target: "Turbine structural feasibility."
+      notes: "Not a burst-speed or redline-speed multiplier; FAA/EASA 1.2-1.25 speed margins are not definition-equivalent."
+    - name: combustor_safety_factor
+      value: 1.5
+      unit: "dimensionless"
+      valid_range: [1.1, 3]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/constraints.yaml burst_safety_factor"
+      physical_meaning: "Combustor liner stress safety factor."
+      calibration_target: "Combustor structural feasibility."
+    - name: turbine_metal_temperature_fraction
+      value: 0.55
+      unit: "dimensionless"
+      valid_range: [0.1, 0.9]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 metal-temperature proxy"
+      physical_meaning: "Fraction of Tt4-Tt3 applied to turbine metal."
+      calibration_target: "Turbine thermal screening."
+    - name: combustor_metal_temperature_fraction
+      value: 0.35
+      unit: "dimensionless"
+      valid_range: [0.1, 0.8]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 metal-temperature proxy"
+      physical_meaning: "Fraction of Tt4-Tt3 applied to combustor metal."
+      calibration_target: "Combustor thermal screening."
+    - name: turbine_inlet_temperature_min_K
+      value: 800
+      unit: "K"
+      valid_range: [700, 1000]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/constraints.yaml design_space"
+      physical_meaning: "Minimum modeled TIT."
+      calibration_target: "Design-point feasibility."
+    - name: turbine_inlet_temperature_max_K
+      value: 1200
+      unit: "K"
+      valid_range: [1000, 1400]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/constraints.yaml max_turbine_inlet_temp_K"
+      physical_meaning: "Maximum modeled TIT."
+      calibration_target: "Design-point feasibility."
+    - name: lattice_topology
+      value: "gyroid"
+      unit: "categorical"
+      valid_range: ["gyroid", "gyroid"]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "src/geometry/lattice.py and README"
+      physical_meaning: "Frozen TPMS topology for the first calibration domain."
+      calibration_target: "Lattice mass and effective-property interpretation."
+    - name: combustor_lattice_volume_fraction
+      value: 0.4
+      unit: "dimensionless"
+      valid_range: [0, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 lattice placement closure"
+      physical_meaning: "Fraction of eligible combustor shell volume replaced by lattice."
+      calibration_target: "Combustor mass and strength."
+    - name: nozzle_lattice_volume_fraction
+      value: 0.5
+      unit: "dimensionless"
+      valid_range: [0, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 lattice placement closure"
+      physical_meaning: "Fraction of eligible nozzle shell volume replaced by lattice."
+      calibration_target: "Nozzle mass and strength."
+    - name: lattice_skin_retained
+      value: true
+      unit: "boolean"
+      valid_range: [false, true]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 lattice placement closure"
+      physical_meaning: "Whether a continuous solid skin remains on lattice regions."
+      calibration_target: "Mass, sealing, and structural interpretation."
+    - name: lattice_flange_allowed
+      value: false
+      unit: "boolean"
+      valid_range: [false, true]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 lattice placement closure"
+      physical_meaning: "Whether flange/joint material may be lattice-replaced."
+      calibration_target: "Mass and assembly interpretation."
+    - name: lattice_min_skin_thickness_m
+      value: 0.0005
+      unit: "m"
+      valid_range: [0.0003, 0.002]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "config/constraints.yaml manufacturing minimum wall"
+      physical_meaning: "Minimum solid sealing skin on lattice regions."
+      calibration_target: "Manufacturing feasibility."
+    - name: lattice_modulus_coefficient
+      value: 0.3
+      unit: "dimensionless"
+      valid_range: [0.05, 1]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Gibson-Ashby bootstrap coefficient"
+      physical_meaning: "Coefficient C_E in E*/E_s."
+      calibration_target: "Lattice stiffness screening."
+    - name: lattice_modulus_exponent
+      value: 2
+      unit: "dimensionless"
+      valid_range: [1, 3]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Gibson-Ashby bootstrap exponent"
+      physical_meaning: "Exponent n_E in E*/E_s."
+      calibration_target: "Lattice stiffness screening."
+    - name: lattice_strength_coefficient
+      value: 0.3
+      unit: "dimensionless"
+      valid_range: [0.05, 1]
+      source_type: PUBLISHED_LITERATURE
+      source_reference: "Classical Gibson-Ashby bending-dominated strength coefficient C2 approximately 0.3"
+      physical_meaning: "Coefficient C_sigma in sigma*/sigma_s."
+      calibration_target: "Lattice strength screening."
+    - name: lattice_strength_exponent
+      value: 1.5
+      unit: "dimensionless"
+      valid_range: [1, 2.5]
+      source_type: PUBLISHED_LITERATURE
+      source_reference: "Classical Gibson-Ashby bending-dominated exponent 1.5; reported TPMS fits span approximately 0.8-2.6"
+      physical_meaning: "Exponent n_sigma in sigma*/sigma_s."
+      calibration_target: "Lattice strength screening."
+      notes: "Gyroid-specific metallic coupon calibration is still required."
+    - name: lattice_cell_size_min_m
+      value: 0.004
+      unit: "m"
+      valid_range: [0.002, 0.01]
+      source_type: CURRENT_NOVATURBO_BASELINE
+      source_reference: "src/ai/dataset.py lattice bounds"
+      physical_meaning: "Minimum printable/qualified lattice cell size."
+      calibration_target: "Manufacturing feasibility."
+    - name: lattice_cells_across_region_min
+      value: 3
+      unit: "count"
+      valid_range: [2, 8]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "V2.1 scale-separation constraint"
+      physical_meaning: "Minimum number of cells across the smallest lattice region."
+      calibration_target: "Manufacturing and homogenization feasibility."
+  theta_assembly:
+    - name: diffuser_area_ratio
+      value: 2.5
+      unit: "dimensionless"
+      valid_range: [1.5, 4]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Derived diffuser GeometryState closure"
+      physical_meaning: "A_d_out divided by compressor effective exit area."
+      calibration_target: "Diffuser-to-combustor assembly."
+    - name: diffuser_length_ratio
+      value: 0.4
+      unit: "dimensionless"
+      valid_range: [0.2, 0.8]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Derived diffuser GeometryState closure"
+      physical_meaning: "Diffuser equivalent length divided by impeller diameter."
+      calibration_target: "Assembly length and future mass closure."
+    - name: diffuser_to_combustor_target_area_ratio
+      value: 0.45
+      unit: "dimensionless"
+      valid_range: [0.25, 0.75]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Reference-geometry calculation"
+      physical_meaning: "Target A_d_out/A_b_in."
+      calibration_target: "Diffuser-to-combustor assembly."
+    - name: diffuser_to_combustor_area_tolerance
+      value: 0.2
+      unit: "dimensionless"
+      valid_range: [0.05, 0.4]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap assembly tolerance"
+      physical_meaning: "Allowed absolute departure from target area ratio."
+      calibration_target: "Diffuser-to-combustor feasibility."
+    - name: combustor_to_turbine_diameter_tolerance
+      value: 0.35
+      unit: "dimensionless"
+      valid_range: [0.1, 0.5]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Reference-geometry envelope allowance"
+      physical_meaning: "Allowed relative D_bo-to-D_t mismatch."
+      calibration_target: "Combustor-to-turbine assembly feasibility."
+    - name: shaft_clearance_m
+      value: 0.003
+      unit: "m"
+      valid_range: [0.001, 0.01]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Bootstrap radial packaging allowance"
+      physical_meaning: "Radial clearance allowance around the shaft envelope."
+      calibration_target: "Shaft-to-combustor assembly feasibility."
+    - name: turbine_to_nozzle_diameter_tolerance
+      value: 0.15
+      unit: "dimensionless"
+      valid_range: [0.05, 0.3]
+      source_type: PROJECT_BOOTSTRAP_ASSUMPTION
+      source_reference: "Reference nozzle/turbine geometry"
+      physical_meaning: "Allowed relative nozzle-inlet-to-turbine-tip mismatch."
+      calibration_target: "Turbine-to-nozzle assembly feasibility."
+solver_candidate:
+  linear_scan_points: 64
+  logarithmic_scan_points: 64
+  flow_residual_tolerance: 1.0e-5
+  mass_flow_residual_epsilon_kg_s: 1.0e-12
+  root_relative_tolerance: 1.0e-6
+  tangency_refine_threshold: 1.0e-3
+  mass_flow_lower_fraction: 0.01
+  mass_flow_upper_fraction: 0.95
+  reject_multiple_roots: true

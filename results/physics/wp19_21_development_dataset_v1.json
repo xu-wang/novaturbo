@@ -1,0 +1,47 @@
+{
+  "artifacts": {
+    "dataset_jsonl": "data\\generated\\wp19_21_development_dataset_v1\\dataset.jsonl",
+    "mesh_preview_audit": "data\\generated\\wp19_21_development_dataset_v1\\mesh_preview_audit.jsonl",
+    "resume_contract": "data\\generated\\wp19_21_development_dataset_v1\\resume_contract.json",
+    "runtime_root": "data\\generated\\wp19_21_development_dataset_v1"
+  },
+  "campaign_id": null,
+  "dataset_tier": "development_bootstrap",
+  "formal_use_allowed": false,
+  "generated_at_utc": "2026-11-18T02:23:10.030716+00:00",
+  "protocol_version": "wp19_21_development_dataset_v1",
+  "provenance": {
+    "calibration_hash": "486373656b2423c620468b529a9ea71958a007fedcce2035bfda752f774c8975",
+    "campaign_id": null,
+    "campaign_seed": 20260826,
+    "constraint_profile": "geometry19_constraint_profile_pipeline_debug_v1",
+    "constraint_profile_hash": "5b5d916ae60bdd80fb0a64e0af514206100d4aff2612d8d0261989b1695fa8f3",
+    "dataset_protocol_hash": "a6a8513790e51c996ad718ae1455798fd1e86bea1694084bbdca513e3de81a34",
+    "formal_dataset_generation_ready": false,
+    "operating_point_policy_hash": "76db0691665368d0eeac6a6d84fed5c5172df08a6f914488f548844921a246ea",
+    "physics_spec_version": "geometry19_closed_v2_1",
+    "resume_contract_hash": "1319322e487a201eafb795fd043f943c9b9978aa68339004463671202c98b3ff",
+    "schema_hash": "cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28",
+    "visualization_calibration_hash": "21f883267fc6766d3c97bd2ce0587fcb30463a4e056b9d36d7e219149354f5b0"
+  },
+  "seed": 20260826,
+  "status": "COMPLETE",
+  "summary": {
+    "classification_distribution": {
+      "CONVERGED_SELECTED_MULTIPLE": 1875,
+      "CONVERGED_UNIQUE": 2003,
+      "FLOW_RESIDUAL_DISCONTINUITY": 26,
+      "GEOMETRY_INVALID": 2567,
+      "NO_FLOW_MATCH": 9913
+    },
+    "conservation_passed_count": 3878,
+    "converged_count": 3878,
+    "dataset_record_count": 16384,
+    "geometry_mapping_valid_count": 13543,
+    "preview_passed_count": 256,
+    "preview_requested_count": 256,
+    "sample_count": 16384,
+    "shard_count": 64
+  },
+  "work_package": "WP19-21"
+}

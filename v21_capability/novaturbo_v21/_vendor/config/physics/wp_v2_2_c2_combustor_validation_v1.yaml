@@ -1,0 +1,27 @@
+validation_id: wp_v2_2_c2_combustor_validation_v1
+baseline_profile: v2_2_comp_turb_inlet_shadow
+enhanced_profile: v2_2_comp_turb_inlet_comb_shadow
+expected_combustor_map_id: synthetic_annular_combustor_v1
+dense_map_scan:
+  mass_flux_ratio_samples: 81
+  equivalence_ratio_samples: 101
+  max_adjacent_efficiency_jump: 0.005
+  max_adjacent_pressure_loss_jump: 0.005
+boundary_classification:
+  probe_fraction_of_stable_span: 0.001
+root_sweep:
+  shaft_speed_ratios: [0.90, 0.95, 1.00, 1.05]
+  maximum_consecutive_mass_flow_relative_jump: 0.20
+  energy_absolute_tolerance_W: 1.0e-6
+runtime_benchmark:
+  shaft_speed_ratios: [0.90, 0.95, 1.00, 1.05]
+  warmup_repetitions: 2
+  timed_repetitions: 7
+  max_p50_enhanced_to_baseline_ratio: 2.5
+  max_p95_enhanced_to_baseline_ratio: 2.5
+engineering_blockers:
+  - combustor_map_is_synthetic_software_fixture
+  - no_independent_combustor_rig_or_high_fidelity_validation
+  - no_measured_lean_blowout_rich_limit_or_pattern_factor
+artifacts:
+  default_output_root: data/validation/wp_v2_2_c2_combustor_v1

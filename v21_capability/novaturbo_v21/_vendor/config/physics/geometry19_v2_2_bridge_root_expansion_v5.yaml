@@ -1,0 +1,90 @@
+dataset_version: geometry19_v2_2_bridge_root_expansion_v5
+status: development_only_successful_manifold_branch_expansion
+profile: v2_2_development
+purpose: consolidate_qualified_roots_and_branch_low_mass_mid_to_high_manifold
+formal_use_allowed: false
+
+frozen_split:
+  manifest_path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/manifest.json
+  manifest_sha256: 46ecfb167d6a204dff3de2889028297ea915995feb3d8a8afe11ac19a8fa13cd
+  train:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/train.jsonl
+    sha256: 81713f27934aeb406d8fba87c6f05625eff2b8212e5319d36b180a55d3eb8fcf
+  validation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/validation.jsonl
+    sha256: ddc102939055a4890d8ac622e9747c5cac1823cbd6ffb82664edc453c713f11f
+  confirmation:
+    path: data/validation/v2_2_fresh_low_mass_confirmation_split_v1/splits/confirmation.jsonl
+    sha256: a3051cae177d1c9735699ef4b50675f41f5f0ffd7d954b3a233f5ebf1ea8b1fd
+
+prior_development_expansions:
+  - manifest_path: data/validation/v2_2_bridge_root_expansion_v1/manifest.json
+    manifest_sha256: 64b6eac70d2dcddf0e8a5bccb3707550dcb1f229a7998209bf2cd02d36340c89
+    accepted_path: data/validation/v2_2_bridge_root_expansion_v1/accepted_bridge_roots.jsonl
+    accepted_sha256: bb501a3561cc948ca16b3e5a5f9d151328efb6e8d34b66e54096cc5b406b3e77
+  - manifest_path: data/validation/v2_2_bridge_root_expansion_v2/manifest.json
+    manifest_sha256: cb7b9cdb09cb771ed45bd9529420ca18d633eb729fae5ef90c598de5cdb2f24d
+    accepted_path: data/validation/v2_2_bridge_root_expansion_v2/accepted_bridge_roots.jsonl
+    accepted_sha256: 5d82320ecb76bb9db9d48fd8a835fa8c209bdb77e457dc3c14b47c4bdd3fc026
+  - manifest_path: data/validation/v2_2_bridge_root_expansion_v3/manifest.json
+    manifest_sha256: eec787ce79d676a538f818cd7ac5db0efcb3df77bb347e615cf53dfa36acdda9
+    accepted_path: data/validation/v2_2_bridge_root_expansion_v3/accepted_bridge_roots.jsonl
+    accepted_sha256: 6d34ba8bc23b51b3ce14878bace06e4f360e5f40720b21e64e686db643d2dd36
+  - manifest_path: data/validation/v2_2_bridge_root_expansion_v4/manifest.json
+    manifest_sha256: 7be7b801e52c2d7dfd4868c43e67d4f1f24da775edaf43425b6f52cbdbdc7c12
+    accepted_path: data/validation/v2_2_bridge_root_expansion_v4/accepted_bridge_roots.jsonl
+    accepted_sha256: 081f4c79236447194e92fea3c1c36090763f2111df0dd61e26441b9744cc7e6f
+
+sampling:
+  method: qualified_development_root_local_nullspace_branching_v5
+  candidate_strategy: local_jacobian_nullspace
+  random_seed: 20260919
+  segments: [low_mass_mid_to_high]
+  bridge_root_count_per_segment: 24
+  directions_per_parent: 10
+  nullspace_step_l2: [0.06, 0.08, 0.10]
+  predicted_performance_drift_penalty: 1.00
+  minimum_l2_to_existing: 0.055
+  minimum_l2_between_bridges: 0.06
+  target_accepted_rows_per_root: 32
+  minimum_observations_for_projection: 16
+  maximum_observations_per_root: 96
+  ridge: 0.001
+  inverse_ridge: 0.01
+  discrete_step_probability: 0.02
+  rounds:
+    - samples_per_active_root: 48
+      trust_radius_fraction: 0.040
+      perturbation_radius_fraction: 0.0015
+      step_gain: 0.95
+    - samples_per_active_root: 48
+      trust_radius_fraction: 0.030
+      perturbation_radius_fraction: 0.0010
+      step_gain: 1.00
+    - samples_per_active_root: 48
+      trust_radius_fraction: 0.020
+      perturbation_radius_fraction: 0.0008
+      step_gain: 1.00
+
+coverage_gate:
+  minimum_qualified_bridge_roots_per_segment: 6
+  minimum_accepted_rows_per_bridge_root: 24
+  minimum_bridge_reference_p95_reduction_fraction: 0.10
+  minimum_total_development_roots_per_target_segment: 22
+
+development_folds:
+  grouping_key: root_seed_id
+  target_segments: [low_mass_low_to_mid, low_mass_mid_to_high]
+  fold_count: 5
+  distance_strata: 3
+  minimum_validation_roots_per_target_segment: 3
+  selection_metric: development_multi_fold_worst_root_rho_p95
+
+limitations:
+  - confirmation_is_hash_locked_and_excluded_from_all_development_operations
+  - only_roots_passing_the_per_root_row_gate_from_v1_to_v4_are_consolidated
+  - v5_targets_the_remaining_low_mass_mid_to_high_root_deficit
+  - roots_are_development_manifold_discoveries_not_fresh_confirmation_roots
+  - all_labels_use_unified_v2_2_physics
+  - simplified_19d_software_labels_only
+  - no_real_geometry_or_engineering_feasibility_claim

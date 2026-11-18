@@ -552,7 +552,7 @@ class Geometry19DesignStore:
             "constraints": assessment.as_mapping(),
             "solver": _jsonable(result.solver),
             "schema_hash": self.schema_payload()["schema_hash"],
-            "calibration_hash": config.calibration_pack_hash,
+            "physics_calibration_hash": config.calibration_pack_hash,
             "operating_point_policy": self.schema_payload()[
                 "operating_point_policy"
             ],

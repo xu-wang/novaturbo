@@ -1,0 +1,79 @@
+schema_version: geometry19_calibration_schema_v1
+description: Contract for candidate and frozen Geometry19 calibration packs.
+required_top_level_fields:
+  - pack_version
+  - calibration_schema_version
+  - physics_spec_version
+  - design_schema_version
+  - status
+  - formal_dataset_generation_ready
+  - reference_states
+  - parameter_groups
+  - solver_candidate
+  - notes
+allowed_status:
+  - bootstrap_candidate
+  - validation_candidate
+  - frozen
+allowed_source_types:
+  - TEXTBOOK_RELATION
+  - NASA_NACA_CORRELATION
+  - CURRENT_NOVATURBO_BASELINE
+  - EXPERIMENT
+  - HIGH_FIDELITY
+  - PUBLISHED_LITERATURE
+  - MATERIAL_STANDARD
+  - PROJECT_BOOTSTRAP_ASSUMPTION
+required_parameter_fields:
+  - name
+  - value
+  - unit
+  - valid_range
+  - source_type
+  - source_reference
+  - physical_meaning
+  - calibration_target
+optional_parameter_fields:
+  - notes
+required_parameter_groups:
+  - thermo
+  - inlet
+  - theta_c
+  - theta_b
+  - shaft
+  - theta_t
+  - theta_n
+  - theta_m
+  - theta_s
+  - theta_assembly
+solver_candidate_contract:
+  linear_scan_points: {type: integer, minimum: 3, maximum: 4096}
+  logarithmic_scan_points: {type: integer, minimum: 3, maximum: 4096}
+  flow_residual_tolerance: {type: number, minimum: 1.0e-10, maximum: 1.0e-3}
+  mass_flow_residual_epsilon_kg_s: {type: number, minimum: 1.0e-16, maximum: 1.0e-6}
+  root_relative_tolerance: {type: number, minimum: 1.0e-12, maximum: 1.0e-2}
+  tangency_refine_threshold: {type: number, minimum: 1.0e-10, maximum: 1.0e-1}
+  mass_flow_lower_fraction: {type: number, minimum: 1.0e-6, maximum: 0.25}
+  mass_flow_upper_fraction: {type: number, minimum: 0.5, maximum: 1.0}
+  reject_multiple_roots: {type: boolean, const: true}
+solver_cross_rules:
+  - mass_flow_lower_fraction < mass_flow_upper_fraction
+  - flow_residual_tolerance <= tangency_refine_threshold
+rules:
+  unique_parameter_names: true
+  non_null_values: true
+  numeric_values_inside_valid_range: true
+  frozen_requires_formal_ready: true
+  non_frozen_requires_formal_not_ready: true
+  corrected_mass_flux_name: turbine_corrected_mass_flux
+  corrected_mass_flux_unit: kg/(s*m^2)
+  parameter_notes_policy: >-
+    Optional. Omission means that source_reference, physical_meaning, and
+    calibration_target fully state the record qualification; use notes only for
+    additional caveats.
+  material_density_prefixes:
+    - compressor_material_density
+    - combustor_material_density
+    - turbine_material_density
+    - nozzle_material_density
+    - shaft_material_density

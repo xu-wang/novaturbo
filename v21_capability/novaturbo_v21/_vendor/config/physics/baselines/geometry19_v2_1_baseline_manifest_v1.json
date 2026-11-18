@@ -1,0 +1,3198 @@
+{
+  "case_count": 11,
+  "cases": [
+    {
+      "case_id": "nominal_reference",
+      "description": "Frozen Geometry19 schema reference design at standard sea-level static conditions.",
+      "expected_result": {
+        "assembly_constraints": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics_pending": false,
+        "calibration_pack_hash": "486373656b2423c620468b529a9ea71958a007fedcce2035bfda752f774c8975",
+        "calibration_status": "bootstrap_candidate",
+        "components": {
+          "combustor": {
+            "equivalence_ratio": 0.30168478652073805,
+            "pressure_loss_fraction": 0.13751205235311226,
+            "primary_residence_time_s": 0.0026524620869199504
+          },
+          "compressor": {
+            "flow_coefficient_ref": 0.39537140653556996,
+            "loading_coefficient": 0.6444476289984005,
+            "pressure_ratio": 2.4624364971930626,
+            "shaft_power_W": 26693.518655043346,
+            "slip_factor": 0.8350663856865359,
+            "total_to_total_efficiency": 0.7520690683204092
+          },
+          "nozzle": {
+            "choked": false,
+            "mass_flow_capacity_kg_s": 0.24091297112986057,
+            "total_pressure_recovery": 0.98
+          },
+          "turbine": {
+            "corrected_mass_flux_kg_s_m2": 78.14571251077625,
+            "flow_coefficient": 0.32946954405525664,
+            "loading_coefficient": 0.7820553639242964,
+            "mean_radius_mach": 0.5837616154505181,
+            "solidity": 0.6366197723675814,
+            "total_to_total_efficiency": 0.6703216049927542
+          }
+        },
+        "conservation": {
+          "combustor_energy_W": -2.9103830456733704e-11,
+          "mass_flow_kg_s": -1.2233269952588444e-12,
+          "normalized_flow": -5.077879325167759e-12,
+          "nozzle_velocity_m_s": 0.0,
+          "shaft_power_W": 0.0
+        },
+        "constraints": {
+          "combustor_equivalence_ratio_max": -0.14831521347926196,
+          "combustor_equivalence_ratio_min": -0.15168478652073805,
+          "combustor_injector_capacity": -0.0002771256687128591,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "combustor_liner_hoop_stress": -0.9972123851030616,
+          "combustor_metal_temperature": -327.56970971087253,
+          "combustor_pressure_loss_fraction_max": 0.057512052353112256,
+          "combustor_primary_residence_time_min": -0.0006524620869199503,
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "compressor_efficiency_min": -0.15206906832040923,
+          "compressor_metal_temperature": -272.3380149398039,
+          "compressor_phi_max": -0.05462859346443005,
+          "compressor_phi_min": -0.31537140653556994,
+          "compressor_psi_max": -0.3055523710015995,
+          "compressor_psi_min": -0.2944476289984005,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_mach_max": -0.26906107882346797,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985,
+          "nozzle_total_pressure_usable": -15497.236413939041,
+          "positive_thrust": -68.35106078639099,
+          "positive_tsfc": -7.08529667429894e-05,
+          "shaft_clearance": -0.0421,
+          "turbine_corrected_mass_flux_max": -1.8542874892237506,
+          "turbine_corrected_mass_flux_min": -68.14571251077625,
+          "turbine_efficiency_min": -0.0703216049927542,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_mean_radius_mach_max": -0.31623838454948194,
+          "turbine_metal_temperature": -187.7021067229117,
+          "turbine_phi_max": -0.020530455944743342,
+          "turbine_phi_min": -0.27946954405525665,
+          "turbine_psi_max": -1.0179446360757036,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "turbine_tip_speed_limit": -54.94104074144593,
+          "turbine_to_nozzle": -0.14705882352941177,
+          "whole_engine_flow_match": -9.999994922120676e-06
+        },
+        "core_feasible": false,
+        "feasibility_complete": true,
+        "feasibility_scope": "geometry19_wp19_8_bootstrap_complete",
+        "feasible": false,
+        "formal_dataset_generation_ready": false,
+        "formal_diagnostics": {
+          "combustor_effective_yield_strength_proxy_Pa": 640788424.4805722,
+          "combustor_hoop_stress_Pa": 1190847.5719117862,
+          "combustor_liner_pressure_difference_Pa": 33623.931442215144,
+          "combustor_metal_temperature_K": 645.4302902891275,
+          "compressor_metal_temperature_K": 400.6619850601961,
+          "compressor_rotating_stress_Pa": 388643088.8606742,
+          "compressor_yield_strength_proxy_Pa": 880000000.0,
+          "hot_section_yield_strength_proxy_Pa": 1034000000.0,
+          "lattice_cells_across_region": 6.25,
+          "lattice_flange_allowed": false,
+          "lattice_modulus_ratio": 0.027,
+          "lattice_region_minimum_length_m": 0.05,
+          "lattice_skin_retained": true,
+          "lattice_strength_ratio": 0.049295030175464945,
+          "lattice_topology": "gyroid",
+          "turbine_metal_temperature_K": 785.2978932770883,
+          "turbine_rotating_stress_Pa": 811127269.2007782,
+          "yield_strength_temperature_model": "room_temperature_bootstrap_proxy"
+        },
+        "manufacturing_constraints": {
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985
+        },
+        "mass_breakdown_kg": {
+          "bearing_accessory": 0.32562668729466504,
+          "combustor": 0.3476836479282298,
+          "compressor": 0.11750682850918773,
+          "injectors": 0.06,
+          "nozzle": 0.09105992677491466,
+          "shaft": 0.1344082624378403,
+          "turbine": 0.2522628243507388
+        },
+        "mass_volume_breakdown_m3": {
+          "combustor_shell": 5.8961410922573224e-05,
+          "compressor_blades": 3.893995377501109e-06,
+          "compressor_casing": 1.2063715789784808e-05,
+          "compressor_hub": 1.0567532288512667e-05,
+          "compressor_total": 2.6525243455798586e-05,
+          "nozzle_shell": 1.7105274119454244e-05,
+          "shaft": 1.6822060380205294e-05,
+          "turbine_blades": 1.8792225000000017e-06,
+          "turbine_casing": 1.021410311498382e-05,
+          "turbine_disk": 1.7016695789563035e-05,
+          "turbine_ngv": 1.6913002500000016e-06,
+          "turbine_total": 3.080132165454686e-05
+        },
+        "operating_point": {
+          "air_fuel_ratio": 48.74585332107982,
+          "flow_root_count": 1,
+          "flow_root_mass_flow_air_kg_s": [
+            0.23607009569189102
+          ],
+          "flow_root_normalized_residuals": [
+            -5.077879325167759e-12
+          ],
+          "flow_root_selection_policy": "reference_continuation_high_flow_v1",
+          "fuel_air_ratio": 0.02051456548341019,
+          "inlet_choked_capacity_kg_s": 0.3630226621978938,
+          "mass_flow_air_kg_s": 0.23607009569189102,
+          "mass_flow_fuel_kg_s": 0.004842875436746208,
+          "mass_flow_gas_kg_s": 0.24091297112863724,
+          "mass_flow_search_max_kg_s": 0.3448715290879991,
+          "mass_flow_search_min_kg_s": 0.0036302266219789383,
+          "selected_flow_root_index": 0,
+          "selected_flow_root_mass_flow_air_kg_s": 0.23607009569189102
+        },
+        "performance": {
+          "mass_kg": 1.3285481772955765,
+          "thrust_N": 68.35106078639099,
+          "tsfc_kg_N_s": 7.08529667429894e-05
+        },
+        "physics_model_version": "geometry19_closed_v2_1",
+        "solver": {
+          "converged": true,
+          "evaluations": 130,
+          "failure_code": null,
+          "flow_residual": -5.077879325167759e-12,
+          "iterations": 5,
+          "message": ""
+        },
+        "stations": {
+          "exit": {
+            "mach": 0.4667322760771179,
+            "static_pressure_Pa": 101325.0,
+            "static_temperature_K": 967.8884088081131,
+            "velocity_m_s": 283.71681469112116
+          },
+          "nozzle_total": {
+            "total_pressure_Pa": 116822.23641393904,
+            "total_temperature_K": 1002.6776457172695
+          },
+          "t2": {
+            "total_pressure_Pa": 99298.5,
+            "total_temperature_K": 288.15
+          },
+          "t3": {
+            "total_pressure_Pa": 244516.25051652532,
+            "total_temperature_K": 400.6619850601961
+          },
+          "t4": {
+            "total_pressure_Pa": 210892.3190743102,
+            "total_temperature_K": 1100.0
+          },
+          "t5": {
+            "total_pressure_Pa": 119206.3636876929,
+            "total_temperature_K": 1002.6776457172695
+          }
+        },
+        "structural_constraints": {
+          "combustor_liner_hoop_stress": -0.9972123851030616,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_tip_speed_limit": -54.94104074144593
+        },
+        "structural_diagnostics": {
+          "combustor_liner_hoop_stress": -0.9972123851030616,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_tip_speed_limit": -54.94104074144593
+        },
+        "structural_diagnostics_pending": false,
+        "thermal_constraints": {
+          "combustor_metal_temperature": -327.56970971087253,
+          "compressor_metal_temperature": -272.3380149398039,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_metal_temperature": -187.7021067229117
+        },
+        "thermodynamic_constraints": {
+          "combustor_equivalence_ratio_max": -0.14831521347926196,
+          "combustor_equivalence_ratio_min": -0.15168478652073805,
+          "combustor_injector_capacity": -0.0002771256687128591,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_pressure_loss_fraction_max": 0.057512052353112256,
+          "combustor_primary_residence_time_min": -0.0006524620869199503,
+          "compressor_efficiency_min": -0.15206906832040923,
+          "compressor_phi_max": -0.05462859346443005,
+          "compressor_phi_min": -0.31537140653556994,
+          "compressor_psi_max": -0.3055523710015995,
+          "compressor_psi_min": -0.2944476289984005,
+          "compressor_tip_mach_max": -0.26906107882346797,
+          "nozzle_total_pressure_usable": -15497.236413939041,
+          "positive_thrust": -68.35106078639099,
+          "positive_tsfc": -7.08529667429894e-05,
+          "turbine_corrected_mass_flux_max": -1.8542874892237506,
+          "turbine_corrected_mass_flux_min": -68.14571251077625,
+          "turbine_efficiency_min": -0.0703216049927542,
+          "turbine_mean_radius_mach_max": -0.31623838454948194,
+          "turbine_phi_max": -0.020530455944743342,
+          "turbine_phi_min": -0.27946954405525665,
+          "turbine_psi_max": -1.0179446360757036,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "whole_engine_flow_match": -9.999994922120676e-06
+        },
+        "thermodynamic_feasible": false
+      },
+      "input_sha256": "5060bcab8ea125d4a11ca2945332443141c7c2743fbc2baaecd26768d34d86e9",
+      "inputs": {
+        "design": {
+          "combustor_injector_count": 6,
+          "combustor_inner_diameter_m": 0.06,
+          "combustor_length_m": 0.08,
+          "combustor_liner_thickness_m": 0.0012,
+          "combustor_outer_diameter_m": 0.11,
+          "compressor_blade_count": 12,
+          "compressor_exit_blade_angle_deg": 60.0,
+          "compressor_impeller_exit_diameter_m": 0.08,
+          "compressor_impeller_exit_width_m": 0.005,
+          "compressor_inducer_hub_tip_ratio": 0.4,
+          "compressor_inducer_tip_diameter_m": 0.05,
+          "lattice_cell_size_m": 0.008,
+          "lattice_relative_density": 0.3,
+          "nozzle_throat_diameter_m": 0.055,
+          "shaft_speed_rpm": 100000.0,
+          "turbine_blade_count": 17,
+          "turbine_hub_tip_ratio": 0.7,
+          "turbine_inlet_total_temperature_K": 1100.0,
+          "turbine_tip_diameter_m": 0.085
+        },
+        "environment": {
+          "mach": 0.0,
+          "pressure_Pa": 101325.0,
+          "temperature_K": 288.15
+        }
+      }
+    },
+    {
+      "case_id": "shaft_speed_085",
+      "description": "Low corrected-speed branch at 85 percent reference shaft speed.",
+      "expected_result": {
+        "assembly_constraints": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics_pending": false,
+        "calibration_pack_hash": "486373656b2423c620468b529a9ea71958a007fedcce2035bfda752f774c8975",
+        "calibration_status": "bootstrap_candidate",
+        "components": {
+          "combustor": {
+            "equivalence_ratio": 0.31240166139649916,
+            "pressure_loss_fraction": 0.11296505987527258,
+            "primary_residence_time_s": 0.0029042841596617266
+          },
+          "compressor": {
+            "flow_coefficient_ref": 0.3580531670093529,
+            "loading_coefficient": 0.6624397151803777,
+            "pressure_ratio": 2.01436074568112,
+            "shaft_power_W": 15260.318408649757,
+            "slip_factor": 0.8350663856865359,
+            "total_to_total_efficiency": 0.7638584689878171
+          },
+          "nozzle": {
+            "choked": false,
+            "mass_flow_capacity_kg_s": 0.1855800935688203,
+            "total_pressure_recovery": 0.98
+          },
+          "turbine": {
+            "corrected_mass_flux_kg_s_m2": 71.55112371859252,
+            "flow_coefficient": 0.3549013510754799,
+            "loading_coefficient": 0.803315621536715,
+            "mean_radius_mach": 0.4961973731329404,
+            "solidity": 0.6366197723675814,
+            "total_to_total_efficiency": 0.6193038595124369
+          }
+        },
+        "conservation": {
+          "combustor_energy_W": 2.9103830456733704e-11,
+          "mass_flow_kg_s": -4.437117340216901e-12,
+          "normalized_flow": -2.3909446616792088e-11,
+          "nozzle_velocity_m_s": 0.0,
+          "shaft_power_W": 0.0
+        },
+        "constraints": {
+          "combustor_equivalence_ratio_max": -0.13759833860350085,
+          "combustor_equivalence_ratio_min": -0.16240166139649917,
+          "combustor_injector_capacity": -0.0004408832723267347,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "combustor_liner_hoop_stress": -0.9981266955713798,
+          "combustor_metal_temperature": -346.38888284797974,
+          "combustor_pressure_loss_fraction_max": 0.03296505987527258,
+          "combustor_primary_residence_time_min": -0.0009042841596617265,
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "compressor_efficiency_min": -0.16385846898781709,
+          "compressor_metal_temperature": -301.2905889968918,
+          "compressor_phi_max": -0.0919468329906471,
+          "compressor_phi_min": -0.2780531670093529,
+          "compressor_psi_max": -0.28756028481962226,
+          "compressor_psi_min": -0.3124397151803777,
+          "compressor_rotating_stress": -0.5213727868718685,
+          "compressor_tip_mach_max": -0.45370191699994766,
+          "compressor_tip_speed_limit": -143.95283259315676,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985,
+          "nozzle_total_pressure_usable": -9356.724072491124,
+          "positive_thrust": -42.13489272448457,
+          "positive_tsfc": -9.161836106490707e-05,
+          "shaft_clearance": -0.0421,
+          "turbine_corrected_mass_flux_max": -8.448876281407479,
+          "turbine_corrected_mass_flux_min": -61.55112371859252,
+          "turbine_efficiency_min": -0.01930385951243696,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_mean_radius_mach_max": -0.40380262686705964,
+          "turbine_metal_temperature": -200.73076504860137,
+          "turbine_phi_max": 0.004901351075479898,
+          "turbine_phi_min": -0.3049013510754799,
+          "turbine_psi_max": -0.9966843784632851,
+          "turbine_rotating_stress": -0.14984605609637947,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "turbine_tip_speed_limit": -121.69988463022906,
+          "turbine_to_nozzle": -0.14705882352941177,
+          "whole_engine_flow_match": -9.999976090553384e-06
+        },
+        "core_feasible": false,
+        "feasibility_complete": true,
+        "feasibility_scope": "geometry19_wp19_8_bootstrap_complete",
+        "feasible": false,
+        "formal_dataset_generation_ready": false,
+        "formal_diagnostics": {
+          "combustor_effective_yield_strength_proxy_Pa": 640788424.4805722,
+          "combustor_hoop_stress_Pa": 800261.1955920315,
+          "combustor_liner_pressure_difference_Pa": 22595.610228480888,
+          "combustor_metal_temperature_K": 626.6111171520203,
+          "compressor_metal_temperature_K": 371.7094110031082,
+          "compressor_rotating_stress_Pa": 280794631.7018372,
+          "compressor_yield_strength_proxy_Pa": 880000000.0,
+          "hot_section_yield_strength_proxy_Pa": 1034000000.0,
+          "lattice_cells_across_region": 6.25,
+          "lattice_flange_allowed": false,
+          "lattice_modulus_ratio": 0.027,
+          "lattice_region_minimum_length_m": 0.05,
+          "lattice_skin_retained": true,
+          "lattice_strength_ratio": 0.049295030175464945,
+          "lattice_topology": "gyroid",
+          "turbine_metal_temperature_K": 772.2692349513986,
+          "turbine_rotating_stress_Pa": 586039451.9975624,
+          "yield_strength_temperature_model": "room_temperature_bootstrap_proxy"
+        },
+        "manufacturing_constraints": {
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985
+        },
+        "mass_breakdown_kg": {
+          "bearing_accessory": 0.32562668729466504,
+          "combustor": 0.3476836479282298,
+          "compressor": 0.11750682850918773,
+          "injectors": 0.06,
+          "nozzle": 0.09105992677491466,
+          "shaft": 0.1344082624378403,
+          "turbine": 0.2522628243507388
+        },
+        "mass_volume_breakdown_m3": {
+          "combustor_shell": 5.8961410922573224e-05,
+          "compressor_blades": 3.893995377501109e-06,
+          "compressor_casing": 1.2063715789784808e-05,
+          "compressor_hub": 1.0567532288512667e-05,
+          "compressor_total": 2.6525243455798586e-05,
+          "nozzle_shell": 1.7105274119454244e-05,
+          "shaft": 1.6822060380205294e-05,
+          "turbine_blades": 1.8792225000000017e-06,
+          "turbine_casing": 1.021410311498382e-05,
+          "turbine_disk": 1.7016695789563035e-05,
+          "turbine_ngv": 1.6913002500000016e-06,
+          "turbine_total": 3.080132165454686e-05
+        },
+        "operating_point": {
+          "air_fuel_ratio": 47.073636827675244,
+          "flow_root_count": 1,
+          "flow_root_mass_flow_air_kg_s": [
+            0.18171976374932022
+          ],
+          "flow_root_normalized_residuals": [
+            -2.3909446616792088e-11
+          ],
+          "flow_root_selection_policy": "reference_continuation_high_flow_v1",
+          "fuel_air_ratio": 0.021243312974961945,
+          "inlet_choked_capacity_kg_s": 0.3630226621978938,
+          "mass_flow_air_kg_s": 0.18171976374932022,
+          "mass_flow_fuel_kg_s": 0.0038603298150629538,
+          "mass_flow_gas_kg_s": 0.18558009356438318,
+          "mass_flow_search_max_kg_s": 0.3448715290879991,
+          "mass_flow_search_min_kg_s": 0.0036302266219789383,
+          "selected_flow_root_index": 0,
+          "selected_flow_root_mass_flow_air_kg_s": 0.18171976374932022
+        },
+        "performance": {
+          "mass_kg": 1.3285481772955765,
+          "thrust_N": 42.13489272448457,
+          "tsfc_kg_N_s": 9.161836106490707e-05
+        },
+        "physics_model_version": "geometry19_closed_v2_1",
+        "solver": {
+          "converged": true,
+          "evaluations": 130,
+          "failure_code": null,
+          "flow_residual": -2.3909446616792088e-11,
+          "iterations": 5,
+          "message": ""
+        },
+        "stations": {
+          "exit": {
+            "mach": 0.3664512028424616,
+            "static_pressure_Pa": 101325.0,
+            "static_temperature_K": 1005.4940641020796,
+            "velocity_m_s": 227.04424766262304
+          },
+          "nozzle_total": {
+            "total_pressure_Pa": 110681.72407249112,
+            "total_temperature_K": 1027.7730674337495
+          },
+          "t2": {
+            "total_pressure_Pa": 99298.5,
+            "total_temperature_K": 288.15
+          },
+          "t3": {
+            "total_pressure_Pa": 200023.00050501668,
+            "total_temperature_K": 371.7094110031082
+          },
+          "t4": {
+            "total_pressure_Pa": 177427.3902765358,
+            "total_temperature_K": 1100.0
+          },
+          "t5": {
+            "total_pressure_Pa": 112940.53476784809,
+            "total_temperature_K": 1027.7730674337495
+          }
+        },
+        "structural_constraints": {
+          "combustor_liner_hoop_stress": -0.9981266955713798,
+          "compressor_rotating_stress": -0.5213727868718685,
+          "compressor_tip_speed_limit": -143.95283259315676,
+          "turbine_rotating_stress": -0.14984605609637947,
+          "turbine_tip_speed_limit": -121.69988463022906
+        },
+        "structural_diagnostics": {
+          "combustor_liner_hoop_stress": -0.9981266955713798,
+          "compressor_rotating_stress": -0.5213727868718685,
+          "compressor_tip_speed_limit": -143.95283259315676,
+          "turbine_rotating_stress": -0.14984605609637947,
+          "turbine_tip_speed_limit": -121.69988463022906
+        },
+        "structural_diagnostics_pending": false,
+        "thermal_constraints": {
+          "combustor_metal_temperature": -346.38888284797974,
+          "compressor_metal_temperature": -301.2905889968918,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_metal_temperature": -200.73076504860137
+        },
+        "thermodynamic_constraints": {
+          "combustor_equivalence_ratio_max": -0.13759833860350085,
+          "combustor_equivalence_ratio_min": -0.16240166139649917,
+          "combustor_injector_capacity": -0.0004408832723267347,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_pressure_loss_fraction_max": 0.03296505987527258,
+          "combustor_primary_residence_time_min": -0.0009042841596617265,
+          "compressor_efficiency_min": -0.16385846898781709,
+          "compressor_phi_max": -0.0919468329906471,
+          "compressor_phi_min": -0.2780531670093529,
+          "compressor_psi_max": -0.28756028481962226,
+          "compressor_psi_min": -0.3124397151803777,
+          "compressor_tip_mach_max": -0.45370191699994766,
+          "nozzle_total_pressure_usable": -9356.724072491124,
+          "positive_thrust": -42.13489272448457,
+          "positive_tsfc": -9.161836106490707e-05,
+          "turbine_corrected_mass_flux_max": -8.448876281407479,
+          "turbine_corrected_mass_flux_min": -61.55112371859252,
+          "turbine_efficiency_min": -0.01930385951243696,
+          "turbine_mean_radius_mach_max": -0.40380262686705964,
+          "turbine_phi_max": 0.004901351075479898,
+          "turbine_phi_min": -0.3049013510754799,
+          "turbine_psi_max": -0.9966843784632851,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "whole_engine_flow_match": -9.999976090553384e-06
+        },
+        "thermodynamic_feasible": false
+      },
+      "input_sha256": "8e7b07a55b1b91b93fc78b2b52fc2a66b8ba20f4c7863a7395c8ff80388ac219",
+      "inputs": {
+        "design": {
+          "combustor_injector_count": 6,
+          "combustor_inner_diameter_m": 0.06,
+          "combustor_length_m": 0.08,
+          "combustor_liner_thickness_m": 0.0012,
+          "combustor_outer_diameter_m": 0.11,
+          "compressor_blade_count": 12,
+          "compressor_exit_blade_angle_deg": 60.0,
+          "compressor_impeller_exit_diameter_m": 0.08,
+          "compressor_impeller_exit_width_m": 0.005,
+          "compressor_inducer_hub_tip_ratio": 0.4,
+          "compressor_inducer_tip_diameter_m": 0.05,
+          "lattice_cell_size_m": 0.008,
+          "lattice_relative_density": 0.3,
+          "nozzle_throat_diameter_m": 0.055,
+          "shaft_speed_rpm": 85000.0,
+          "turbine_blade_count": 17,
+          "turbine_hub_tip_ratio": 0.7,
+          "turbine_inlet_total_temperature_K": 1100.0,
+          "turbine_tip_diameter_m": 0.085
+        },
+        "environment": {
+          "mach": 0.0,
+          "pressure_Pa": 101325.0,
+          "temperature_K": 288.15
+        }
+      }
+    },
+    {
+      "case_id": "shaft_speed_105",
+      "description": "High-speed case that freezes two-root high-flow continuation behavior.",
+      "expected_result": {
+        "assembly_constraints": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics_pending": false,
+        "calibration_pack_hash": "486373656b2423c620468b529a9ea71958a007fedcce2035bfda752f774c8975",
+        "calibration_status": "bootstrap_candidate",
+        "components": {
+          "combustor": {
+            "equivalence_ratio": 0.29779965911728074,
+            "pressure_loss_fraction": 0.14348715821033253,
+            "primary_residence_time_s": 0.0026063347293968494
+          },
+          "compressor": {
+            "flow_coefficient_ref": 0.4065401793320262,
+            "loading_coefficient": 0.6390628754502168,
+            "pressure_ratio": 2.6365239528515536,
+            "shaft_power_W": 31508.512275548997,
+            "slip_factor": 0.8350663856865359,
+            "total_to_total_efficiency": 0.7476228917621872
+          },
+          "nozzle": {
+            "choked": false,
+            "mass_flow_capacity_kg_s": 0.26003729688616684,
+            "total_pressure_recovery": 0.98
+          },
+          "turbine": {
+            "corrected_mass_flux_kg_s_m2": 79.32913187622026,
+            "flow_coefficient": 0.3185323327995505,
+            "loading_coefficient": 0.7757216308880235,
+            "mean_radius_mach": 0.6129496962230441,
+            "solidity": 0.6366197723675814,
+            "total_to_total_efficiency": 0.687674717125957
+          }
+        },
+        "conservation": {
+          "combustor_energy_W": -2.9103830456733704e-11,
+          "mass_flow_kg_s": -2.3182140290733955e-07,
+          "normalized_flow": -8.914936909074978e-07,
+          "nozzle_velocity_m_s": 0.0,
+          "shaft_power_W": 0.0
+        },
+        "constraints": {
+          "combustor_equivalence_ratio_max": -0.15220034088271928,
+          "combustor_equivalence_ratio_min": -0.14779965911728074,
+          "combustor_injector_capacity": -0.0002240499608815418,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "combustor_liner_hoop_stress": -0.9968856190876743,
+          "combustor_metal_temperature": -320.7473024220882,
+          "combustor_pressure_loss_fraction_max": 0.06348715821033253,
+          "combustor_primary_residence_time_min": -0.0006063347293968494,
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "compressor_efficiency_min": -0.14762289176218724,
+          "compressor_metal_temperature": -261.8420037262895,
+          "compressor_phi_max": -0.043459820667973825,
+          "compressor_phi_min": -0.32654017933202617,
+          "compressor_psi_max": -0.3109371245497832,
+          "compressor_psi_min": -0.2890628754502168,
+          "compressor_rotating_stress": -0.2696380588598407,
+          "compressor_tip_mach_max": -0.20751413276464126,
+          "compressor_tip_speed_limit": -60.17702849742892,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985,
+          "nozzle_total_pressure_usable": -17943.223916826377,
+          "positive_thrust": -78.50557728308216,
+          "positive_tsfc": -6.574475167697888e-05,
+          "shaft_clearance": -0.0421,
+          "turbine_corrected_mass_flux_max": -0.6708681237797407,
+          "turbine_corrected_mass_flux_min": -69.32913187622026,
+          "turbine_efficiency_min": -0.08767471712595698,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_mean_radius_mach_max": -0.28705030377695595,
+          "turbine_metal_temperature": -182.97890167683022,
+          "turbine_phi_max": -0.03146766720044947,
+          "turbine_phi_min": -0.2685323327995505,
+          "turbine_psi_max": -1.0242783691119766,
+          "turbine_rotating_stress": 0.29729373446884644,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "turbine_tip_speed_limit": -32.68809277851818,
+          "turbine_to_nozzle": -0.14705882352941177,
+          "whole_engine_flow_match": -9.108506309092503e-06
+        },
+        "core_feasible": false,
+        "feasibility_complete": true,
+        "feasibility_scope": "geometry19_wp19_8_bootstrap_complete",
+        "feasible": false,
+        "formal_dataset_generation_ready": false,
+        "formal_diagnostics": {
+          "combustor_effective_yield_strength_proxy_Pa": 640788424.4805722,
+          "combustor_hoop_stress_Pa": 1330439.4920277402,
+          "combustor_liner_pressure_difference_Pa": 37565.3503631362,
+          "combustor_metal_temperature_K": 652.2526975779118,
+          "compressor_metal_temperature_K": 411.1579962737105,
+          "compressor_rotating_stress_Pa": 428479005.46889347,
+          "compressor_yield_strength_proxy_Pa": 880000000.0,
+          "hot_section_yield_strength_proxy_Pa": 1034000000.0,
+          "lattice_cells_across_region": 6.25,
+          "lattice_flange_allowed": false,
+          "lattice_modulus_ratio": 0.027,
+          "lattice_region_minimum_length_m": 0.05,
+          "lattice_skin_retained": true,
+          "lattice_strength_ratio": 0.049295030175464945,
+          "lattice_topology": "gyroid",
+          "turbine_metal_temperature_K": 790.0210983231698,
+          "turbine_rotating_stress_Pa": 894267814.2938583,
+          "yield_strength_temperature_model": "room_temperature_bootstrap_proxy"
+        },
+        "manufacturing_constraints": {
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985
+        },
+        "mass_breakdown_kg": {
+          "bearing_accessory": 0.32562668729466504,
+          "combustor": 0.3476836479282298,
+          "compressor": 0.11750682850918773,
+          "injectors": 0.06,
+          "nozzle": 0.09105992677491466,
+          "shaft": 0.1344082624378403,
+          "turbine": 0.2522628243507388
+        },
+        "mass_volume_breakdown_m3": {
+          "combustor_shell": 5.8961410922573224e-05,
+          "compressor_blades": 3.893995377501109e-06,
+          "compressor_casing": 1.2063715789784808e-05,
+          "compressor_hub": 1.0567532288512667e-05,
+          "compressor_total": 2.6525243455798586e-05,
+          "nozzle_shell": 1.7105274119454244e-05,
+          "shaft": 1.6822060380205294e-05,
+          "turbine_blades": 1.8792225000000017e-06,
+          "turbine_casing": 1.021410311498382e-05,
+          "turbine_disk": 1.7016695789563035e-05,
+          "turbine_ngv": 1.6913002500000016e-06,
+          "turbine_total": 3.080132165454686e-05
+        },
+        "operating_point": {
+          "air_fuel_ratio": 49.38179713345354,
+          "flow_root_count": 2,
+          "flow_root_mass_flow_air_kg_s": [
+            0.0704673218130458,
+            0.2548757353810298
+          ],
+          "flow_root_normalized_residuals": [
+            1.1973787914053544e-06,
+            -8.914936909074978e-07
+          ],
+          "flow_root_selection_policy": "reference_continuation_high_flow_v1",
+          "fuel_air_ratio": 0.020250376819975092,
+          "inlet_choked_capacity_kg_s": 0.3630226621978938,
+          "mass_flow_air_kg_s": 0.2548757353810298,
+          "mass_flow_fuel_kg_s": 0.005161329683734111,
+          "mass_flow_gas_kg_s": 0.26003706506476393,
+          "mass_flow_search_max_kg_s": 0.3448715290879991,
+          "mass_flow_search_min_kg_s": 0.0036302266219789383,
+          "selected_flow_root_index": 1,
+          "selected_flow_root_mass_flow_air_kg_s": 0.2548757353810298
+        },
+        "performance": {
+          "mass_kg": 1.3285481772955765,
+          "thrust_N": 78.50557728308216,
+          "tsfc_kg_N_s": 6.574475167697888e-05
+        },
+        "physics_model_version": "geometry19_closed_v2_1",
+        "solver": {
+          "converged": true,
+          "evaluations": 134,
+          "failure_code": null,
+          "flow_residual": -8.914936909074978e-07,
+          "iterations": 10,
+          "message": "Selected the reference-continuation high-flow branch from 2 valid roots"
+        },
+        "stations": {
+          "exit": {
+            "mach": 0.5002022657571674,
+            "static_pressure_Pa": 101325.0,
+            "static_temperature_K": 954.1793427937628,
+            "velocity_m_s": 301.9014895569977
+          },
+          "nozzle_total": {
+            "total_pressure_Pa": 119268.22391682638,
+            "total_temperature_K": 993.5710917632806
+          },
+          "t2": {
+            "total_pressure_Pa": 99298.5,
+            "total_temperature_K": 288.15
+          },
+          "t3": {
+            "total_pressure_Pa": 261802.87373223,
+            "total_temperature_K": 411.1579962737105
+          },
+          "t4": {
+            "total_pressure_Pa": 224237.52336909377,
+            "total_temperature_K": 1100.0
+          },
+          "t5": {
+            "total_pressure_Pa": 121702.26930288406,
+            "total_temperature_K": 993.5710917632806
+          }
+        },
+        "structural_constraints": {
+          "combustor_liner_hoop_stress": -0.9968856190876743,
+          "compressor_rotating_stress": -0.2696380588598407,
+          "compressor_tip_speed_limit": -60.17702849742892,
+          "turbine_rotating_stress": 0.29729373446884644,
+          "turbine_tip_speed_limit": -32.68809277851818
+        },
+        "structural_diagnostics": {
+          "combustor_liner_hoop_stress": -0.9968856190876743,
+          "compressor_rotating_stress": -0.2696380588598407,
+          "compressor_tip_speed_limit": -60.17702849742892,
+          "turbine_rotating_stress": 0.29729373446884644,
+          "turbine_tip_speed_limit": -32.68809277851818
+        },
+        "structural_diagnostics_pending": false,
+        "thermal_constraints": {
+          "combustor_metal_temperature": -320.7473024220882,
+          "compressor_metal_temperature": -261.8420037262895,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_metal_temperature": -182.97890167683022
+        },
+        "thermodynamic_constraints": {
+          "combustor_equivalence_ratio_max": -0.15220034088271928,
+          "combustor_equivalence_ratio_min": -0.14779965911728074,
+          "combustor_injector_capacity": -0.0002240499608815418,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_pressure_loss_fraction_max": 0.06348715821033253,
+          "combustor_primary_residence_time_min": -0.0006063347293968494,
+          "compressor_efficiency_min": -0.14762289176218724,
+          "compressor_phi_max": -0.043459820667973825,
+          "compressor_phi_min": -0.32654017933202617,
+          "compressor_psi_max": -0.3109371245497832,
+          "compressor_psi_min": -0.2890628754502168,
+          "compressor_tip_mach_max": -0.20751413276464126,
+          "nozzle_total_pressure_usable": -17943.223916826377,
+          "positive_thrust": -78.50557728308216,
+          "positive_tsfc": -6.574475167697888e-05,
+          "turbine_corrected_mass_flux_max": -0.6708681237797407,
+          "turbine_corrected_mass_flux_min": -69.32913187622026,
+          "turbine_efficiency_min": -0.08767471712595698,
+          "turbine_mean_radius_mach_max": -0.28705030377695595,
+          "turbine_phi_max": -0.03146766720044947,
+          "turbine_phi_min": -0.2685323327995505,
+          "turbine_psi_max": -1.0242783691119766,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "whole_engine_flow_match": -9.108506309092503e-06
+        },
+        "thermodynamic_feasible": false
+      },
+      "input_sha256": "5cdbac1b1c9c0e87cb94b83343bfc9ddf2e5df087131e5347f4559d3158847eb",
+      "inputs": {
+        "design": {
+          "combustor_injector_count": 6,
+          "combustor_inner_diameter_m": 0.06,
+          "combustor_length_m": 0.08,
+          "combustor_liner_thickness_m": 0.0012,
+          "combustor_outer_diameter_m": 0.11,
+          "compressor_blade_count": 12,
+          "compressor_exit_blade_angle_deg": 60.0,
+          "compressor_impeller_exit_diameter_m": 0.08,
+          "compressor_impeller_exit_width_m": 0.005,
+          "compressor_inducer_hub_tip_ratio": 0.4,
+          "compressor_inducer_tip_diameter_m": 0.05,
+          "lattice_cell_size_m": 0.008,
+          "lattice_relative_density": 0.3,
+          "nozzle_throat_diameter_m": 0.055,
+          "shaft_speed_rpm": 105000.0,
+          "turbine_blade_count": 17,
+          "turbine_hub_tip_ratio": 0.7,
+          "turbine_inlet_total_temperature_K": 1100.0,
+          "turbine_tip_diameter_m": 0.085
+        },
+        "environment": {
+          "mach": 0.0,
+          "pressure_Pa": 101325.0,
+          "temperature_K": 288.15
+        }
+      }
+    },
+    {
+      "case_id": "compressor_exit_width_two_root",
+      "description": "Explicit two-root geometry used by the operating-point policy regression.",
+      "expected_result": {
+        "assembly_constraints": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": 0.3299692029350813,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": 0.3299692029350813,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics_pending": false,
+        "calibration_pack_hash": "486373656b2423c620468b529a9ea71958a007fedcce2035bfda752f774c8975",
+        "calibration_status": "bootstrap_candidate",
+        "components": {
+          "combustor": {
+            "equivalence_ratio": 0.2959428823744852,
+            "pressure_loss_fraction": 0.1338903647384741,
+            "primary_residence_time_s": 0.002570036771725086
+          },
+          "compressor": {
+            "flow_coefficient_ref": 0.21108070317734817,
+            "loading_coefficient": 0.7332989322606807,
+            "pressure_ratio": 2.826795226603976,
+            "shaft_power_W": 35739.062149736725,
+            "slip_factor": 0.8350663856865359,
+            "total_to_total_efficiency": 0.7780338756119047
+          },
+          "nozzle": {
+            "choked": false,
+            "mass_flow_capacity_kg_s": 0.28335957677698886,
+            "total_pressure_recovery": 0.98
+          },
+          "turbine": {
+            "corrected_mass_flux_kg_s_m2": 79.73219527358198,
+            "flow_coefficient": 0.33615830196300556,
+            "loading_coefficient": 0.8902195235560838,
+            "mean_radius_mach": 0.5837616154505181,
+            "solidity": 0.6366197723675814,
+            "total_to_total_efficiency": 0.6628218611157605
+          }
+        },
+        "conservation": {
+          "combustor_energy_W": 0.0,
+          "mass_flow_kg_s": -1.080326383906538e-10,
+          "normalized_flow": -3.8125635159621354e-10,
+          "nozzle_velocity_m_s": 0.0,
+          "shaft_power_W": 0.0
+        },
+        "constraints": {
+          "combustor_equivalence_ratio_max": -0.15405711762551483,
+          "combustor_equivalence_ratio_min": -0.1459428823744852,
+          "combustor_injector_capacity": -0.00015262660772554849,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "combustor_liner_hoop_stress": -0.9968841922926756,
+          "combustor_metal_temperature": -317.4867434060774,
+          "combustor_pressure_loss_fraction_max": 0.0538903647384741,
+          "combustor_primary_residence_time_min": -0.0005700367717250861,
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "compressor_efficiency_min": -0.17803387561190476,
+          "compressor_metal_temperature": -256.82575908627285,
+          "compressor_phi_max": -0.23891929682265184,
+          "compressor_phi_min": -0.13108070317734816,
+          "compressor_psi_max": -0.2167010677393193,
+          "compressor_psi_min": -0.3832989322606807,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_mach_max": -0.26906107882346797,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "diffuser_to_combustor_area": 0.3299692029350813,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985,
+          "nozzle_total_pressure_usable": -21296.25660658034,
+          "positive_thrust": -92.17444025487629,
+          "positive_tsfc": -6.064446702592643e-05,
+          "shaft_clearance": -0.0421,
+          "turbine_corrected_mass_flux_max": -0.2678047264180208,
+          "turbine_corrected_mass_flux_min": -69.73219527358198,
+          "turbine_efficiency_min": -0.06282186111576049,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_mean_radius_mach_max": -0.31623838454948194,
+          "turbine_metal_temperature": -180.72159158882278,
+          "turbine_phi_max": -0.013841698036994421,
+          "turbine_phi_min": -0.28615830196300557,
+          "turbine_psi_max": -0.9097804764439162,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "turbine_tip_speed_limit": -54.94104074144593,
+          "turbine_to_nozzle": -0.14705882352941177,
+          "whole_engine_flow_match": -9.999618743648404e-06
+        },
+        "core_feasible": false,
+        "feasibility_complete": true,
+        "feasibility_scope": "geometry19_wp19_8_bootstrap_complete",
+        "feasible": false,
+        "formal_dataset_generation_ready": false,
+        "formal_diagnostics": {
+          "combustor_effective_yield_strength_proxy_Pa": 640788424.4805722,
+          "combustor_hoop_stress_Pa": 1331049.0078405703,
+          "combustor_liner_pressure_difference_Pa": 37582.56022138081,
+          "combustor_metal_temperature_K": 655.5132565939226,
+          "compressor_metal_temperature_K": 416.17424091372715,
+          "compressor_rotating_stress_Pa": 388643088.8606742,
+          "compressor_yield_strength_proxy_Pa": 880000000.0,
+          "hot_section_yield_strength_proxy_Pa": 1034000000.0,
+          "lattice_cells_across_region": 6.25,
+          "lattice_flange_allowed": false,
+          "lattice_modulus_ratio": 0.027,
+          "lattice_region_minimum_length_m": 0.05,
+          "lattice_skin_retained": true,
+          "lattice_strength_ratio": 0.049295030175464945,
+          "lattice_topology": "gyroid",
+          "turbine_metal_temperature_K": 792.2784084111772,
+          "turbine_rotating_stress_Pa": 811127269.2007782,
+          "yield_strength_temperature_model": "room_temperature_bootstrap_proxy"
+        },
+        "manufacturing_constraints": {
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985
+        },
+        "mass_breakdown_kg": {
+          "bearing_accessory": 0.3412537968221712,
+          "combustor": 0.3476836479282298,
+          "compressor": 0.2216875586925623,
+          "injectors": 0.06,
+          "nozzle": 0.09105992677491466,
+          "shaft": 0.1344082624378403,
+          "turbine": 0.2522628243507388
+        },
+        "mass_volume_breakdown_m3": {
+          "combustor_shell": 5.8961410922573224e-05,
+          "compressor_blades": 1.2616545023103591e-05,
+          "compressor_casing": 1.2063715789784808e-05,
+          "compressor_hub": 2.5362077492430403e-05,
+          "compressor_total": 5.0042338305318804e-05,
+          "nozzle_shell": 1.7105274119454244e-05,
+          "shaft": 1.6822060380205294e-05,
+          "turbine_blades": 1.8792225000000017e-06,
+          "turbine_casing": 1.021410311498382e-05,
+          "turbine_disk": 1.7016695789563035e-05,
+          "turbine_ngv": 1.6913002500000016e-06,
+          "turbine_total": 3.080132165454686e-05
+        },
+        "operating_point": {
+          "air_fuel_ratio": 49.69162371789161,
+          "flow_root_count": 2,
+          "flow_root_mass_flow_air_kg_s": [
+            0.07064446854613514,
+            0.27776970686628616
+          ],
+          "flow_root_normalized_residuals": [
+            -6.82938224488734e-08,
+            -3.8125635159621354e-10
+          ],
+          "flow_root_selection_policy": "reference_continuation_high_flow_v1",
+          "fuel_air_ratio": 0.020124116001464996,
+          "inlet_choked_capacity_kg_s": 0.3630226621978938,
+          "mass_flow_air_kg_s": 0.27776970686628616,
+          "mass_flow_fuel_kg_s": 0.005589869802670071,
+          "mass_flow_gas_kg_s": 0.2833595766689562,
+          "mass_flow_search_max_kg_s": 0.3448715290879991,
+          "mass_flow_search_min_kg_s": 0.0036302266219789383,
+          "selected_flow_root_index": 1,
+          "selected_flow_root_mass_flow_air_kg_s": 0.27776970686628616
+        },
+        "performance": {
+          "mass_kg": 1.448356017006457,
+          "thrust_N": 92.17444025487629,
+          "tsfc_kg_N_s": 6.064446702592643e-05
+        },
+        "physics_model_version": "geometry19_closed_v2_1",
+        "solver": {
+          "converged": true,
+          "evaluations": 135,
+          "failure_code": null,
+          "flow_residual": -3.8125635159621354e-10,
+          "iterations": 11,
+          "message": "Selected the reference-continuation high-flow branch from 2 valid roots"
+        },
+        "stations": {
+          "exit": {
+            "mach": 0.542001464293638,
+            "static_pressure_Pa": 101325.0,
+            "static_temperature_K": 943.4852521798515,
+            "velocity_m_s": 325.2914241983146
+          },
+          "nozzle_total": {
+            "total_pressure_Pa": 122621.25660658034,
+            "total_temperature_K": 989.2172295498565
+          },
+          "t2": {
+            "total_pressure_Pa": 99298.5,
+            "total_temperature_K": 288.15
+          },
+          "t3": {
+            "total_pressure_Pa": 280696.52580893494,
+            "total_temperature_K": 416.17424091372715
+          },
+          "t4": {
+            "total_pressure_Pa": 243113.96558755412,
+            "total_temperature_K": 1100.0
+          },
+          "t5": {
+            "total_pressure_Pa": 125123.73123120444,
+            "total_temperature_K": 989.2172295498565
+          }
+        },
+        "structural_constraints": {
+          "combustor_liner_hoop_stress": -0.9968841922926756,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_tip_speed_limit": -54.94104074144593
+        },
+        "structural_diagnostics": {
+          "combustor_liner_hoop_stress": -0.9968841922926756,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_tip_speed_limit": -54.94104074144593
+        },
+        "structural_diagnostics_pending": false,
+        "thermal_constraints": {
+          "combustor_metal_temperature": -317.4867434060774,
+          "compressor_metal_temperature": -256.82575908627285,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_metal_temperature": -180.72159158882278
+        },
+        "thermodynamic_constraints": {
+          "combustor_equivalence_ratio_max": -0.15405711762551483,
+          "combustor_equivalence_ratio_min": -0.1459428823744852,
+          "combustor_injector_capacity": -0.00015262660772554849,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_pressure_loss_fraction_max": 0.0538903647384741,
+          "combustor_primary_residence_time_min": -0.0005700367717250861,
+          "compressor_efficiency_min": -0.17803387561190476,
+          "compressor_phi_max": -0.23891929682265184,
+          "compressor_phi_min": -0.13108070317734816,
+          "compressor_psi_max": -0.2167010677393193,
+          "compressor_psi_min": -0.3832989322606807,
+          "compressor_tip_mach_max": -0.26906107882346797,
+          "nozzle_total_pressure_usable": -21296.25660658034,
+          "positive_thrust": -92.17444025487629,
+          "positive_tsfc": -6.064446702592643e-05,
+          "turbine_corrected_mass_flux_max": -0.2678047264180208,
+          "turbine_corrected_mass_flux_min": -69.73219527358198,
+          "turbine_efficiency_min": -0.06282186111576049,
+          "turbine_mean_radius_mach_max": -0.31623838454948194,
+          "turbine_phi_max": -0.013841698036994421,
+          "turbine_phi_min": -0.28615830196300557,
+          "turbine_psi_max": -0.9097804764439162,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "whole_engine_flow_match": -9.999618743648404e-06
+        },
+        "thermodynamic_feasible": false
+      },
+      "input_sha256": "e4b8553b260a4dbc74bcfb098ec88080a3ef24e3af661cb8f0b6382c57eb4aea",
+      "inputs": {
+        "design": {
+          "combustor_injector_count": 6,
+          "combustor_inner_diameter_m": 0.06,
+          "combustor_length_m": 0.08,
+          "combustor_liner_thickness_m": 0.0012,
+          "combustor_outer_diameter_m": 0.11,
+          "compressor_blade_count": 12,
+          "compressor_exit_blade_angle_deg": 60.0,
+          "compressor_impeller_exit_diameter_m": 0.08,
+          "compressor_impeller_exit_width_m": 0.012,
+          "compressor_inducer_hub_tip_ratio": 0.4,
+          "compressor_inducer_tip_diameter_m": 0.05,
+          "lattice_cell_size_m": 0.008,
+          "lattice_relative_density": 0.3,
+          "nozzle_throat_diameter_m": 0.055,
+          "shaft_speed_rpm": 100000.0,
+          "turbine_blade_count": 17,
+          "turbine_hub_tip_ratio": 0.7,
+          "turbine_inlet_total_temperature_K": 1100.0,
+          "turbine_tip_diameter_m": 0.085
+        },
+        "environment": {
+          "mach": 0.0,
+          "pressure_Pa": 101325.0,
+          "temperature_K": 288.15
+        }
+      }
+    },
+    {
+      "case_id": "compressor_large_no_flow",
+      "description": "Explicit no-flow-match failure path used by the operating-point policy regression.",
+      "expected_result": {
+        "assembly_constraints": {},
+        "assembly_diagnostics": {},
+        "assembly_diagnostics_pending": true,
+        "calibration_pack_hash": "486373656b2423c620468b529a9ea71958a007fedcce2035bfda752f774c8975",
+        "calibration_status": "bootstrap_candidate",
+        "components": {},
+        "conservation": {
+          "combustor_energy_W": null,
+          "mass_flow_kg_s": null,
+          "normalized_flow": null,
+          "nozzle_velocity_m_s": null,
+          "shaft_power_W": null
+        },
+        "constraints": {},
+        "core_feasible": false,
+        "feasibility_complete": false,
+        "feasibility_scope": "geometry19_wp19_8_not_evaluated",
+        "feasible": false,
+        "formal_dataset_generation_ready": false,
+        "formal_diagnostics": {},
+        "manufacturing_constraints": {},
+        "mass_breakdown_kg": {},
+        "mass_volume_breakdown_m3": {},
+        "operating_point": {
+          "flow_root_count": 0,
+          "flow_root_mass_flow_air_kg_s": [],
+          "flow_root_normalized_residuals": [],
+          "flow_root_selection_policy": "reference_continuation_high_flow_v1",
+          "inlet_choked_capacity_kg_s": 0.3630226621978938,
+          "mass_flow_search_max_kg_s": 0.3448715290879991,
+          "mass_flow_search_min_kg_s": 0.0036302266219789383,
+          "selected_flow_root_index": null,
+          "selected_flow_root_mass_flow_air_kg_s": null
+        },
+        "performance": {},
+        "physics_model_version": "geometry19_closed_v2_1",
+        "solver": {
+          "converged": false,
+          "evaluations": 126,
+          "failure_code": "NO_FLOW_MATCH",
+          "flow_residual": null,
+          "iterations": 0,
+          "message": "No unique valid whole-engine flow match was found"
+        },
+        "stations": {},
+        "structural_constraints": {},
+        "structural_diagnostics": {},
+        "structural_diagnostics_pending": true,
+        "thermal_constraints": {},
+        "thermodynamic_constraints": {},
+        "thermodynamic_feasible": false
+      },
+      "input_sha256": "62ab9ff5ab1e857bbb15ad2393afebdc6027d111cfcb277e55c847f6e840f9cb",
+      "inputs": {
+        "design": {
+          "combustor_injector_count": 6,
+          "combustor_inner_diameter_m": 0.06,
+          "combustor_length_m": 0.08,
+          "combustor_liner_thickness_m": 0.0012,
+          "combustor_outer_diameter_m": 0.11,
+          "compressor_blade_count": 12,
+          "compressor_exit_blade_angle_deg": 60.0,
+          "compressor_impeller_exit_diameter_m": 0.15,
+          "compressor_impeller_exit_width_m": 0.005,
+          "compressor_inducer_hub_tip_ratio": 0.4,
+          "compressor_inducer_tip_diameter_m": 0.05,
+          "lattice_cell_size_m": 0.008,
+          "lattice_relative_density": 0.3,
+          "nozzle_throat_diameter_m": 0.055,
+          "shaft_speed_rpm": 100000.0,
+          "turbine_blade_count": 17,
+          "turbine_hub_tip_ratio": 0.7,
+          "turbine_inlet_total_temperature_K": 1100.0,
+          "turbine_tip_diameter_m": 0.085
+        },
+        "environment": {
+          "mach": 0.0,
+          "pressure_Pa": 101325.0,
+          "temperature_K": 288.15
+        }
+      }
+    },
+    {
+      "case_id": "compressor_diameter_low",
+      "description": "Five-percent reduction of compressor impeller exit diameter.",
+      "expected_result": {
+        "assembly_constraints": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": -0.17111393433309213,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": -0.17111393433309213,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics_pending": false,
+        "calibration_pack_hash": "486373656b2423c620468b529a9ea71958a007fedcce2035bfda752f774c8975",
+        "calibration_status": "bootstrap_candidate",
+        "components": {
+          "combustor": {
+            "equivalence_ratio": 0.3059512622486498,
+            "pressure_loss_fraction": 0.13427720556556905,
+            "primary_residence_time_s": 0.002679999097668974
+          },
+          "compressor": {
+            "flow_coefficient_ref": 0.40269493493034153,
+            "loading_coefficient": 0.6409167669934465,
+            "pressure_ratio": 2.2609768110105763,
+            "shaft_power_W": 21955.805138939457,
+            "slip_factor": 0.8350663856865359,
+            "total_to_total_efficiency": 0.748977967067106
+          },
+          "nozzle": {
+            "choked": false,
+            "mass_flow_capacity_kg_s": 0.22083434795025986,
+            "total_pressure_recovery": 0.98
+          },
+          "turbine": {
+            "corrected_mass_flux_kg_s_m2": 77.72380355157533,
+            "flow_coefficient": 0.32769073690186884,
+            "loading_coefficient": 0.7017384373977785,
+            "mean_radius_mach": 0.5837616154505181,
+            "solidity": 0.6366197723675814,
+            "total_to_total_efficiency": 0.6685287491487755
+          }
+        },
+        "conservation": {
+          "combustor_energy_W": -2.9103830456733704e-11,
+          "mass_flow_kg_s": -3.371712430921825e-07,
+          "normalized_flow": -1.5268084925087992e-06,
+          "nozzle_velocity_m_s": 0.0,
+          "shaft_power_W": 0.0
+        },
+        "constraints": {
+          "combustor_equivalence_ratio_max": -0.1440487377513502,
+          "combustor_equivalence_ratio_min": -0.15595126224864983,
+          "combustor_injector_capacity": -0.0003341473053530673,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "combustor_liner_hoop_stress": -0.9975006597911168,
+          "combustor_metal_temperature": -335.06177678636266,
+          "combustor_pressure_loss_fraction_max": 0.054277205565569045,
+          "combustor_primary_residence_time_min": -0.0006799990976689737,
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "compressor_efficiency_min": -0.14897796706710598,
+          "compressor_metal_temperature": -283.86427197901946,
+          "compressor_phi_max": -0.04730506506965848,
+          "compressor_phi_min": -0.3226949349303415,
+          "compressor_psi_max": -0.3090832330065535,
+          "compressor_psi_min": -0.2909167669934465,
+          "compressor_rotating_stress": -0.40213002097143447,
+          "compressor_tip_mach_max": -0.3306080248822947,
+          "compressor_tip_speed_limit": -102.0649305452929,
+          "diffuser_to_combustor_area": -0.17111393433309213,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985,
+          "nozzle_total_pressure_usable": -13114.096361256088,
+          "positive_thrust": -58.30236393019262,
+          "positive_tsfc": -7.719662314711377e-05,
+          "shaft_clearance": -0.0421,
+          "turbine_corrected_mass_flux_max": -2.2761964484246704,
+          "turbine_corrected_mass_flux_min": -67.72380355157533,
+          "turbine_efficiency_min": -0.06852874914877549,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_mean_radius_mach_max": -0.31623838454948194,
+          "turbine_metal_temperature": -192.88892239055872,
+          "turbine_phi_max": -0.022309263098131138,
+          "turbine_phi_min": -0.27769073690186885,
+          "turbine_psi_max": -1.0982615626022216,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "turbine_tip_speed_limit": -54.94104074144593,
+          "turbine_to_nozzle": -0.14705882352941177,
+          "whole_engine_flow_match": -8.473191507491202e-06
+        },
+        "core_feasible": false,
+        "feasibility_complete": true,
+        "feasibility_scope": "geometry19_wp19_8_bootstrap_complete",
+        "feasible": false,
+        "formal_dataset_generation_ready": false,
+        "formal_diagnostics": {
+          "combustor_effective_yield_strength_proxy_Pa": 640788424.4805722,
+          "combustor_hoop_stress_Pa": 1067698.849794154,
+          "combustor_liner_pressure_difference_Pa": 30146.79105301141,
+          "combustor_metal_temperature_K": 637.9382232136373,
+          "compressor_metal_temperature_K": 389.13572802098054,
+          "compressor_rotating_stress_Pa": 350750387.69675845,
+          "compressor_yield_strength_proxy_Pa": 880000000.0,
+          "hot_section_yield_strength_proxy_Pa": 1034000000.0,
+          "lattice_cells_across_region": 6.25,
+          "lattice_flange_allowed": false,
+          "lattice_modulus_ratio": 0.027,
+          "lattice_region_minimum_length_m": 0.05,
+          "lattice_skin_retained": true,
+          "lattice_strength_ratio": 0.049295030175464945,
+          "lattice_topology": "gyroid",
+          "turbine_metal_temperature_K": 780.1110776094413,
+          "turbine_rotating_stress_Pa": 811127269.2007782,
+          "yield_strength_temperature_model": "room_temperature_bootstrap_proxy"
+        },
+        "manufacturing_constraints": {
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985
+        },
+        "mass_breakdown_kg": {
+          "bearing_accessory": 0.32360684968548703,
+          "combustor": 0.3476836479282298,
+          "compressor": 0.10560526786545985,
+          "injectors": 0.06,
+          "nozzle": 0.09105992677491466,
+          "shaft": 0.1328442390203818,
+          "turbine": 0.2522628243507388
+        },
+        "mass_volume_breakdown_m3": {
+          "combustor_shell": 5.8961410922573224e-05,
+          "compressor_blades": 3.6578551092135945e-06,
+          "compressor_casing": 1.0887503500280788e-05,
+          "compressor_hub": 9.293302308216645e-06,
+          "compressor_total": 2.3838660917711026e-05,
+          "nozzle_shell": 1.7105274119454244e-05,
+          "shaft": 1.662631276850836e-05,
+          "turbine_blades": 1.8792225000000017e-06,
+          "turbine_casing": 1.021410311498382e-05,
+          "turbine_disk": 1.7016695789563035e-05,
+          "turbine_ngv": 1.6913002500000016e-06,
+          "turbine_total": 3.080132165454686e-05
+        },
+        "operating_point": {
+          "air_fuel_ratio": 48.06609472651742,
+          "flow_root_count": 1,
+          "flow_root_mass_flow_air_kg_s": [
+            0.2163332651621118
+          ],
+          "flow_root_normalized_residuals": [
+            -1.5268084925087992e-06
+          ],
+          "flow_root_selection_policy": "reference_continuation_high_flow_v1",
+          "fuel_air_ratio": 0.02080468583290819,
+          "inlet_choked_capacity_kg_s": 0.3630226621978938,
+          "mass_flow_air_kg_s": 0.2163332651621118,
+          "mass_flow_fuel_kg_s": 0.004500745616904958,
+          "mass_flow_gas_kg_s": 0.22083401077901677,
+          "mass_flow_search_max_kg_s": 0.3448715290879991,
+          "mass_flow_search_min_kg_s": 0.0036302266219789383,
+          "selected_flow_root_index": 0,
+          "selected_flow_root_mass_flow_air_kg_s": 0.2163332651621118
+        },
+        "performance": {
+          "mass_kg": 1.3130627556252121,
+          "thrust_N": 58.30236393019262,
+          "tsfc_kg_N_s": 7.719662314711377e-05
+        },
+        "physics_model_version": "geometry19_closed_v2_1",
+        "solver": {
+          "converged": true,
+          "evaluations": 129,
+          "failure_code": null,
+          "flow_residual": -1.5268084925087992e-06,
+          "iterations": 4,
+          "message": ""
+        },
+        "stations": {
+          "exit": {
+            "mach": 0.43106088760680683,
+            "static_pressure_Pa": 101325.0,
+            "static_temperature_K": 982.5484568165737,
+            "velocity_m_s": 264.0098946920562
+          },
+          "nozzle_total": {
+            "total_pressure_Pa": 114439.09636125609,
+            "total_temperature_K": 1012.672631672088
+          },
+          "t2": {
+            "total_pressure_Pa": 99298.5,
+            "total_temperature_K": 288.15
+          },
+          "t3": {
+            "total_pressure_Pa": 224511.60586813372,
+            "total_temperature_K": 389.13572802098054
+          },
+          "t4": {
+            "total_pressure_Pa": 194364.8148151223,
+            "total_temperature_K": 1100.0
+          },
+          "t5": {
+            "total_pressure_Pa": 116774.5881237307,
+            "total_temperature_K": 1012.672631672088
+          }
+        },
+        "structural_constraints": {
+          "combustor_liner_hoop_stress": -0.9975006597911168,
+          "compressor_rotating_stress": -0.40213002097143447,
+          "compressor_tip_speed_limit": -102.0649305452929,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_tip_speed_limit": -54.94104074144593
+        },
+        "structural_diagnostics": {
+          "combustor_liner_hoop_stress": -0.9975006597911168,
+          "compressor_rotating_stress": -0.40213002097143447,
+          "compressor_tip_speed_limit": -102.0649305452929,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_tip_speed_limit": -54.94104074144593
+        },
+        "structural_diagnostics_pending": false,
+        "thermal_constraints": {
+          "combustor_metal_temperature": -335.06177678636266,
+          "compressor_metal_temperature": -283.86427197901946,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_metal_temperature": -192.88892239055872
+        },
+        "thermodynamic_constraints": {
+          "combustor_equivalence_ratio_max": -0.1440487377513502,
+          "combustor_equivalence_ratio_min": -0.15595126224864983,
+          "combustor_injector_capacity": -0.0003341473053530673,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_pressure_loss_fraction_max": 0.054277205565569045,
+          "combustor_primary_residence_time_min": -0.0006799990976689737,
+          "compressor_efficiency_min": -0.14897796706710598,
+          "compressor_phi_max": -0.04730506506965848,
+          "compressor_phi_min": -0.3226949349303415,
+          "compressor_psi_max": -0.3090832330065535,
+          "compressor_psi_min": -0.2909167669934465,
+          "compressor_tip_mach_max": -0.3306080248822947,
+          "nozzle_total_pressure_usable": -13114.096361256088,
+          "positive_thrust": -58.30236393019262,
+          "positive_tsfc": -7.719662314711377e-05,
+          "turbine_corrected_mass_flux_max": -2.2761964484246704,
+          "turbine_corrected_mass_flux_min": -67.72380355157533,
+          "turbine_efficiency_min": -0.06852874914877549,
+          "turbine_mean_radius_mach_max": -0.31623838454948194,
+          "turbine_phi_max": -0.022309263098131138,
+          "turbine_phi_min": -0.27769073690186885,
+          "turbine_psi_max": -1.0982615626022216,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "whole_engine_flow_match": -8.473191507491202e-06
+        },
+        "thermodynamic_feasible": false
+      },
+      "input_sha256": "2b0f0398c6d8d1fc6583897fd0db3f25d596ad70ef8c26b5932385cb0c693cf7",
+      "inputs": {
+        "design": {
+          "combustor_injector_count": 6,
+          "combustor_inner_diameter_m": 0.06,
+          "combustor_length_m": 0.08,
+          "combustor_liner_thickness_m": 0.0012,
+          "combustor_outer_diameter_m": 0.11,
+          "compressor_blade_count": 12,
+          "compressor_exit_blade_angle_deg": 60.0,
+          "compressor_impeller_exit_diameter_m": 0.076,
+          "compressor_impeller_exit_width_m": 0.005,
+          "compressor_inducer_hub_tip_ratio": 0.4,
+          "compressor_inducer_tip_diameter_m": 0.05,
+          "lattice_cell_size_m": 0.008,
+          "lattice_relative_density": 0.3,
+          "nozzle_throat_diameter_m": 0.055,
+          "shaft_speed_rpm": 100000.0,
+          "turbine_blade_count": 17,
+          "turbine_hub_tip_ratio": 0.7,
+          "turbine_inlet_total_temperature_K": 1100.0,
+          "turbine_tip_diameter_m": 0.085
+        },
+        "environment": {
+          "mach": 0.0,
+          "pressure_Pa": 101325.0,
+          "temperature_K": 288.15
+        }
+      }
+    },
+    {
+      "case_id": "compressor_diameter_high",
+      "description": "Five-percent increase of compressor impeller exit diameter with two roots.",
+      "expected_result": {
+        "assembly_constraints": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": -0.18182724213749613,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": -0.18182724213749613,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics_pending": false,
+        "calibration_pack_hash": "486373656b2423c620468b529a9ea71958a007fedcce2035bfda752f774c8975",
+        "calibration_status": "bootstrap_candidate",
+        "components": {
+          "combustor": {
+            "equivalence_ratio": 0.29718667705043855,
+            "pressure_loss_fraction": 0.13921069954847146,
+            "primary_residence_time_s": 0.002643088810044149
+          },
+          "compressor": {
+            "flow_coefficient_ref": 0.3886951748920999,
+            "loading_coefficient": 0.6476664125376338,
+            "pressure_ratio": 2.6879596068091596,
+            "shaft_power_W": 32146.648441218258,
+            "slip_factor": 0.8350663856865359,
+            "total_to_total_efficiency": 0.7545700398032612
+          },
+          "nozzle": {
+            "choked": false,
+            "mass_flow_capacity_kg_s": 0.26176858706601297,
+            "total_pressure_recovery": 0.98
+          },
+          "turbine": {
+            "corrected_mass_flux_kg_s_m2": 77.94010321301141,
+            "flow_coefficient": 0.32860267625903866,
+            "loading_coefficient": 0.8667822913341011,
+            "mean_radius_mach": 0.5837616154505181,
+            "solidity": 0.6366197723675814,
+            "total_to_total_efficiency": 0.6740677661924893
+          }
+        },
+        "conservation": {
+          "combustor_energy_W": 2.9103830456733704e-11,
+          "mass_flow_kg_s": -5.927935919913807e-11,
+          "normalized_flow": -2.2645711571806436e-10,
+          "nozzle_velocity_m_s": 0.0,
+          "shaft_power_W": 0.0
+        },
+        "constraints": {
+          "combustor_equivalence_ratio_max": -0.15281332294956146,
+          "combustor_equivalence_ratio_min": -0.14718667705043856,
+          "combustor_injector_capacity": -0.00022006909762843272,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "combustor_liner_hoop_stress": -0.9969194920972668,
+          "combustor_metal_temperature": -319.6708864165289,
+          "combustor_pressure_loss_fraction_max": 0.059210699548471454,
+          "combustor_primary_residence_time_min": -0.0006430888100441489,
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "compressor_efficiency_min": -0.15457003980326123,
+          "compressor_metal_temperature": -260.18597910235223,
+          "compressor_phi_max": -0.061304825107900085,
+          "compressor_phi_min": -0.3086951748920999,
+          "compressor_psi_max": -0.30233358746236616,
+          "compressor_psi_min": -0.2976664125376338,
+          "compressor_rotating_stress": -0.2696380588598408,
+          "compressor_tip_mach_max": -0.20751413276464148,
+          "compressor_tip_speed_limit": -60.17702849742898,
+          "diffuser_to_combustor_area": -0.18182724213749613,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985,
+          "nozzle_total_pressure_usable": -18161.309209562198,
+          "positive_thrust": -79.40340710955022,
+          "positive_tsfc": -6.530217092698427e-05,
+          "shaft_clearance": -0.0421,
+          "turbine_corrected_mass_flux_max": -2.0598967869885882,
+          "turbine_corrected_mass_flux_min": -67.94010321301141,
+          "turbine_efficiency_min": -0.07406776619248934,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_mean_radius_mach_max": -0.31623838454948194,
+          "turbine_metal_temperature": -182.23369059605852,
+          "turbine_phi_max": -0.021397323740961316,
+          "turbine_phi_min": -0.2786026762590387,
+          "turbine_psi_max": -0.9332177086658989,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "turbine_tip_speed_limit": -54.94104074144593,
+          "turbine_to_nozzle": -0.14705882352941177,
+          "whole_engine_flow_match": -9.999773542884283e-06
+        },
+        "core_feasible": false,
+        "feasibility_complete": true,
+        "feasibility_scope": "geometry19_wp19_8_bootstrap_complete",
+        "feasible": false,
+        "formal_dataset_generation_ready": false,
+        "formal_diagnostics": {
+          "combustor_effective_yield_strength_proxy_Pa": 640788424.4805722,
+          "combustor_hoop_stress_Pa": 1315969.203728236,
+          "combustor_liner_pressure_difference_Pa": 37156.77751703255,
+          "combustor_metal_temperature_K": 653.3291135834711,
+          "compressor_metal_temperature_K": 412.81402089764777,
+          "compressor_rotating_stress_Pa": 428479005.46889335,
+          "compressor_yield_strength_proxy_Pa": 880000000.0,
+          "hot_section_yield_strength_proxy_Pa": 1034000000.0,
+          "lattice_cells_across_region": 6.25,
+          "lattice_flange_allowed": false,
+          "lattice_modulus_ratio": 0.027,
+          "lattice_region_minimum_length_m": 0.05,
+          "lattice_skin_retained": true,
+          "lattice_strength_ratio": 0.049295030175464945,
+          "lattice_topology": "gyroid",
+          "turbine_metal_temperature_K": 790.7663094039415,
+          "turbine_rotating_stress_Pa": 811127269.2007782,
+          "yield_strength_temperature_model": "room_temperature_bootstrap_proxy"
+        },
+        "manufacturing_constraints": {
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985
+        },
+        "mass_breakdown_kg": {
+          "bearing_accessory": 0.3277343982495843,
+          "combustor": 0.3476836479282298,
+          "compressor": 0.1299942114578574,
+          "injectors": 0.06,
+          "nozzle": 0.09105992677491466,
+          "shaft": 0.13597228585529877,
+          "turbine": 0.2522628243507388
+        },
+        "mass_volume_breakdown_m3": {
+          "combustor_shell": 5.8961410922573224e-05,
+          "compressor_blades": 4.136711737600288e-06,
+          "compressor_casing": 1.3300246658237753e-05,
+          "compressor_hub": 1.1907107396003355e-05,
+          "compressor_total": 2.93440657918414e-05,
+          "nozzle_shell": 1.7105274119454244e-05,
+          "shaft": 1.7017807991902226e-05,
+          "turbine_blades": 1.8792225000000017e-06,
+          "turbine_casing": 1.021410311498382e-05,
+          "turbine_disk": 1.7016695789563035e-05,
+          "turbine_ngv": 1.6913002500000016e-06,
+          "turbine_total": 3.080132165454686e-05
+        },
+        "operating_point": {
+          "air_fuel_ratio": 49.48365283025555,
+          "flow_root_count": 2,
+          "flow_root_mass_flow_air_kg_s": [
+            0.07059246545981278,
+            0.25658337214348087
+          ],
+          "flow_root_normalized_residuals": [
+            -7.52476428173028e-07,
+            -2.2645711571806436e-10
+          ],
+          "flow_root_selection_policy": "reference_continuation_high_flow_v1",
+          "fuel_air_ratio": 0.020208694039429823,
+          "inlet_choked_capacity_kg_s": 0.3630226621978938,
+          "mass_flow_air_kg_s": 0.25658337214348087,
+          "mass_flow_fuel_kg_s": 0.005185214863252766,
+          "mass_flow_gas_kg_s": 0.2617685870067336,
+          "mass_flow_search_max_kg_s": 0.3448715290879991,
+          "mass_flow_search_min_kg_s": 0.0036302266219789383,
+          "selected_flow_root_index": 1,
+          "selected_flow_root_mass_flow_air_kg_s": 0.25658337214348087
+        },
+        "performance": {
+          "mass_kg": 1.3447072946166236,
+          "thrust_N": 79.40340710955022,
+          "tsfc_kg_N_s": 6.530217092698427e-05
+        },
+        "physics_model_version": "geometry19_closed_v2_1",
+        "solver": {
+          "converged": true,
+          "evaluations": 135,
+          "failure_code": null,
+          "flow_residual": -2.2645711571806436e-10,
+          "iterations": 11,
+          "message": "Selected the reference-continuation high-flow branch from 2 valid roots"
+        },
+        "stations": {
+          "exit": {
+            "mach": 0.5030541942229829,
+            "static_pressure_Pa": 101325.0,
+            "static_temperature_K": 952.3673050785508,
+            "velocity_m_s": 303.33436115276766
+          },
+          "nozzle_total": {
+            "total_pressure_Pa": 119486.3092095622,
+            "total_temperature_K": 992.1338601657104
+          },
+          "t2": {
+            "total_pressure_Pa": 99298.5,
+            "total_temperature_K": 288.15
+          },
+          "t3": {
+            "total_pressure_Pa": 266910.3570167393,
+            "total_temperature_K": 412.81402089764777
+          },
+          "t4": {
+            "total_pressure_Pa": 229753.57949970677,
+            "total_temperature_K": 1100.0
+          },
+          "t5": {
+            "total_pressure_Pa": 121924.8053158798,
+            "total_temperature_K": 992.1338601657104
+          }
+        },
+        "structural_constraints": {
+          "combustor_liner_hoop_stress": -0.9969194920972668,
+          "compressor_rotating_stress": -0.2696380588598408,
+          "compressor_tip_speed_limit": -60.17702849742898,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_tip_speed_limit": -54.94104074144593
+        },
+        "structural_diagnostics": {
+          "combustor_liner_hoop_stress": -0.9969194920972668,
+          "compressor_rotating_stress": -0.2696380588598408,
+          "compressor_tip_speed_limit": -60.17702849742898,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_tip_speed_limit": -54.94104074144593
+        },
+        "structural_diagnostics_pending": false,
+        "thermal_constraints": {
+          "combustor_metal_temperature": -319.6708864165289,
+          "compressor_metal_temperature": -260.18597910235223,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_metal_temperature": -182.23369059605852
+        },
+        "thermodynamic_constraints": {
+          "combustor_equivalence_ratio_max": -0.15281332294956146,
+          "combustor_equivalence_ratio_min": -0.14718667705043856,
+          "combustor_injector_capacity": -0.00022006909762843272,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_pressure_loss_fraction_max": 0.059210699548471454,
+          "combustor_primary_residence_time_min": -0.0006430888100441489,
+          "compressor_efficiency_min": -0.15457003980326123,
+          "compressor_phi_max": -0.061304825107900085,
+          "compressor_phi_min": -0.3086951748920999,
+          "compressor_psi_max": -0.30233358746236616,
+          "compressor_psi_min": -0.2976664125376338,
+          "compressor_tip_mach_max": -0.20751413276464148,
+          "nozzle_total_pressure_usable": -18161.309209562198,
+          "positive_thrust": -79.40340710955022,
+          "positive_tsfc": -6.530217092698427e-05,
+          "turbine_corrected_mass_flux_max": -2.0598967869885882,
+          "turbine_corrected_mass_flux_min": -67.94010321301141,
+          "turbine_efficiency_min": -0.07406776619248934,
+          "turbine_mean_radius_mach_max": -0.31623838454948194,
+          "turbine_phi_max": -0.021397323740961316,
+          "turbine_phi_min": -0.2786026762590387,
+          "turbine_psi_max": -0.9332177086658989,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "whole_engine_flow_match": -9.999773542884283e-06
+        },
+        "thermodynamic_feasible": false
+      },
+      "input_sha256": "6e411b9ffe15555a75eca27231fac034f91f4f9c08e8694d0b5ff6270569fb1f",
+      "inputs": {
+        "design": {
+          "combustor_injector_count": 6,
+          "combustor_inner_diameter_m": 0.06,
+          "combustor_length_m": 0.08,
+          "combustor_liner_thickness_m": 0.0012,
+          "combustor_outer_diameter_m": 0.11,
+          "compressor_blade_count": 12,
+          "compressor_exit_blade_angle_deg": 60.0,
+          "compressor_impeller_exit_diameter_m": 0.084,
+          "compressor_impeller_exit_width_m": 0.005,
+          "compressor_inducer_hub_tip_ratio": 0.4,
+          "compressor_inducer_tip_diameter_m": 0.05,
+          "lattice_cell_size_m": 0.008,
+          "lattice_relative_density": 0.3,
+          "nozzle_throat_diameter_m": 0.055,
+          "shaft_speed_rpm": 100000.0,
+          "turbine_blade_count": 17,
+          "turbine_hub_tip_ratio": 0.7,
+          "turbine_inlet_total_temperature_K": 1100.0,
+          "turbine_tip_diameter_m": 0.085
+        },
+        "environment": {
+          "mach": 0.0,
+          "pressure_Pa": 101325.0,
+          "temperature_K": 288.15
+        }
+      }
+    },
+    {
+      "case_id": "turbine_tip_low",
+      "description": "Five-percent reduction of turbine tip diameter with two roots.",
+      "expected_result": {
+        "assembly_constraints": {
+          "combustor_to_turbine_outer_diameter": 0.012229102167182648,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "shaft_clearance": -0.042695,
+          "turbine_to_nozzle": -0.09427244582043338
+        },
+        "assembly_diagnostics": {
+          "combustor_to_turbine_outer_diameter": 0.012229102167182648,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "shaft_clearance": -0.042695,
+          "turbine_to_nozzle": -0.09427244582043338
+        },
+        "assembly_diagnostics_pending": false,
+        "calibration_pack_hash": "486373656b2423c620468b529a9ea71958a007fedcce2035bfda752f774c8975",
+        "calibration_status": "bootstrap_candidate",
+        "components": {
+          "combustor": {
+            "equivalence_ratio": 0.30113549611104445,
+            "pressure_loss_fraction": 0.12171855004556963,
+            "primary_residence_time_s": 0.0028460457584985983
+          },
+          "compressor": {
+            "flow_coefficient_ref": 0.37774152046085663,
+            "loading_coefficient": 0.6529474519713421,
+            "pressure_ratio": 2.505239659995412,
+            "shaft_power_W": 25839.606309630275,
+            "slip_factor": 0.8350663856865359,
+            "total_to_total_efficiency": 0.7584192590754067
+          },
+          "nozzle": {
+            "choked": false,
+            "mass_flow_capacity_kg_s": 0.2301622012587636,
+            "total_pressure_recovery": 0.98
+          },
+          "turbine": {
+            "corrected_mass_flux_kg_s_m2": 79.8484704176622,
+            "flow_coefficient": 0.35436687232994396,
+            "loading_coefficient": 0.8780045886090796,
+            "mean_radius_mach": 0.5545735346779922,
+            "solidity": 0.6366197723675814,
+            "total_to_total_efficiency": 0.630709197568624
+          }
+        },
+        "conservation": {
+          "combustor_energy_W": 2.9103830456733704e-11,
+          "mass_flow_kg_s": -1.3156072939390917e-07,
+          "normalized_flow": -5.716003925690837e-07,
+          "nozzle_velocity_m_s": 0.0,
+          "shaft_power_W": 0.0
+        },
+        "constraints": {
+          "combustor_equivalence_ratio_max": -0.14886450388895556,
+          "combustor_equivalence_ratio_min": -0.15113549611104446,
+          "combustor_injector_capacity": -0.00031452094059379924,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "combustor_liner_hoop_stress": -0.9974896572505257,
+          "combustor_metal_temperature": -326.60513828100943,
+          "combustor_pressure_loss_fraction_max": 0.041718550045569625,
+          "combustor_primary_residence_time_min": -0.0008460457584985983,
+          "combustor_to_turbine_outer_diameter": 0.012229102167182648,
+          "compressor_efficiency_min": -0.15841925907540677,
+          "compressor_metal_temperature": -270.85405889386067,
+          "compressor_phi_max": -0.07225847953914338,
+          "compressor_phi_min": -0.2977415204608566,
+          "compressor_psi_max": -0.2970525480286579,
+          "compressor_psi_min": -0.3029474519713421,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_mach_max": -0.26906107882346797,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985,
+          "nozzle_total_pressure_usable": -14103.344385501012,
+          "positive_thrust": -62.492545053821175,
+          "positive_tsfc": -7.390487619735953e-05,
+          "shaft_clearance": -0.042695,
+          "turbine_corrected_mass_flux_max": -0.15152958233780112,
+          "turbine_corrected_mass_flux_min": -69.8484704176622,
+          "turbine_efficiency_min": -0.030709197568624003,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_mean_radius_mach_max": -0.3454264653220078,
+          "turbine_metal_temperature": -187.03432650223726,
+          "turbine_phi_max": 0.004366872329943983,
+          "turbine_phi_min": -0.30436687232994397,
+          "turbine_psi_max": -0.9219954113909204,
+          "turbine_rotating_stress": 0.061957002592411436,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "turbine_tip_speed_limit": -77.19398870437368,
+          "turbine_to_nozzle": -0.09427244582043338,
+          "whole_engine_flow_match": -9.428399607430916e-06
+        },
+        "core_feasible": false,
+        "feasibility_complete": true,
+        "feasibility_scope": "geometry19_wp19_8_bootstrap_complete",
+        "feasible": false,
+        "formal_dataset_generation_ready": false,
+        "formal_diagnostics": {
+          "combustor_effective_yield_strength_proxy_Pa": 640788424.4805722,
+          "combustor_hoop_stress_Pa": 1072399.0502278758,
+          "combustor_liner_pressure_difference_Pa": 30279.502594669437,
+          "combustor_metal_temperature_K": 646.3948617189906,
+          "compressor_metal_temperature_K": 402.14594110613933,
+          "compressor_rotating_stress_Pa": 388643088.8606742,
+          "compressor_yield_strength_proxy_Pa": 880000000.0,
+          "hot_section_yield_strength_proxy_Pa": 1034000000.0,
+          "lattice_cells_across_region": 6.25,
+          "lattice_flange_allowed": false,
+          "lattice_modulus_ratio": 0.027,
+          "lattice_region_minimum_length_m": 0.05,
+          "lattice_skin_retained": true,
+          "lattice_strength_ratio": 0.049295030175464945,
+          "lattice_topology": "gyroid",
+          "turbine_metal_temperature_K": 785.9656734977627,
+          "turbine_rotating_stress_Pa": 732042360.4537023,
+          "yield_strength_temperature_model": "room_temperature_bootstrap_proxy"
+        },
+        "manufacturing_constraints": {
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985
+        },
+        "mass_breakdown_kg": {
+          "bearing_accessory": 0.3186616262358301,
+          "combustor": 0.3476836479282298,
+          "compressor": 0.11750682850918773,
+          "injectors": 0.06,
+          "nozzle": 0.09105992677491466,
+          "shaft": 0.12017864297754038,
+          "turbine": 0.2200587034188059
+        },
+        "mass_volume_breakdown_m3": {
+          "combustor_shell": 5.8961410922573224e-05,
+          "compressor_blades": 3.893995377501109e-06,
+          "compressor_casing": 1.2063715789784808e-05,
+          "compressor_hub": 1.0567532288512667e-05,
+          "compressor_total": 2.6525243455798586e-05,
+          "nozzle_shell": 1.7105274119454244e-05,
+          "shaft": 1.5041131786926206e-05,
+          "turbine_blades": 1.6111983909375003e-06,
+          "turbine_casing": 9.218228061272894e-06,
+          "turbine_disk": 1.4589689552576609e-05,
+          "turbine_ngv": 1.4500785518437504e-06,
+          "turbine_total": 2.6869194556630758e-05
+        },
+        "operating_point": {
+          "air_fuel_ratio": 48.834768875995756,
+          "flow_root_count": 2,
+          "flow_root_mass_flow_air_kg_s": [
+            0.06554001410772066,
+            0.22554356589257366
+          ],
+          "flow_root_normalized_residuals": [
+            1.1091262136733137e-06,
+            -5.716003925690837e-07
+          ],
+          "flow_root_selection_policy": "reference_continuation_high_flow_v1",
+          "fuel_air_ratio": 0.020477213735551024,
+          "inlet_choked_capacity_kg_s": 0.3630226621978938,
+          "mass_flow_air_kg_s": 0.22554356589257366,
+          "mass_flow_fuel_kg_s": 0.004618503805460567,
+          "mass_flow_gas_kg_s": 0.2301620696980342,
+          "mass_flow_search_max_kg_s": 0.3448715290879991,
+          "mass_flow_search_min_kg_s": 0.0036302266219789383,
+          "selected_flow_root_index": 1,
+          "selected_flow_root_mass_flow_air_kg_s": 0.22554356589257366
+        },
+        "performance": {
+          "mass_kg": 1.2751493758445087,
+          "thrust_N": 62.492545053821175,
+          "tsfc_kg_N_s": 7.390487619735953e-05
+        },
+        "physics_model_version": "geometry19_closed_v2_1",
+        "solver": {
+          "converged": true,
+          "evaluations": 134,
+          "failure_code": null,
+          "flow_residual": -5.716003925690837e-07,
+          "iterations": 10,
+          "message": "Selected the reference-continuation high-flow branch from 2 valid roots"
+        },
+        "stations": {
+          "exit": {
+            "mach": 0.4462820664955969,
+            "static_pressure_Pa": 101325.0,
+            "static_temperature_K": 969.52910841151,
+            "velocity_m_s": 271.51539406909893
+          },
+          "nozzle_total": {
+            "total_pressure_Pa": 115428.34438550101,
+            "total_temperature_K": 1001.3904213019634
+          },
+          "t2": {
+            "total_pressure_Pa": 99298.5,
+            "total_temperature_K": 288.15
+          },
+          "t3": {
+            "total_pressure_Pa": 248766.54037805443,
+            "total_temperature_K": 402.14594110613933
+          },
+          "t4": {
+            "total_pressure_Pa": 218487.037783385,
+            "total_temperature_K": 1100.0
+          },
+          "t5": {
+            "total_pressure_Pa": 117784.0248831643,
+            "total_temperature_K": 1001.3904213019634
+          }
+        },
+        "structural_constraints": {
+          "combustor_liner_hoop_stress": -0.9974896572505257,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "turbine_rotating_stress": 0.061957002592411436,
+          "turbine_tip_speed_limit": -77.19398870437368
+        },
+        "structural_diagnostics": {
+          "combustor_liner_hoop_stress": -0.9974896572505257,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "turbine_rotating_stress": 0.061957002592411436,
+          "turbine_tip_speed_limit": -77.19398870437368
+        },
+        "structural_diagnostics_pending": false,
+        "thermal_constraints": {
+          "combustor_metal_temperature": -326.60513828100943,
+          "compressor_metal_temperature": -270.85405889386067,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_metal_temperature": -187.03432650223726
+        },
+        "thermodynamic_constraints": {
+          "combustor_equivalence_ratio_max": -0.14886450388895556,
+          "combustor_equivalence_ratio_min": -0.15113549611104446,
+          "combustor_injector_capacity": -0.00031452094059379924,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_pressure_loss_fraction_max": 0.041718550045569625,
+          "combustor_primary_residence_time_min": -0.0008460457584985983,
+          "compressor_efficiency_min": -0.15841925907540677,
+          "compressor_phi_max": -0.07225847953914338,
+          "compressor_phi_min": -0.2977415204608566,
+          "compressor_psi_max": -0.2970525480286579,
+          "compressor_psi_min": -0.3029474519713421,
+          "compressor_tip_mach_max": -0.26906107882346797,
+          "nozzle_total_pressure_usable": -14103.344385501012,
+          "positive_thrust": -62.492545053821175,
+          "positive_tsfc": -7.390487619735953e-05,
+          "turbine_corrected_mass_flux_max": -0.15152958233780112,
+          "turbine_corrected_mass_flux_min": -69.8484704176622,
+          "turbine_efficiency_min": -0.030709197568624003,
+          "turbine_mean_radius_mach_max": -0.3454264653220078,
+          "turbine_phi_max": 0.004366872329943983,
+          "turbine_phi_min": -0.30436687232994397,
+          "turbine_psi_max": -0.9219954113909204,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "whole_engine_flow_match": -9.428399607430916e-06
+        },
+        "thermodynamic_feasible": false
+      },
+      "input_sha256": "f292d39f46978eacebbcc2964bca4944283ec799bdd8e15f70c5c9be2103a8ae",
+      "inputs": {
+        "design": {
+          "combustor_injector_count": 6,
+          "combustor_inner_diameter_m": 0.06,
+          "combustor_length_m": 0.08,
+          "combustor_liner_thickness_m": 0.0012,
+          "combustor_outer_diameter_m": 0.11,
+          "compressor_blade_count": 12,
+          "compressor_exit_blade_angle_deg": 60.0,
+          "compressor_impeller_exit_diameter_m": 0.08,
+          "compressor_impeller_exit_width_m": 0.005,
+          "compressor_inducer_hub_tip_ratio": 0.4,
+          "compressor_inducer_tip_diameter_m": 0.05,
+          "lattice_cell_size_m": 0.008,
+          "lattice_relative_density": 0.3,
+          "nozzle_throat_diameter_m": 0.055,
+          "shaft_speed_rpm": 100000.0,
+          "turbine_blade_count": 17,
+          "turbine_hub_tip_ratio": 0.7,
+          "turbine_inlet_total_temperature_K": 1100.0,
+          "turbine_tip_diameter_m": 0.08075
+        },
+        "environment": {
+          "mach": 0.0,
+          "pressure_Pa": 101325.0,
+          "temperature_K": 288.15
+        }
+      }
+    },
+    {
+      "case_id": "turbine_tip_high",
+      "description": "Five-percent increase of turbine tip diameter.",
+      "expected_result": {
+        "assembly_constraints": {
+          "combustor_to_turbine_outer_diameter": -0.11750700280112036,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "shaft_clearance": -0.041505,
+          "turbine_to_nozzle": -0.10518207282913175
+        },
+        "assembly_diagnostics": {
+          "combustor_to_turbine_outer_diameter": -0.11750700280112036,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "shaft_clearance": -0.041505,
+          "turbine_to_nozzle": -0.10518207282913175
+        },
+        "assembly_diagnostics_pending": false,
+        "calibration_pack_hash": "486373656b2423c620468b529a9ea71958a007fedcce2035bfda752f774c8975",
+        "calibration_status": "bootstrap_candidate",
+        "components": {
+          "combustor": {
+            "equivalence_ratio": 0.3020874400979193,
+            "pressure_loss_fraction": 0.15013876018808137,
+            "primary_residence_time_s": 0.002519413471314471
+          },
+          "compressor": {
+            "flow_coefficient_ref": 0.4082948739182275,
+            "loading_coefficient": 0.6382168919145839,
+            "pressure_ratio": 2.4303415872194116,
+            "shaft_power_W": 27299.529305082026,
+            "slip_factor": 0.8350663856865359,
+            "total_to_total_efficiency": 0.7468945257599942
+          },
+          "nozzle": {
+            "choked": false,
+            "mass_flow_capacity_kg_s": 0.24879454987986943,
+            "total_pressure_recovery": 0.98
+          },
+          "turbine": {
+            "corrected_mass_flux_kg_s_m2": 75.2678676082727,
+            "flow_coefficient": 0.30222503243222393,
+            "loading_coefficient": 0.702470212867808,
+            "mean_radius_mach": 0.612949696223044,
+            "solidity": 0.6366197723675815,
+            "total_to_total_efficiency": 0.7066361458686206
+          }
+        },
+        "conservation": {
+          "combustor_energy_W": 0.0,
+          "mass_flow_kg_s": -2.045039233788959e-07,
+          "normalized_flow": -8.219797884468629e-07,
+          "nozzle_velocity_m_s": 0.0,
+          "shaft_power_W": 0.0
+        },
+        "constraints": {
+          "combustor_equivalence_ratio_max": -0.1479125599020807,
+          "combustor_equivalence_ratio_min": -0.15208744009791933,
+          "combustor_injector_capacity": -0.00024963007055776615,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "combustor_liner_hoop_stress": -0.9969960886140316,
+          "combustor_metal_temperature": -328.2767821989902,
+          "combustor_pressure_loss_fraction_max": 0.07013876018808136,
+          "combustor_primary_residence_time_min": -0.0005194134713144708,
+          "combustor_to_turbine_outer_diameter": -0.11750700280112036,
+          "compressor_efficiency_min": -0.14689452575999418,
+          "compressor_metal_temperature": -273.42581876767724,
+          "compressor_phi_max": -0.041705126081772514,
+          "compressor_phi_min": -0.3282948739182275,
+          "compressor_psi_max": -0.3117831080854161,
+          "compressor_psi_min": -0.2882168919145839,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_mach_max": -0.26906107882346797,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985,
+          "nozzle_total_pressure_usable": -16564.34250095085,
+          "positive_thrust": -72.80059168345205,
+          "positive_tsfc": -6.878857588756487e-05,
+          "shaft_clearance": -0.041505,
+          "turbine_corrected_mass_flux_max": -4.732132391727305,
+          "turbine_corrected_mass_flux_min": -65.2678676082727,
+          "turbine_efficiency_min": -0.10663614586862058,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_mean_radius_mach_max": -0.28705030377695606,
+          "turbine_metal_temperature": -188.19161844545465,
+          "turbine_phi_max": -0.04777496756777605,
+          "turbine_phi_min": -0.25222503243222394,
+          "turbine_psi_max": -1.097529787132192,
+          "turbine_rotating_stress": 0.297293734468846,
+          "turbine_solidity_max": -0.5633802276324185,
+          "turbine_solidity_min": -0.2866197723675815,
+          "turbine_tip_speed_limit": -32.688092778518296,
+          "turbine_to_nozzle": -0.10518207282913175,
+          "whole_engine_flow_match": -9.178020211553139e-06
+        },
+        "core_feasible": false,
+        "feasibility_complete": true,
+        "feasibility_scope": "geometry19_wp19_8_bootstrap_complete",
+        "feasible": false,
+        "formal_dataset_generation_ready": false,
+        "formal_diagnostics": {
+          "combustor_effective_yield_strength_proxy_Pa": 640788424.4805722,
+          "combustor_hoop_stress_Pa": 1283247.7628626474,
+          "combustor_liner_pressure_difference_Pa": 36232.87801023946,
+          "combustor_metal_temperature_K": 644.7232178010098,
+          "compressor_metal_temperature_K": 399.57418123232276,
+          "compressor_rotating_stress_Pa": 388643088.8606742,
+          "compressor_yield_strength_proxy_Pa": 880000000.0,
+          "hot_section_yield_strength_proxy_Pa": 1034000000.0,
+          "lattice_cells_across_region": 6.25,
+          "lattice_flange_allowed": false,
+          "lattice_modulus_ratio": 0.027,
+          "lattice_region_minimum_length_m": 0.05,
+          "lattice_skin_retained": true,
+          "lattice_strength_ratio": 0.049295030175464945,
+          "lattice_topology": "gyroid",
+          "turbine_metal_temperature_K": 784.8083815545453,
+          "turbine_rotating_stress_Pa": 894267814.2938579,
+          "yield_strength_temperature_model": "room_temperature_bootstrap_proxy"
+        },
+        "manufacturing_constraints": {
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985
+        },
+        "mass_breakdown_kg": {
+          "bearing_accessory": 0.3331720555831735,
+          "combustor": 0.3476836479282298,
+          "compressor": 0.11750682850918773,
+          "injectors": 0.06,
+          "nozzle": 0.09105992677491466,
+          "shaft": 0.1495591894424868,
+          "turbine": 0.2874143526028154
+        },
+        "mass_volume_breakdown_m3": {
+          "combustor_shell": 5.8961410922573224e-05,
+          "compressor_blades": 3.893995377501109e-06,
+          "compressor_casing": 1.2063715789784808e-05,
+          "compressor_hub": 1.0567532288512667e-05,
+          "compressor_total": 2.6525243455798586e-05,
+          "nozzle_shell": 1.7105274119454244e-05,
+          "shaft": 1.87182965509996e-05,
+          "turbine_blades": 2.1754349465625005e-06,
+          "turbine_casing": 1.1261048684269655e-05,
+          "turbine_disk": 1.9698952463392905e-05,
+          "turbine_ngv": 1.9578914519062506e-06,
+          "turbine_total": 3.509332754613131e-05
+        },
+        "operating_point": {
+          "air_fuel_ratio": 48.68087977498957,
+          "flow_root_count": 1,
+          "flow_root_mass_flow_air_kg_s": [
+            0.24378649635026928
+          ],
+          "flow_root_normalized_residuals": [
+            -8.219797884468629e-07
+          ],
+          "flow_root_selection_policy": "reference_continuation_high_flow_v1",
+          "fuel_air_ratio": 0.020541945926658516,
+          "inlet_choked_capacity_kg_s": 0.3630226621978938,
+          "mass_flow_air_kg_s": 0.24378649635026928,
+          "mass_flow_fuel_kg_s": 0.005007849025676765,
+          "mass_flow_gas_kg_s": 0.24879434537594605,
+          "mass_flow_search_max_kg_s": 0.3448715290879991,
+          "mass_flow_search_min_kg_s": 0.0036302266219789383,
+          "selected_flow_root_index": 0,
+          "selected_flow_root_mass_flow_air_kg_s": 0.24378649635026928
+        },
+        "performance": {
+          "mass_kg": 1.3863960008408078,
+          "thrust_N": 72.80059168345205,
+          "tsfc_kg_N_s": 6.878857588756487e-05
+        },
+        "physics_model_version": "geometry19_closed_v2_1",
+        "solver": {
+          "converged": true,
+          "evaluations": 129,
+          "failure_code": null,
+          "flow_residual": -8.219797884468629e-07,
+          "iterations": 4,
+          "message": ""
+        },
+        "stations": {
+          "exit": {
+            "mach": 0.48168468500576994,
+            "static_pressure_Pa": 101325.0,
+            "static_temperature_K": 966.6159084556559,
+            "velocity_m_s": 292.6135301565844
+          },
+          "nozzle_total": {
+            "total_pressure_Pa": 117889.34250095085,
+            "total_temperature_K": 1003.6211769178719
+          },
+          "t2": {
+            "total_pressure_Pa": 99298.5,
+            "total_temperature_K": 288.15
+          },
+          "t3": {
+            "total_pressure_Pa": 241329.27409850675,
+            "total_temperature_K": 399.57418123232276
+          },
+          "t4": {
+            "total_pressure_Pa": 205096.3960882673,
+            "total_temperature_K": 1100.0
+          },
+          "t5": {
+            "total_pressure_Pa": 120295.24744994985,
+            "total_temperature_K": 1003.6211769178719
+          }
+        },
+        "structural_constraints": {
+          "combustor_liner_hoop_stress": -0.9969960886140316,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "turbine_rotating_stress": 0.297293734468846,
+          "turbine_tip_speed_limit": -32.688092778518296
+        },
+        "structural_diagnostics": {
+          "combustor_liner_hoop_stress": -0.9969960886140316,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "turbine_rotating_stress": 0.297293734468846,
+          "turbine_tip_speed_limit": -32.688092778518296
+        },
+        "structural_diagnostics_pending": false,
+        "thermal_constraints": {
+          "combustor_metal_temperature": -328.2767821989902,
+          "compressor_metal_temperature": -273.42581876767724,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_metal_temperature": -188.19161844545465
+        },
+        "thermodynamic_constraints": {
+          "combustor_equivalence_ratio_max": -0.1479125599020807,
+          "combustor_equivalence_ratio_min": -0.15208744009791933,
+          "combustor_injector_capacity": -0.00024963007055776615,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_pressure_loss_fraction_max": 0.07013876018808136,
+          "combustor_primary_residence_time_min": -0.0005194134713144708,
+          "compressor_efficiency_min": -0.14689452575999418,
+          "compressor_phi_max": -0.041705126081772514,
+          "compressor_phi_min": -0.3282948739182275,
+          "compressor_psi_max": -0.3117831080854161,
+          "compressor_psi_min": -0.2882168919145839,
+          "compressor_tip_mach_max": -0.26906107882346797,
+          "nozzle_total_pressure_usable": -16564.34250095085,
+          "positive_thrust": -72.80059168345205,
+          "positive_tsfc": -6.878857588756487e-05,
+          "turbine_corrected_mass_flux_max": -4.732132391727305,
+          "turbine_corrected_mass_flux_min": -65.2678676082727,
+          "turbine_efficiency_min": -0.10663614586862058,
+          "turbine_mean_radius_mach_max": -0.28705030377695606,
+          "turbine_phi_max": -0.04777496756777605,
+          "turbine_phi_min": -0.25222503243222394,
+          "turbine_psi_max": -1.097529787132192,
+          "turbine_solidity_max": -0.5633802276324185,
+          "turbine_solidity_min": -0.2866197723675815,
+          "whole_engine_flow_match": -9.178020211553139e-06
+        },
+        "thermodynamic_feasible": false
+      },
+      "input_sha256": "5a350e35df1715a27e7185a152a768c8a17c64015ab59fbfd1e0c21b62c52009",
+      "inputs": {
+        "design": {
+          "combustor_injector_count": 6,
+          "combustor_inner_diameter_m": 0.06,
+          "combustor_length_m": 0.08,
+          "combustor_liner_thickness_m": 0.0012,
+          "combustor_outer_diameter_m": 0.11,
+          "compressor_blade_count": 12,
+          "compressor_exit_blade_angle_deg": 60.0,
+          "compressor_impeller_exit_diameter_m": 0.08,
+          "compressor_impeller_exit_width_m": 0.005,
+          "compressor_inducer_hub_tip_ratio": 0.4,
+          "compressor_inducer_tip_diameter_m": 0.05,
+          "lattice_cell_size_m": 0.008,
+          "lattice_relative_density": 0.3,
+          "nozzle_throat_diameter_m": 0.055,
+          "shaft_speed_rpm": 100000.0,
+          "turbine_blade_count": 17,
+          "turbine_hub_tip_ratio": 0.7,
+          "turbine_inlet_total_temperature_K": 1100.0,
+          "turbine_tip_diameter_m": 0.08925
+        },
+        "environment": {
+          "mach": 0.0,
+          "pressure_Pa": 101325.0,
+          "temperature_K": 288.15
+        }
+      }
+    },
+    {
+      "case_id": "cruise_environment",
+      "description": "Lower-pressure, lower-temperature subsonic operating environment.",
+      "expected_result": {
+        "assembly_constraints": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics_pending": false,
+        "calibration_pack_hash": "486373656b2423c620468b529a9ea71958a007fedcce2035bfda752f774c8975",
+        "calibration_status": "bootstrap_candidate",
+        "components": {
+          "combustor": {
+            "equivalence_ratio": 0.31331849494642255,
+            "pressure_loss_fraction": 0.14889971977316055,
+            "primary_residence_time_s": 0.002476818330512478
+          },
+          "compressor": {
+            "flow_coefficient_ref": 0.41057205011091247,
+            "loading_coefficient": 0.6371190065150985,
+            "pressure_ratio": 2.634707555590051,
+            "shaft_power_W": 16863.749007364957,
+            "slip_factor": 0.8350663856865359,
+            "total_to_total_efficiency": 0.7396593100661519
+          },
+          "nozzle": {
+            "choked": false,
+            "mass_flow_capacity_kg_s": 0.15406788902103385,
+            "total_pressure_recovery": 0.98
+          },
+          "turbine": {
+            "corrected_mass_flux_kg_s_m2": 85.9072171649757,
+            "flow_coefficient": 0.36219276478536666,
+            "loading_coefficient": 0.7725629912397707,
+            "mean_radius_mach": 0.5837616154505181,
+            "solidity": 0.6366197723675814,
+            "total_to_total_efficiency": 0.5902338151226895
+          }
+        },
+        "conservation": {
+          "combustor_energy_W": -2.9103830456733704e-11,
+          "mass_flow_kg_s": -1.5727976782065056e-08,
+          "normalized_flow": -1.020847269835964e-07,
+          "nozzle_velocity_m_s": 0.0,
+          "shaft_power_W": 0.0
+        },
+        "constraints": {
+          "combustor_equivalence_ratio_max": -0.13668150505357746,
+          "combustor_equivalence_ratio_min": -0.16331849494642256,
+          "combustor_injector_capacity": -0.0005485982205681135,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "combustor_liner_hoop_stress": -0.9982205507637184,
+          "combustor_metal_temperature": -347.9988717219695,
+          "combustor_pressure_loss_fraction_max": 0.06889971977316055,
+          "combustor_primary_residence_time_min": -0.000476818330512478,
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "compressor_efficiency_min": -0.13965931006615195,
+          "compressor_metal_temperature": -303.7674949568762,
+          "compressor_phi_max": -0.039427949889087544,
+          "compressor_phi_min": -0.33057205011091245,
+          "compressor_psi_max": -0.3128809934849015,
+          "compressor_psi_min": -0.2871190065150985,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_mach_max": -0.1991238158973132,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985,
+          "nozzle_total_pressure_usable": -13023.61316320824,
+          "positive_thrust": -36.34896557194378,
+          "positive_tsfc": -8.842177693484244e-05,
+          "shaft_clearance": -0.0421,
+          "turbine_corrected_mass_flux_max": 5.907217164975705,
+          "turbine_corrected_mass_flux_min": -75.9072171649757,
+          "turbine_efficiency_min": 0.009766184877310513,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_mean_radius_mach_max": -0.31623838454948194,
+          "turbine_metal_temperature": -201.84537273059436,
+          "turbine_phi_max": 0.012192764785366683,
+          "turbine_phi_min": -0.31219276478536667,
+          "turbine_psi_max": -1.0274370087602294,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "turbine_tip_speed_limit": -54.94104074144593,
+          "turbine_to_nozzle": -0.14705882352941177,
+          "whole_engine_flow_match": -9.897915273016405e-06
+        },
+        "core_feasible": false,
+        "feasibility_complete": true,
+        "feasibility_scope": "geometry19_wp19_8_bootstrap_complete",
+        "feasible": false,
+        "formal_dataset_generation_ready": false,
+        "formal_diagnostics": {
+          "combustor_effective_yield_strength_proxy_Pa": 640788424.4805722,
+          "combustor_hoop_stress_Pa": 760166.9817067145,
+          "combustor_liner_pressure_difference_Pa": 21463.538307013114,
+          "combustor_metal_temperature_K": 625.0011282780305,
+          "compressor_metal_temperature_K": 369.2325050431238,
+          "compressor_rotating_stress_Pa": 388643088.8606742,
+          "compressor_yield_strength_proxy_Pa": 880000000.0,
+          "hot_section_yield_strength_proxy_Pa": 1034000000.0,
+          "lattice_cells_across_region": 6.25,
+          "lattice_flange_allowed": false,
+          "lattice_modulus_ratio": 0.027,
+          "lattice_region_minimum_length_m": 0.05,
+          "lattice_skin_retained": true,
+          "lattice_strength_ratio": 0.049295030175464945,
+          "lattice_topology": "gyroid",
+          "turbine_metal_temperature_K": 771.1546272694056,
+          "turbine_rotating_stress_Pa": 811127269.2007782,
+          "yield_strength_temperature_model": "room_temperature_bootstrap_proxy"
+        },
+        "manufacturing_constraints": {
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985
+        },
+        "mass_breakdown_kg": {
+          "bearing_accessory": 0.32562668729466504,
+          "combustor": 0.3476836479282298,
+          "compressor": 0.11750682850918773,
+          "injectors": 0.06,
+          "nozzle": 0.09105992677491466,
+          "shaft": 0.1344082624378403,
+          "turbine": 0.2522628243507388
+        },
+        "mass_volume_breakdown_m3": {
+          "combustor_shell": 5.8961410922573224e-05,
+          "compressor_blades": 3.893995377501109e-06,
+          "compressor_casing": 1.2063715789784808e-05,
+          "compressor_hub": 1.0567532288512667e-05,
+          "compressor_total": 2.6525243455798586e-05,
+          "nozzle_shell": 1.7105274119454244e-05,
+          "shaft": 1.6822060380205294e-05,
+          "turbine_blades": 1.8792225000000017e-06,
+          "turbine_casing": 1.021410311498382e-05,
+          "turbine_disk": 1.7016695789563035e-05,
+          "turbine_ngv": 1.6913002500000016e-06,
+          "turbine_total": 3.080132165454686e-05
+        },
+        "operating_point": {
+          "air_fuel_ratio": 46.93588980585356,
+          "flow_root_count": 1,
+          "flow_root_mass_flow_air_kg_s": [
+            0.15085383316744239
+          ],
+          "flow_root_normalized_residuals": [
+            -1.020847269835964e-07
+          ],
+          "flow_root_selection_policy": "reference_continuation_high_flow_v1",
+          "fuel_air_ratio": 0.021305657656356735,
+          "inlet_choked_capacity_kg_s": 0.21138079587558423,
+          "mass_flow_air_kg_s": 0.15085383316744239,
+          "mass_flow_fuel_kg_s": 0.0032140401256146806,
+          "mass_flow_gas_kg_s": 0.15406787329305707,
+          "mass_flow_search_max_kg_s": 0.20081175608180502,
+          "mass_flow_search_min_kg_s": 0.002113807958755842,
+          "selected_flow_root_index": 0,
+          "selected_flow_root_mass_flow_air_kg_s": 0.15085383316744239
+        },
+        "performance": {
+          "mass_kg": 1.3285481772955765,
+          "thrust_N": 36.34896557194378,
+          "tsfc_kg_N_s": 8.842177693484244e-05
+        },
+        "physics_model_version": "geometry19_closed_v2_1",
+        "solver": {
+          "converged": true,
+          "evaluations": 129,
+          "failure_code": null,
+          "flow_residual": -1.020847269835964e-07,
+          "iterations": 4,
+          "message": ""
+        },
+        "stations": {
+          "exit": {
+            "mach": 0.5985740872790197,
+            "static_pressure_Pa": 50000.0,
+            "static_temperature_K": 947.8253727560889,
+            "velocity_m_s": 360.06977989701176
+          },
+          "nozzle_total": {
+            "total_pressure_Pa": 63023.61316320824,
+            "total_temperature_K": 1003.8589176578537
+          },
+          "t2": {
+            "total_pressure_Pa": 54711.04632467791,
+            "total_temperature_K": 258.0
+          },
+          "t3": {
+            "total_pressure_Pa": 144147.60712586617,
+            "total_temperature_K": 369.2325050431238
+          },
+          "t4": {
+            "total_pressure_Pa": 122684.06881885306,
+            "total_temperature_K": 1100.0
+          },
+          "t5": {
+            "total_pressure_Pa": 64309.80935021249,
+            "total_temperature_K": 1003.8589176578537
+          }
+        },
+        "structural_constraints": {
+          "combustor_liner_hoop_stress": -0.9982205507637184,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_tip_speed_limit": -54.94104074144593
+        },
+        "structural_diagnostics": {
+          "combustor_liner_hoop_stress": -0.9982205507637184,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_tip_speed_limit": -54.94104074144593
+        },
+        "structural_diagnostics_pending": false,
+        "thermal_constraints": {
+          "combustor_metal_temperature": -347.9988717219695,
+          "compressor_metal_temperature": -303.7674949568762,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_metal_temperature": -201.84537273059436
+        },
+        "thermodynamic_constraints": {
+          "combustor_equivalence_ratio_max": -0.13668150505357746,
+          "combustor_equivalence_ratio_min": -0.16331849494642256,
+          "combustor_injector_capacity": -0.0005485982205681135,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_pressure_loss_fraction_max": 0.06889971977316055,
+          "combustor_primary_residence_time_min": -0.000476818330512478,
+          "compressor_efficiency_min": -0.13965931006615195,
+          "compressor_phi_max": -0.039427949889087544,
+          "compressor_phi_min": -0.33057205011091245,
+          "compressor_psi_max": -0.3128809934849015,
+          "compressor_psi_min": -0.2871190065150985,
+          "compressor_tip_mach_max": -0.1991238158973132,
+          "nozzle_total_pressure_usable": -13023.61316320824,
+          "positive_thrust": -36.34896557194378,
+          "positive_tsfc": -8.842177693484244e-05,
+          "turbine_corrected_mass_flux_max": 5.907217164975705,
+          "turbine_corrected_mass_flux_min": -75.9072171649757,
+          "turbine_efficiency_min": 0.009766184877310513,
+          "turbine_mean_radius_mach_max": -0.31623838454948194,
+          "turbine_phi_max": 0.012192764785366683,
+          "turbine_phi_min": -0.31219276478536667,
+          "turbine_psi_max": -1.0274370087602294,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "whole_engine_flow_match": -9.897915273016405e-06
+        },
+        "thermodynamic_feasible": false
+      },
+      "input_sha256": "b1106e1d45d4f7856ded30bdefea576bf490f8a47d60073d30e9341eb73c8825",
+      "inputs": {
+        "design": {
+          "combustor_injector_count": 6,
+          "combustor_inner_diameter_m": 0.06,
+          "combustor_length_m": 0.08,
+          "combustor_liner_thickness_m": 0.0012,
+          "combustor_outer_diameter_m": 0.11,
+          "compressor_blade_count": 12,
+          "compressor_exit_blade_angle_deg": 60.0,
+          "compressor_impeller_exit_diameter_m": 0.08,
+          "compressor_impeller_exit_width_m": 0.005,
+          "compressor_inducer_hub_tip_ratio": 0.4,
+          "compressor_inducer_tip_diameter_m": 0.05,
+          "lattice_cell_size_m": 0.008,
+          "lattice_relative_density": 0.3,
+          "nozzle_throat_diameter_m": 0.055,
+          "shaft_speed_rpm": 100000.0,
+          "turbine_blade_count": 17,
+          "turbine_hub_tip_ratio": 0.7,
+          "turbine_inlet_total_temperature_K": 1100.0,
+          "turbine_tip_diameter_m": 0.085
+        },
+        "environment": {
+          "mach": 0.4,
+          "pressure_Pa": 50000.0,
+          "temperature_K": 250.0
+        }
+      }
+    },
+    {
+      "case_id": "hot_altitude_environment",
+      "description": "Hot, reduced-pressure subsonic operating environment.",
+      "expected_result": {
+        "assembly_constraints": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics": {
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "shaft_clearance": -0.0421,
+          "turbine_to_nozzle": -0.14705882352941177
+        },
+        "assembly_diagnostics_pending": false,
+        "calibration_pack_hash": "486373656b2423c620468b529a9ea71958a007fedcce2035bfda752f774c8975",
+        "calibration_status": "bootstrap_candidate",
+        "components": {
+          "combustor": {
+            "equivalence_ratio": 0.28824746305574084,
+            "pressure_loss_fraction": 0.12478924388531551,
+            "primary_residence_time_s": 0.0028682037731536476
+          },
+          "compressor": {
+            "flow_coefficient_ref": 0.3728925924088567,
+            "loading_coefficient": 0.6552852453000038,
+            "pressure_ratio": 2.274402168454221,
+            "shaft_power_W": 16245.328054925358,
+            "slip_factor": 0.8350663856865359,
+            "total_to_total_efficiency": 0.7461073596772408
+          },
+          "nozzle": {
+            "choked": false,
+            "mass_flow_capacity_kg_s": 0.14406258648811057,
+            "total_pressure_recovery": 0.98
+          },
+          "turbine": {
+            "corrected_mass_flux_kg_s_m2": 70.18445083858175,
+            "flow_coefficient": 0.29590412928114734,
+            "loading_coefficient": 0.7959197593773835,
+            "mean_radius_mach": 0.5837616154505181,
+            "solidity": 0.6366197723675814,
+            "total_to_total_efficiency": 0.6848966131211631
+          }
+        },
+        "conservation": {
+          "combustor_energy_W": 0.0,
+          "mass_flow_kg_s": -4.9959863718251896e-08,
+          "normalized_flow": -3.4679289232461967e-07,
+          "nozzle_velocity_m_s": 0.0,
+          "shaft_power_W": 0.0
+        },
+        "constraints": {
+          "combustor_equivalence_ratio_max": -0.16175253694425917,
+          "combustor_equivalence_ratio_min": -0.13824746305574084,
+          "combustor_injector_capacity": -0.0006226947090322804,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "combustor_liner_hoop_stress": -0.9983401659200737,
+          "combustor_metal_temperature": -303.9733423259137,
+          "combustor_pressure_loss_fraction_max": 0.04478924388531551,
+          "combustor_primary_residence_time_min": -0.0008682037731536476,
+          "combustor_to_turbine_outer_diameter": -0.05588235294117655,
+          "compressor_efficiency_min": -0.14610735967724087,
+          "compressor_metal_temperature": -236.0359112706364,
+          "compressor_phi_max": -0.07710740759114332,
+          "compressor_phi_min": -0.2928925924088567,
+          "compressor_psi_max": -0.2947147546999962,
+          "compressor_psi_min": -0.3052852453000038,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_mach_max": -0.33656918990290907,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "diffuser_to_combustor_area": -0.1946433460977981,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985,
+          "nozzle_total_pressure_usable": -7969.766811301481,
+          "positive_thrust": -25.487998363602763,
+          "positive_tsfc": -0.00010865746126163094,
+          "shaft_clearance": -0.0421,
+          "turbine_corrected_mass_flux_max": -9.815549161418247,
+          "turbine_corrected_mass_flux_min": -60.18445083858175,
+          "turbine_efficiency_min": -0.08489661312116314,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_mean_radius_mach_max": -0.31623838454948194,
+          "turbine_metal_temperature": -171.36616007178634,
+          "turbine_phi_max": -0.054095870718852634,
+          "turbine_phi_min": -0.24590412928114735,
+          "turbine_psi_max": -1.0040802406226166,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "turbine_tip_speed_limit": -54.94104074144593,
+          "turbine_to_nozzle": -0.14705882352941177,
+          "whole_engine_flow_match": -9.65320710767538e-06
+        },
+        "core_feasible": false,
+        "feasibility_complete": true,
+        "feasibility_scope": "geometry19_wp19_8_bootstrap_complete",
+        "feasible": false,
+        "formal_dataset_generation_ready": false,
+        "formal_diagnostics": {
+          "combustor_effective_yield_strength_proxy_Pa": 640788424.4805722,
+          "combustor_hoop_stress_Pa": 709068.3099834148,
+          "combustor_liner_pressure_difference_Pa": 20020.752281884656,
+          "combustor_metal_temperature_K": 669.0266576740863,
+          "compressor_metal_temperature_K": 436.9640887293636,
+          "compressor_rotating_stress_Pa": 388643088.8606742,
+          "compressor_yield_strength_proxy_Pa": 880000000.0,
+          "hot_section_yield_strength_proxy_Pa": 1034000000.0,
+          "lattice_cells_across_region": 6.25,
+          "lattice_flange_allowed": false,
+          "lattice_modulus_ratio": 0.027,
+          "lattice_region_minimum_length_m": 0.05,
+          "lattice_skin_retained": true,
+          "lattice_strength_ratio": 0.049295030175464945,
+          "lattice_topology": "gyroid",
+          "turbine_metal_temperature_K": 801.6338399282137,
+          "turbine_rotating_stress_Pa": 811127269.2007782,
+          "yield_strength_temperature_model": "room_temperature_bootstrap_proxy"
+        },
+        "manufacturing_constraints": {
+          "combustor_lattice_skin_thickness_min": -0.0006999999999999999,
+          "lattice_cell_size_min": -0.004,
+          "lattice_cells_across_region_min": -3.25,
+          "lattice_relative_density_max": -0.25000000000000006,
+          "lattice_relative_density_min": -0.15,
+          "nozzle_lattice_skin_thickness_min": -0.000985
+        },
+        "mass_breakdown_kg": {
+          "bearing_accessory": 0.32562668729466504,
+          "combustor": 0.3476836479282298,
+          "compressor": 0.11750682850918773,
+          "injectors": 0.06,
+          "nozzle": 0.09105992677491466,
+          "shaft": 0.1344082624378403,
+          "turbine": 0.2522628243507388
+        },
+        "mass_volume_breakdown_m3": {
+          "combustor_shell": 5.8961410922573224e-05,
+          "compressor_blades": 3.893995377501109e-06,
+          "compressor_casing": 1.2063715789784808e-05,
+          "compressor_hub": 1.0567532288512667e-05,
+          "compressor_total": 2.6525243455798586e-05,
+          "nozzle_shell": 1.7105274119454244e-05,
+          "shaft": 1.6822060380205294e-05,
+          "turbine_blades": 1.8792225000000017e-06,
+          "turbine_casing": 1.021410311498382e-05,
+          "turbine_disk": 1.7016695789563035e-05,
+          "turbine_ngv": 1.6913002500000016e-06,
+          "turbine_total": 3.080132165454686e-05
+        },
+        "operating_point": {
+          "air_fuel_ratio": 51.01825423558845,
+          "flow_root_count": 1,
+          "flow_root_mass_flow_air_kg_s": [
+            0.14129307533341717
+          ],
+          "flow_root_normalized_residuals": [
+            -3.4679289232461967e-07
+          ],
+          "flow_root_selection_policy": "reference_continuation_high_flow_v1",
+          "fuel_air_ratio": 0.01960082748779038,
+          "inlet_choked_capacity_kg_s": 0.24374240054492785,
+          "mass_flow_air_kg_s": 0.14129307533341717,
+          "mass_flow_fuel_kg_s": 0.00276946119482968,
+          "mass_flow_gas_kg_s": 0.14406253652824685,
+          "mass_flow_search_max_kg_s": 0.23155528051768146,
+          "mass_flow_search_min_kg_s": 0.0024374240054492787,
+          "selected_flow_root_index": 0,
+          "selected_flow_root_mass_flow_air_kg_s": 0.14129307533341717
+        },
+        "performance": {
+          "mass_kg": 1.3285481772955765,
+          "thrust_N": 25.487998363602763,
+          "tsfc_kg_N_s": 0.00010865746126163094
+        },
+        "physics_model_version": "geometry19_closed_v2_1",
+        "solver": {
+          "converged": true,
+          "evaluations": 129,
+          "failure_code": null,
+          "flow_residual": -3.4679289232461967e-07,
+          "iterations": 4,
+          "message": ""
+        },
+        "stations": {
+          "exit": {
+            "mach": 0.4053796700757353,
+            "static_pressure_Pa": 70000.0,
+            "static_temperature_K": 974.528077081718,
+            "velocity_m_s": 247.26562175871229
+          },
+          "nozzle_total": {
+            "total_pressure_Pa": 77969.76681130148,
+            "total_temperature_K": 1000.9523003409134
+          },
+          "t2": {
+            "total_pressure_Pa": 70540.08490877067,
+            "total_temperature_K": 322.56
+          },
+          "t3": {
+            "total_pressure_Pa": 160436.5220794529,
+            "total_temperature_K": 436.9640887293636
+          },
+          "t4": {
+            "total_pressure_Pa": 140415.76979756824,
+            "total_temperature_K": 1100.0
+          },
+          "t5": {
+            "total_pressure_Pa": 79560.98654214437,
+            "total_temperature_K": 1000.9523003409134
+          }
+        },
+        "structural_constraints": {
+          "combustor_liner_hoop_stress": -0.9983401659200737,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_tip_speed_limit": -54.94104074144593
+        },
+        "structural_diagnostics": {
+          "combustor_liner_hoop_stress": -0.9983401659200737,
+          "compressor_rotating_stress": -0.33754018944203257,
+          "compressor_tip_speed_limit": -81.12097952136094,
+          "turbine_rotating_stress": 0.17668365938217367,
+          "turbine_tip_speed_limit": -54.94104074144593
+        },
+        "structural_diagnostics_pending": false,
+        "thermal_constraints": {
+          "combustor_metal_temperature": -303.9733423259137,
+          "compressor_metal_temperature": -236.0359112706364,
+          "turbine_inlet_temperature_max": -100.0,
+          "turbine_inlet_temperature_min": -300.0,
+          "turbine_metal_temperature": -171.36616007178634
+        },
+        "thermodynamic_constraints": {
+          "combustor_equivalence_ratio_max": -0.16175253694425917,
+          "combustor_equivalence_ratio_min": -0.13824746305574084,
+          "combustor_injector_capacity": -0.0006226947090322804,
+          "combustor_injector_pitch_min": -0.029505895925855403,
+          "combustor_pressure_loss_fraction_max": 0.04478924388531551,
+          "combustor_primary_residence_time_min": -0.0008682037731536476,
+          "compressor_efficiency_min": -0.14610735967724087,
+          "compressor_phi_max": -0.07710740759114332,
+          "compressor_phi_min": -0.2928925924088567,
+          "compressor_psi_max": -0.2947147546999962,
+          "compressor_psi_min": -0.3052852453000038,
+          "compressor_tip_mach_max": -0.33656918990290907,
+          "nozzle_total_pressure_usable": -7969.766811301481,
+          "positive_thrust": -25.487998363602763,
+          "positive_tsfc": -0.00010865746126163094,
+          "turbine_corrected_mass_flux_max": -9.815549161418247,
+          "turbine_corrected_mass_flux_min": -60.18445083858175,
+          "turbine_efficiency_min": -0.08489661312116314,
+          "turbine_mean_radius_mach_max": -0.31623838454948194,
+          "turbine_phi_max": -0.054095870718852634,
+          "turbine_phi_min": -0.24590412928114735,
+          "turbine_psi_max": -1.0040802406226166,
+          "turbine_solidity_max": -0.5633802276324186,
+          "turbine_solidity_min": -0.2866197723675814,
+          "whole_engine_flow_match": -9.65320710767538e-06
+        },
+        "thermodynamic_feasible": false
+      },
+      "input_sha256": "5a62abca0a941a842bb18085b6ec695f5350510be2fe16bbda7d36e467a2729b",
+      "inputs": {
+        "design": {
+          "combustor_injector_count": 6,
+          "combustor_inner_diameter_m": 0.06,
+          "combustor_length_m": 0.08,
+          "combustor_liner_thickness_m": 0.0012,
+          "combustor_outer_diameter_m": 0.11,
+          "compressor_blade_count": 12,
+          "compressor_exit_blade_angle_deg": 60.0,
+          "compressor_impeller_exit_diameter_m": 0.08,
+          "compressor_impeller_exit_width_m": 0.005,
+          "compressor_inducer_hub_tip_ratio": 0.4,
+          "compressor_inducer_tip_diameter_m": 0.05,
+          "lattice_cell_size_m": 0.008,
+          "lattice_relative_density": 0.3,
+          "nozzle_throat_diameter_m": 0.055,
+          "shaft_speed_rpm": 100000.0,
+          "turbine_blade_count": 17,
+          "turbine_hub_tip_ratio": 0.7,
+          "turbine_inlet_total_temperature_K": 1100.0,
+          "turbine_tip_diameter_m": 0.085
+        },
+        "environment": {
+          "mach": 0.2,
+          "pressure_Pa": 70000.0,
+          "temperature_K": 320.0
+        }
+      }
+    }
+  ],
+  "context": {
+    "context_hash": "45e41ad2ba777586336780b254da5d4a4cc12d9b8de3db8922211c4f2cb36c9d",
+    "physics_runtime": {
+      "backend_id": "geometry19_v2_1_backend",
+      "component_maps": {},
+      "constraint_profile": "geometry19_constraint_profile_pipeline_debug_v1",
+      "design_schema_version": "geometry19_schema_v1",
+      "operating_point_policy": "reference_continuation_high_flow_v1",
+      "physics_bundle_hash": "cd86def037adf9a4cd31bdb99172fb8f3f56ec8148d1c198f70689689cd258d2",
+      "physics_model_version": "geometry19_closed_v2_1",
+      "provenance_hashes": {
+        "acceptance_policy_hash": "99a0376bc750be04589f1676fe1f28aba42589c64483ba1a965673e194ae7fdd",
+        "calibration_hash": "486373656b2423c620468b529a9ea71958a007fedcce2035bfda752f774c8975",
+        "calibration_source_hash": "3bb454998c9f52d62267ab5ef3b30a98501905aba6f478c49288642619d681e7",
+        "conservation_tolerances_hash": "6165e04162cd31b1c41ec085ea4baec926f28656157c2438fcbf189c331af6b7",
+        "constraint_profile_hash": "5b5d916ae60bdd80fb0a64e0af514206100d4aff2612d8d0261989b1695fa8f3",
+        "design_schema_hash": "cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28",
+        "operating_point_policy_hash": "76db0691665368d0eeac6a6d84fed5c5172df08a6f914488f548844921a246ea",
+        "physics_code_hash": "79e5cc46a2c7f94ba59996ff0f811d1ec65b1595cc212360811974d2fb37f61d",
+        "solver_binding_hash": "824a70d81d03f8b18cd5c1df2804077dd4f37b1c12cd90af8c52cbc12deb0940"
+      },
+      "thermo_model_id": null
+    },
+    "pipeline_profile": {
+      "mode": "production_development",
+      "name": "v2_1",
+      "profile_hash": "e1342009ac4b8a98076ef3962e095f64f27d2c677922271bed9dd9733de76e81",
+      "protocol_path": "config/physics/wp19_23_inverse_closure_v1.yaml"
+    },
+    "profile_registry_version": "geometry19_pipeline_profiles_v1",
+    "provenance_hashes": {
+      "acceptance_policy_hash": "99a0376bc750be04589f1676fe1f28aba42589c64483ba1a965673e194ae7fdd",
+      "calibration_hash": "486373656b2423c620468b529a9ea71958a007fedcce2035bfda752f774c8975",
+      "calibration_source_hash": "3bb454998c9f52d62267ab5ef3b30a98501905aba6f478c49288642619d681e7",
+      "conservation_tolerances_hash": "6165e04162cd31b1c41ec085ea4baec926f28656157c2438fcbf189c331af6b7",
+      "constraint_dominance_hash": "af88c512dfdd553346d63abbed411274477b7a16ac15bf1367289047f3c21358",
+      "constraint_profile_hash": "5b5d916ae60bdd80fb0a64e0af514206100d4aff2612d8d0261989b1695fa8f3",
+      "design_schema_hash": "cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28",
+      "operating_point_policy_hash": "76db0691665368d0eeac6a6d84fed5c5172df08a6f914488f548844921a246ea",
+      "physics_bundle_hash": "cd86def037adf9a4cd31bdb99172fb8f3f56ec8148d1c198f70689689cd258d2",
+      "physics_code_hash": "79e5cc46a2c7f94ba59996ff0f811d1ec65b1595cc212360811974d2fb37f61d",
+      "pipeline_profile_hash": "e1342009ac4b8a98076ef3962e095f64f27d2c677922271bed9dd9733de76e81",
+      "protocol_dependency_0_hash": "8f3a85cc72fd769cbaf0121aee8887ec0b9e7842da4ab19ad53c1746432f31cd",
+      "protocol_hash": "8f3a85cc72fd769cbaf0121aee8887ec0b9e7842da4ab19ad53c1746432f31cd",
+      "solver_binding_hash": "824a70d81d03f8b18cd5c1df2804077dd4f37b1c12cd90af8c52cbc12deb0940"
+    }
+  },
+  "execution_environment": {
+    "numpy": "2.4.4",
+    "python": "3.11.15",
+    "pyyaml": "6.0.3",
+    "scipy": "1.17.1"
+  },
+  "generator": {
+    "contract_version": "geometry19_v2_1_baseline_manifest_v1",
+    "tool": "scripts/verify_geometry19_v2_1_baseline.py"
+  },
+  "manifest_payload_sha256": "ac1b15dd7e1f9dcd53b19b55574b0bad91f044f8285f8fda1b55eb041954db3c",
+  "manifest_version": "geometry19_v2_1_baseline_manifest_v1",
+  "suite_sha256": "4b1a2f13cfddb8085fb09c1b393a4292c420f4ef629aa2ece83677c708ad7014",
+  "suite_version": "geometry19_v2_1_golden_cases_v1",
+  "tolerances": {
+    "components": {
+      "absolute": 1e-10,
+      "relative": 1e-10
+    },
+    "conservation": {
+      "absolute": 1e-06,
+      "relative": 1e-09
+    },
+    "constraints": {
+      "absolute": 1e-10,
+      "relative": 1e-10
+    },
+    "diagnostics": {
+      "absolute": 1e-10,
+      "relative": 1e-10
+    },
+    "mass": {
+      "absolute": 1e-12,
+      "relative": 1e-10
+    },
+    "operating_point": {
+      "absolute": 1e-12,
+      "relative": 1e-09
+    },
+    "performance": {
+      "absolute": 1e-12,
+      "relative": 1e-10
+    },
+    "solver": {
+      "absolute": 0.0,
+      "relative": 0.0
+    },
+    "stations": {
+      "absolute": 1e-08,
+      "relative": 1e-10
+    }
+  }
+}

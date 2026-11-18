@@ -1,0 +1,7 @@
+profile_version: geometry19_conservation_tolerances_v1
+description: Numerical closure tolerances for WP19-18 converged V2.1 points.
+combustor_energy_absolute_W: 1.0e-6
+shaft_power_absolute_W: 1.0e-6
+normalized_flow_absolute: 1.0e-5
+nozzle_velocity_absolute_m_s: 1.0e-9
+mass_flow_rule: abs(residual_kg_s) <= normalized_flow_absolute * max(abs(mass_flow_gas_kg_s), 1.0e-12)

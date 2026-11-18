@@ -1,0 +1,46 @@
+overlay_version: geometry19_pipeline_protocol_overlay_v1
+extends: config/physics/wp19_23_inverse_closure_v1.yaml
+overrides:
+  status: all_component_maps_full_variable_thermo_paired_shadow_only
+  contracts:
+    thermo_model: config/physics/geometry19_thermo_variable_property_shadow_v1.yaml
+    component_map_registry: config/physics/geometry19_component_maps_v1.yaml
+    constraint_dominance: config/physics/geometry19_constraint_dominance_v2_2_c4_v1.yaml
+  generation:
+    supported_sampling_modes: [direct]
+    pipeline_sampling_modes: [direct]
+    default_sampling_mode: direct
+  dflow:
+    enabled_only_when_sampling_mode_is_dflow: false
+    pipeline_execution: disabled_for_paired_physics_shadow
+  physics_evaluation:
+    model_tag: geometry19_map_enhanced_v2_2_full_variable_thermo_shadow
+    base_calibration_model_version: geometry19_closed_v2_1
+    component_maps:
+      compressor: nasa_hecc_post_test_cfd_v1
+      turbine: synthetic_single_stage_turbine_v1
+      inlet: synthetic_subsonic_inlet_v1
+      combustor: synthetic_annular_combustor_v1
+      nozzle: synthetic_convergent_nozzle_v1
+    thermo_backend: geometry19_thermo_variable_property_shadow_v1
+    solver_backend: one_mass_flow_root_with_local_combustor_far_root_v1
+    formal_use_allowed: false
+  refinement:
+    trigger: disabled_for_paired_physics_shadow
+  optimizer:
+    trigger: disabled_for_paired_physics_shadow
+    constraint_dominance: geometry19_constraint_dominance_v2_2_c4_v1
+  delivery:
+    enabled: false
+    reason: synthetic_component_maps_lack_independent_engineering_validation
+  artifact_protocol:
+    runtime_root: data/inverse_design/wp19_23_v2_2_full_variable_thermo_shadow
+  shadow:
+    enabled: true
+    baseline_profile: v2_1
+    candidate_sampling: direct
+    paired_by: [candidate_id, design_hash]
+    execute_stages: [B, C_V2_1, C_V2_2, SHADOW_REPORT]
+    forbidden_stages: [D, E, F]
+    delivery_enabled: false
+    formal_use_allowed: false

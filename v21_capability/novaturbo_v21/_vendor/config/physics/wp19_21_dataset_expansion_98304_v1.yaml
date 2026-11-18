@@ -1,0 +1,26 @@
+protocol_version: wp19_21_dataset_expansion_98304_v1
+work_package: WP19-21-expansion
+dataset_tier: development_bootstrap
+formal_use_allowed: false
+base_protocol: config/physics/wp19_21_development_dataset_v1.yaml
+base_campaign:
+  campaign_id: seed_20260826
+  seed: 20260826
+  sample_count: 16384
+  manifest: data/generated/wp19_21_development_dataset_v1/manifest.json
+  dataset_jsonl: data/generated/wp19_21_development_dataset_v1/dataset.jsonl
+expansion_campaigns:
+  - {campaign_id: seed_20260827, seed: 20260827, sample_count: 16384}
+  - {campaign_id: seed_20260828, seed: 20260828, sample_count: 16384}
+  - {campaign_id: seed_20260829, seed: 20260829, sample_count: 16384}
+  - {campaign_id: seed_20260830, seed: 20260830, sample_count: 16384}
+  - {campaign_id: seed_20260831, seed: 20260831, sample_count: 16384}
+shard_size: 256
+workers: 4
+additional_preview_budget: 256
+expected_total_sample_count: 98304
+artifacts:
+  runtime_root: data/generated/wp19_21_dataset_expansion_98304_v1
+  merged_root: data/generated/wp19_21_development_dataset_98304_v1
+  summary_json: results/physics/wp19_21_dataset_expansion_98304_v1.json
+  report_markdown: docs/physics/WP19_21_DATASET_EXPANSION_98304_20260826.md

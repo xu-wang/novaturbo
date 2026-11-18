@@ -1,0 +1,47 @@
+map_id: synthetic_convergent_nozzle_v1
+map_version: 1.0.0
+component_type: nozzle
+formal_use_allowed: false
+source:
+  type: synthetic_interface_test
+  reference: NovaTurbo V2.2-C3 convergent-nozzle implementation fixture
+  license: project_internal_synthetic
+  validation_status: trends_and_software_contract_only
+coordinates:
+  - name: inlet_pressure_ratio
+    definition: turbine-exit total pressure divided by ambient static pressure
+    unit: dimensionless
+  - name: reynolds_ratio
+    definition: nozzle inlet Reynolds number divided by design Reynolds number
+    unit: dimensionless
+outputs:
+  - name: total_pressure_recovery
+    definition: nozzle available total pressure divided by turbine-exit total pressure
+    unit: dimensionless
+  - name: discharge_coefficient
+    definition: actual nozzle flow capacity divided by ideal one-dimensional capacity
+    unit: dimensionless
+boundaries:
+  - name: minimum_reynolds_ratio
+    definition: lower validated Reynolds-ratio boundary indexed by inlet pressure ratio
+    unit: dimensionless
+  - name: maximum_reynolds_ratio
+    definition: upper validated Reynolds-ratio boundary indexed by inlet pressure ratio
+    unit: dimensionless
+reference_state:
+  temperature_K: 850.0
+  pressure_Pa: 150000.0
+  reynolds_design: 150000.0
+  total_or_static: turbine_exit_total_to_ambient_static
+  mass_flow_basis: combustion_gas_including_fuel
+  area_definition: nozzle_throat_area
+  diameter_definition: nozzle_throat_diameter
+interpolation: {method: bilinear_v1, boundary_method: linear_v1}
+domain_policy: {diagnostic_extrapolation_limit: 0.08}
+uncertainty:
+  total_pressure_recovery: 0.012
+  discharge_coefficient: 0.018
+applicability:
+  geometry_family: small_subsonic_convergent_nozzle_proxy
+  scaling_basis: inlet_pressure_ratio_and_reynolds_similarity
+  excluded_uses: [formal_acceptance, production_training_data, certification]

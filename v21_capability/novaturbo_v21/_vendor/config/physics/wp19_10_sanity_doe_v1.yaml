@@ -1,0 +1,20 @@
+protocol_version: wp19_10_sanity_doe_v1
+physics_spec_version: geometry19_closed_v2_1
+design_schema: config/physics/geometry19_schema_v1.yaml
+calibration_pack: config/physics/geometry19_calibration_bootstrap_v1.yaml
+sample_count: 1024
+seed: 20260824
+sampler: latin_hypercube
+environment: {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 0.0}
+
+sensitivity:
+  oat_fraction_of_range: 0.05
+  numeric_change_relative_tolerance: 1.0e-9
+  numeric_change_absolute_tolerance: 1.0e-12
+  spearman_minimum_pairs: 20
+  reported_top_channels: 5
+
+artifacts:
+  report_json: results/physics/wp19_10_sanity_doe_v1.json
+  sample_ledger_csv: results/physics/wp19_10_sanity_doe_samples_v1.csv
+  report_markdown: docs/physics/WP19_10_SANITY_DOE_REPORT.md

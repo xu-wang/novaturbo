@@ -1,0 +1,31 @@
+correction_version: geometry22_v3_development_correction_v1
+status: software_development_fixture_unvalidated
+development_runtime_allowed: true
+base_runtime:
+  contracts:
+    design_schema: config/physics/geometry19_schema_v1.yaml
+    calibration_pack: config/physics/geometry19_calibration_bootstrap_v1.yaml
+    acceptance_policy: config/physics/geometry19_acceptance_policy_v1.yaml
+    constraint_profile: config/physics/geometry19_constraint_profile_pipeline_debug_v1.yaml
+    operating_point_policy: config/physics/geometry19_operating_point_policy_reference_continuation_v1.yaml
+    conservation_tolerances: config/physics/geometry19_conservation_tolerances_v1.yaml
+    thermo_model: config/physics/geometry19_thermo_variable_property_shadow_v1.yaml
+    component_map_registry: config/physics/geometry19_component_maps_v1.yaml
+  physics_evaluation:
+    model_tag: geometry19_map_enhanced_v2_2_full_variable_thermo_shadow
+    base_calibration_model_version: geometry19_closed_v2_1
+    component_maps:
+      compressor: synthetic_centrifugal_compressor_v1
+      turbine: synthetic_single_stage_turbine_v1
+      inlet: synthetic_subsonic_inlet_v1
+      combustor: synthetic_annular_combustor_v1
+      nozzle: synthetic_convergent_nozzle_v1
+model_version: geometry22_map_enhanced_v3_development_v1
+compressor_tip_clearance:
+  reference_ratio: 0.00375
+  efficiency_slope_per_unit_ratio: 1.0
+  relationship: efficiency = base_map_efficiency - slope * (ratio - reference_ratio)
+  source: synthetic_software_connectivity_fixture
+  independent_calibration_available: false
+formal_use_allowed: false
+deployment_allowed: false

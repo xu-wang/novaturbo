@@ -1,0 +1,183 @@
+{
+  "schema_version": "geometry19_schema_v1",
+  "design": [
+    {
+      "name": "compressor_impeller_exit_diameter_m",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 0.06,
+      "physical_max": 0.15,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "compressor_inducer_tip_diameter_m",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 0.035,
+      "physical_max": 0.1,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "compressor_inducer_hub_tip_ratio",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 0.25,
+      "physical_max": 0.65,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "compressor_impeller_exit_width_m",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 0.003,
+      "physical_max": 0.012,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "compressor_exit_blade_angle_deg",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 45.0,
+      "physical_max": 90.0,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "compressor_blade_count",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 8.0,
+      "physical_max": 20.0,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "combustor_outer_diameter_m",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 0.08,
+      "physical_max": 0.16,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "combustor_inner_diameter_m",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 0.04,
+      "physical_max": 0.09,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "combustor_length_m",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 0.05,
+      "physical_max": 0.15,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "combustor_liner_thickness_m",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 0.0008,
+      "physical_max": 0.002,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "combustor_injector_count",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 4.0,
+      "physical_max": 12.0,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "turbine_tip_diameter_m",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 0.065,
+      "physical_max": 0.16,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "turbine_hub_tip_ratio",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 0.6,
+      "physical_max": 0.85,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "turbine_blade_count",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 11.0,
+      "physical_max": 23.0,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "turbine_inlet_total_temperature_K",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 800.0,
+      "physical_max": 1200.0,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "nozzle_throat_diameter_m",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 0.03,
+      "physical_max": 0.08,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "shaft_speed_rpm",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 60000.0,
+      "physical_max": 150000.0,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "lattice_cell_size_m",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 0.004,
+      "physical_max": 0.014,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    },
+    {
+      "name": "lattice_relative_density",
+      "method": "physical_bounds_to_minus_one_plus_one",
+      "physical_min": 0.15,
+      "physical_max": 0.55,
+      "normalized_min": -1.0,
+      "normalized_max": 1.0
+    }
+  ],
+  "conditions": [
+    {
+      "name": "thrust_N",
+      "method": "standard",
+      "transform": "identity",
+      "mean": 80.29643081273976,
+      "std": 65.67769512173527
+    },
+    {
+      "name": "tsfc_kg_N_s",
+      "method": "standard",
+      "transform": "natural_log",
+      "mean": -9.55914454987331,
+      "std": 0.5114121794028114
+    },
+    {
+      "name": "mass_kg",
+      "method": "standard",
+      "transform": "natural_log",
+      "mean": 0.8128973985837247,
+      "std": 0.30511384776927747
+    }
+  ],
+  "fitted_split": "train",
+  "fitted_sample_count": 15612,
+  "fitted_sample_id_sha256": "a0c8abca154c99cec53662a169aae14398fed7170c1bd0771259a317755c5481"
+}

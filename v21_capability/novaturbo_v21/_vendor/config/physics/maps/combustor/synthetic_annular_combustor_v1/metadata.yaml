@@ -1,0 +1,47 @@
+map_id: synthetic_annular_combustor_v1
+map_version: 1.0.0
+component_type: combustor
+formal_use_allowed: false
+source:
+  type: synthetic_interface_test
+  reference: NovaTurbo V2.2-C2 combustor implementation fixture
+  license: project_internal_synthetic
+  validation_status: trends_and_software_contract_only
+coordinates:
+  - name: mass_flux_ratio
+    definition: combustor inlet air mass flux divided by design mass flux
+    unit: dimensionless
+  - name: equivalence_ratio
+    definition: global fuel-air ratio divided by stoichiometric fuel-air ratio
+    unit: dimensionless
+outputs:
+  - name: combustion_efficiency
+    definition: fraction of fuel lower heating value released to modeled gas
+    unit: dimensionless
+  - name: total_pressure_loss_fraction
+    definition: combustor total-pressure loss divided by inlet total pressure
+    unit: dimensionless
+boundaries:
+  - name: minimum_equivalence_ratio
+    definition: lean stability boundary indexed by mass-flux ratio
+    unit: dimensionless
+  - name: maximum_equivalence_ratio
+    definition: rich stability boundary indexed by mass-flux ratio
+    unit: dimensionless
+reference_state:
+  temperature_K: 700.0
+  pressure_Pa: 250000.0
+  mass_flux_design_kg_s_m2: 39.0
+  total_or_static: total
+  mass_flow_basis: air_only
+  area_definition: combustor_annulus_area
+  temperature_definition: prescribed_turbine_inlet_total_temperature
+interpolation: {method: bilinear_v1, boundary_method: linear_v1}
+domain_policy: {diagnostic_extrapolation_limit: 0.08}
+uncertainty:
+  combustion_efficiency: 0.025
+  total_pressure_loss_fraction: 0.015
+applicability:
+  geometry_family: small_annular_combustor_proxy
+  scaling_basis: inlet_mass_flux_and_global_equivalence_ratio
+  excluded_uses: [emissions_prediction, pattern_factor, formal_acceptance, certification]

@@ -1,0 +1,35 @@
+dataset_version: geometry19_v2_2_restricted_pilot_v1
+status: software_development_pilot
+profile: v2_2_development
+purpose: restricted_performance_domain_dataset_protocol_validation
+formal_use_allowed: false
+engineering_validation_required: false
+training_ready: false
+seed_pack:
+  path: data/validation/geometry19_v2_2_audited_seed_pack_v1.jsonl
+  sha256: d6a09a4805f7b99baa721ee4720df460da4d9ba53db9fe3cff5a527f37e4592a
+  selection: unique_v2_2_physics_acceptable_c_stage_designs_ranked_by_target_domain_distance
+sampling:
+  method: local_seeded_latin_hypercube_v1
+  random_seed: 20260911
+  sample_count: 1024
+  shard_size: 128
+  local_radius_fraction: 0.003
+  maximum_seed_domain_distance: 2.0
+  discrete_policy: unconditional_nearest_integer
+  retain_seed_anchors: true
+acceptance:
+  require_solver_converged: true
+  require_numerically_valid: true
+  require_physics_domain_valid: true
+  require_inside_v2_2_target_domain: true
+  require_engineering_feasible: false
+  retain_rejected_rows_in_raw_dataset: true
+pilot_gate:
+  minimum_physics_domain_valid: 256
+  minimum_training_candidates: 32
+limitations:
+  - pilot_only_not_training_release
+  - simplified_v2_2_software_labels_only
+  - local_19d_neighborhoods_without_real_geometry
+  - no_engineering_feasibility_requirement

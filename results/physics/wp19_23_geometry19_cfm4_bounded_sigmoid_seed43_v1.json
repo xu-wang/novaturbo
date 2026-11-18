@@ -1,0 +1,125 @@
+{
+  "architecture_id": "WP19-23-BS-GEOMETRY19-CFM-4-OFFSET-SIGMOID",
+  "artifacts": {
+    "best_checkpoint": "data\\generator_models\\geometry19\\wp19_23_cfm4_bounded_sigmoid_seed43_v1\\baseline\\best.pt",
+    "last_checkpoint": "data\\generator_models\\geometry19\\wp19_23_cfm4_bounded_sigmoid_seed43_v1\\baseline\\last.pt",
+    "normalizer": "data\\generator_models\\geometry19\\wp19_23_cfm4_bounded_sigmoid_seed43_v1\\baseline\\normalizer.json"
+  },
+  "bounded_output": {
+    "enabled": true,
+    "epsilon": 0.0001,
+    "input_tolerance": 1e-06,
+    "kind": "offset_sigmoid",
+    "offset": [
+      -0.2839851585467822,
+      -0.17062803657267445,
+      -0.031726139768828654,
+      -0.07599704136823282,
+      -0.04287902875720084,
+      -0.042845422434769964,
+      0.32893434597933535,
+      -0.17483998829392344,
+      -0.019569696732631647,
+      -0.0007285142107904541,
+      -0.0003203305305408133,
+      -0.05925199491405697,
+      -0.022826257037631748,
+      0.0010250577787215276,
+      0.3348719521011829,
+      0.2515176526008265,
+      -0.51957552556155,
+      -0.004709081352643363,
+      0.0004465201481536063
+    ],
+    "saturation_threshold": 0.99
+  },
+  "condition_names": [
+    "thrust_N",
+    "tsfc_kg_N_s",
+    "mass_kg"
+  ],
+  "dataset_tier": "development_bootstrap",
+  "device": "cuda:0",
+  "feature_names": [
+    "compressor_impeller_exit_diameter_m",
+    "compressor_inducer_tip_diameter_m",
+    "compressor_inducer_hub_tip_ratio",
+    "compressor_impeller_exit_width_m",
+    "compressor_exit_blade_angle_deg",
+    "compressor_blade_count",
+    "combustor_outer_diameter_m",
+    "combustor_inner_diameter_m",
+    "combustor_length_m",
+    "combustor_liner_thickness_m",
+    "combustor_injector_count",
+    "turbine_tip_diameter_m",
+    "turbine_hub_tip_ratio",
+    "turbine_blade_count",
+    "turbine_inlet_total_temperature_K",
+    "nozzle_throat_diameter_m",
+    "shaft_speed_rpm",
+    "lattice_cell_size_m",
+    "lattice_relative_density"
+  ],
+  "formal_use_allowed": false,
+  "generated_at_utc": "2026-11-18T02:46:12.685344+00:00",
+  "hashes": {
+    "best_checkpoint_hash": "ce4299afe3c1957fb90c4614a13fc10828b251b9bce6420d663e7a3ca765db28",
+    "calibration_hash": "486373656b2423c620468b529a9ea71958a007fedcce2035bfda752f774c8975",
+    "code_commit": "58517c67cbc61166666c1fd63eb1254100792a60",
+    "constraint_profile_hash": "5b5d916ae60bdd80fb0a64e0af514206100d4aff2612d8d0261989b1695fa8f3",
+    "dataset_manifest_hash": "7517aeb4b86b3cecf1f1285a7bba9678d2499b78682abba5beefa9049c0b0a0e",
+    "forward_surrogate_manifest_hash": null,
+    "normalizer_hash": "2a0e898604d5a41abc835c0eee388358dccdfa12f4a654e102b48d768b7e3a7e",
+    "protocol_hash": "8f3a85cc72fd769cbaf0121aee8887ec0b9e7842da4ab19ad53c1746432f31cd",
+    "regression_dataset_hash": "a9620915121148ba869a3d8526c483708fd6ce5f788e4738e927a878a481f0ae",
+    "schema_hash": "cf112030ac47b93bfa53d489f7e88aeac030efdc52bcd86b5776f74057341f28",
+    "training_config_hash": "d9d079d00670a63d1503a1b031ceeca49245ebc54b51c5a03fe0251a32a5b1b0"
+  },
+  "model_tag": "novaturbo_geometry19_gpu_sinkhorn_cfm4_film_residual_bounded_sigmoid_v1",
+  "performance_consistency": {
+    "enabled": false,
+    "forward_weights": null,
+    "integer_projection": null,
+    "objective": null,
+    "weight": 0.0
+  },
+  "run_kind": "baseline",
+  "split_counts": {
+    "test": 3873,
+    "train": 15612,
+    "validation": 3938
+  },
+  "status": "PASS",
+  "tolerance_set": {},
+  "training": {
+    "best_epoch": 136,
+    "best_validation_loss": 1.939590694699692,
+    "early_stopped": true,
+    "elapsed_seconds": 90.53633200000331,
+    "epochs_completed": 156,
+    "peak_gpu_memory_bytes": 101007872,
+    "termination_reason": "early_stopping",
+    "total_parameters": 418835
+  },
+  "training_seed": 43,
+  "validation": {
+    "checkpoint_reload_exact": true,
+    "sample_count": 128,
+    "sample_metrics": {
+      "candidate_protocol_n_keep": 128,
+      "count": 128,
+      "duplicate_rate": 0.0,
+      "finite": true,
+      "in_bounds_count": 128,
+      "mean_dimension_std": 0.5331610441207886,
+      "out_of_bounds_count": 0,
+      "out_of_bounds_rate": 0.0,
+      "unique_count_at_1e_8": 128
+    },
+    "source_integration_exact": true,
+    "source_integration_max_absolute_error": 0.0,
+    "source_seed": 20260817
+  },
+  "work_package": "WP19-23-BS"
+}

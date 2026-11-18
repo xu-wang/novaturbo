@@ -1,0 +1,55 @@
+{
+  "ablation_protocol_hash": "40ba840fb3071f3dea68c8d5e3c02db3bd2097fb130b02e61052dc1f236ce264",
+  "architecture": {
+    "activation": "relu",
+    "batch_norm": true,
+    "dropout": 0.1,
+    "hidden_layers": [
+      128,
+      256,
+      256,
+      128,
+      64
+    ],
+    "input_dim": 19,
+    "output_dim": 3
+  },
+  "architecture_tag": "legacy_surrogate_mlp_geometry19_v1_performance3",
+  "checkpoint_version": "geometry19_performance3_v1",
+  "feature_names": [
+    "compressor_impeller_exit_diameter_m",
+    "compressor_inducer_tip_diameter_m",
+    "compressor_inducer_hub_tip_ratio",
+    "compressor_impeller_exit_width_m",
+    "compressor_exit_blade_angle_deg",
+    "compressor_blade_count",
+    "combustor_outer_diameter_m",
+    "combustor_inner_diameter_m",
+    "combustor_length_m",
+    "combustor_liner_thickness_m",
+    "combustor_injector_count",
+    "turbine_tip_diameter_m",
+    "turbine_hub_tip_ratio",
+    "turbine_blade_count",
+    "turbine_inlet_total_temperature_K",
+    "nozzle_throat_diameter_m",
+    "shaft_speed_rpm",
+    "lattice_cell_size_m",
+    "lattice_relative_density"
+  ],
+  "formal_use_allowed": false,
+  "model_tag": "novaturbo_geometry19_performance3_log_seed43_v1",
+  "normalization_sha256": "eb9352eb8499a237cee6048e773ad94baf76b77312b3ea3fb4e70203559fca6a",
+  "output_transform": "natural_log",
+  "protocol_hash": "8af3269955c305872375b7aa294ef9d95b3aeb1731b2b5c0695e8654d22ae9c3",
+  "regression_dataset": "data\\generated\\wp19_21_development_dataset_98304_v1\\regression_converged.jsonl",
+  "regression_dataset_hash": "a9620915121148ba869a3d8526c483708fd6ce5f788e4738e927a878a481f0ae",
+  "target_names": [
+    "thrust_N",
+    "tsfc_kg_N_s",
+    "mass_kg"
+  ],
+  "training_note": "retrained from delivery-local data; not the published WP19-22 checkpoint",
+  "training_seed": 43,
+  "weights_sha256": "1a132c99d8fbfe3d14d79a480b53d93117b0491d5db23043ffe7469fd182cd3c"
+}

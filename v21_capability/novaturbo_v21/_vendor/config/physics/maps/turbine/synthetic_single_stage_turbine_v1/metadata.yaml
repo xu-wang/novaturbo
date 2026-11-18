@@ -1,0 +1,45 @@
+map_id: synthetic_single_stage_turbine_v1
+map_version: 1.0.0
+component_type: turbine
+formal_use_allowed: false
+source:
+  type: synthetic_interface_test
+  reference: NovaTurbo V2.2-B turbine implementation fixture
+  license: project_internal_synthetic
+  validation_status: trends_and_software_contract_only
+coordinates:
+  - name: corrected_speed_ratio
+    definition: N*sqrt(T_ref/Tt4)/Ncorr_design
+    unit: dimensionless
+  - name: corrected_mass_flux_ratio
+    definition: corrected mass flux divided by design corrected mass flux
+    unit: dimensionless
+outputs:
+  - name: total_to_total_efficiency
+    definition: turbine total-to-total isentropic efficiency
+    unit: dimensionless
+boundaries:
+  - name: minimum_corrected_mass_flux_ratio
+    definition: lower validated capacity boundary indexed by corrected speed ratio
+    unit: dimensionless
+  - name: maximum_corrected_mass_flux_ratio
+    definition: upper validated capacity boundary indexed by corrected speed ratio
+    unit: dimensionless
+reference_state:
+  temperature_K: 288.15
+  pressure_Pa: 101325.0
+  corrected_speed_design_rpm: 51180.0
+  corrected_mass_flux_design_kg_s_m2: 76.0
+  total_or_static: total
+  mass_flow_basis: combustion_gas_including_fuel
+  area_definition: turbine_annulus_area
+  diameter_definition: turbine_mean_diameter
+  speed_definition: shaft_rpm
+interpolation: {method: bilinear_v1, boundary_method: linear_v1}
+domain_policy: {diagnostic_extrapolation_limit: 0.08}
+uncertainty:
+  total_to_total_efficiency: 0.04
+applicability:
+  geometry_family: small_single_stage_radial_or_axial_turbine_proxy
+  scaling_basis: corrected_speed_and_corrected_mass_flux_similarity
+  excluded_uses: [formal_acceptance, production_training_data, certification]

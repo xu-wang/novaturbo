@@ -1,0 +1,304 @@
+schema_version: geometry19_schema_v1
+physics_spec_version: geometry19_closed_v2_1
+description: >-
+  Frozen WP19-A interface for the Geometry-aware 19D low-order engine model.
+  Design storage uses SI units except shaft speed, which is intentionally stored
+  in rpm to match the frozen V2.1 interface and is converted by omega=2*pi*N/60.
+source_document: docs/physics/NovaTurbo_GeometryAware_19D_Closed_LowOrder_Engine_Model_V2_1.md
+coordinate_order_frozen: true
+bounds_status: frozen_wp19_a_v1
+formal_dataset_generation_ready: false
+
+design_variables:
+  - index: 1
+    name: compressor_impeller_exit_diameter_m
+    symbol: D_c2
+    component: compressor
+    role: geometry
+    dtype: float64
+    unit: m
+    display_unit: mm
+    bounds: [0.060, 0.150]
+    reference_value: 0.080
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+  - index: 2
+    name: compressor_inducer_tip_diameter_m
+    symbol: D_c1t
+    component: compressor
+    role: geometry
+    dtype: float64
+    unit: m
+    display_unit: mm
+    bounds: [0.035, 0.100]
+    reference_value: 0.050
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+  - index: 3
+    name: compressor_inducer_hub_tip_ratio
+    symbol: lambda_c1
+    component: compressor
+    role: geometry
+    dtype: float64
+    unit: dimensionless
+    bounds: [0.25, 0.65]
+    reference_value: 0.40
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+  - index: 4
+    name: compressor_impeller_exit_width_m
+    symbol: b_c2
+    component: compressor
+    role: geometry
+    dtype: float64
+    unit: m
+    display_unit: mm
+    bounds: [0.003, 0.012]
+    reference_value: 0.005
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+  - index: 5
+    name: compressor_exit_blade_angle_deg
+    symbol: beta_c2
+    component: compressor
+    role: geometry
+    dtype: float64
+    unit: deg
+    angle_convention: measured_from_tangential_direction
+    bounds: [45.0, 90.0]
+    reference_value: 60.0
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+  - index: 6
+    name: compressor_blade_count
+    symbol: Z_c
+    component: compressor
+    role: integer_geometry
+    dtype: int64
+    unit: count
+    bounds: [8, 20]
+    reference_value: 12
+    sampling: {method: balanced_discrete, step: 1}
+
+  - index: 7
+    name: combustor_outer_diameter_m
+    symbol: D_bo
+    component: combustor
+    role: geometry
+    dtype: float64
+    unit: m
+    display_unit: mm
+    bounds: [0.080, 0.160]
+    reference_value: 0.110
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+  - index: 8
+    name: combustor_inner_diameter_m
+    symbol: D_bi
+    component: combustor
+    role: geometry
+    dtype: float64
+    unit: m
+    display_unit: mm
+    bounds: [0.040, 0.090]
+    reference_value: 0.060
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+  - index: 9
+    name: combustor_length_m
+    symbol: L_b
+    component: combustor
+    role: geometry
+    dtype: float64
+    unit: m
+    display_unit: mm
+    bounds: [0.050, 0.150]
+    reference_value: 0.080
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+  - index: 10
+    name: combustor_liner_thickness_m
+    symbol: t_b
+    component: combustor
+    role: geometry
+    dtype: float64
+    unit: m
+    display_unit: mm
+    bounds: [0.0008, 0.0020]
+    reference_value: 0.0012
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+  - index: 11
+    name: combustor_injector_count
+    symbol: Z_inj
+    component: combustor
+    role: integer_geometry
+    dtype: int64
+    unit: count
+    bounds: [4, 12]
+    reference_value: 6
+    sampling: {method: balanced_discrete, step: 1}
+
+  - index: 12
+    name: turbine_tip_diameter_m
+    symbol: D_t
+    component: turbine
+    role: geometry
+    dtype: float64
+    unit: m
+    display_unit: mm
+    bounds: [0.065, 0.160]
+    reference_value: 0.085
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+  - index: 13
+    name: turbine_hub_tip_ratio
+    symbol: lambda_t
+    component: turbine
+    role: geometry
+    dtype: float64
+    unit: dimensionless
+    bounds: [0.60, 0.85]
+    reference_value: 0.70
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+  - index: 14
+    name: turbine_blade_count
+    symbol: Z_t
+    component: turbine
+    role: integer_geometry
+    dtype: int64
+    unit: count
+    bounds: [11, 23]
+    reference_value: 17
+    sampling: {method: balanced_discrete, step: 1}
+
+  - index: 15
+    name: turbine_inlet_total_temperature_K
+    symbol: T_t4
+    component: operating_point
+    role: design_point_operating_parameter
+    dtype: float64
+    unit: K
+    bounds: [800.0, 1200.0]
+    reference_value: 1100.0
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+  - index: 16
+    name: nozzle_throat_diameter_m
+    symbol: D_star
+    component: nozzle
+    role: geometry
+    dtype: float64
+    unit: m
+    display_unit: mm
+    bounds: [0.030, 0.080]
+    reference_value: 0.055
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+  - index: 17
+    name: shaft_speed_rpm
+    symbol: N
+    component: operating_point
+    role: design_point_operating_parameter
+    dtype: float64
+    unit: rpm
+    bounds: [60000.0, 150000.0]
+    reference_value: 100000.0
+    derived_conversion: omega_rad_s=2*pi*shaft_speed_rpm/60
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+  - index: 18
+    name: lattice_cell_size_m
+    symbol: a_lat
+    component: lattice
+    role: geometry_manufacturing
+    dtype: float64
+    unit: m
+    display_unit: mm
+    bounds: [0.004, 0.014]
+    reference_value: 0.008
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+  - index: 19
+    name: lattice_relative_density
+    symbol: rho_bar_lat
+    component: lattice
+    role: geometry_structure
+    dtype: float64
+    unit: dimensionless
+    bounds: [0.15, 0.55]
+    reference_value: 0.30
+    sampling: {method: lhs_or_sobol, transform: linear}
+
+inverse_conditions:
+  - {name: thrust_N, symbol: F_star, dtype: float64, unit: N}
+  - {name: tsfc_kg_N_s, symbol: TSFC_star, dtype: float64, unit: kg/(N*s)}
+  - {name: mass_kg, symbol: M_star, dtype: float64, unit: kg}
+
+derived_states:
+  - mass_flow_air_kg_s
+  - compressor_pressure_ratio
+  - compressor_total_to_total_efficiency
+  - turbine_total_to_total_efficiency
+  - mass_flow_fuel_kg_s
+  - air_fuel_ratio
+  - turbine_exit_total_pressure_Pa
+  - turbine_exit_total_temperature_K
+
+cross_constraints:
+  - id: compressor_inducer_order
+    stage: pre_solver_hard
+    expression: lambda_c1*D_c1t < D_c1t < D_c2
+    description: The inducer hub is inside the inducer tip and the inducer tip is inside the impeller exit.
+  - id: compressor_exit_blockage
+    stage: pre_solver_hard
+    expression: 0 < B_c2 < 1
+    requires_calibration: [compressor_blade_thickness_ratio]
+  - id: combustor_annulus
+    stage: pre_solver_hard
+    expression: D_bo > D_bi + 2*t_b
+  - id: turbine_annulus
+    stage: pre_solver_hard
+    expression: 0 < lambda_t < 1 and D_t > 0
+  - id: compressor_tip_speed
+    stage: post_geometry_feasibility
+    expression: pi*D_c2*N/60 <= U_c2_max
+    requires_calibration: [compressor_tip_speed_limit_m_s]
+  - id: turbine_tip_speed
+    stage: post_geometry_feasibility
+    expression: pi*D_t*N/60 <= U_t_tip_max
+    requires_calibration: [turbine_tip_speed_limit_m_s]
+  - id: diffuser_to_combustor_area
+    stage: post_geometry_feasibility
+    expression: abs((A_d_out/A_b_in)-Pi_A_db) <= epsilon_A_db
+    derived_diffuser: A_d_out=Pi_A_d*A_c2; L_d=k_Ld*D_c2
+    requires_calibration: [Pi_A_d, k_Ld, Pi_A_db, epsilon_A_db]
+  - id: combustor_to_turbine_outer_diameter
+    stage: post_geometry_feasibility
+    expression: abs(D_bo-D_t)/D_t <= epsilon_D_bt
+    requires_calibration: [epsilon_D_bt]
+  - id: shaft_clearance
+    stage: post_geometry_feasibility
+    expression: D_s + 2*delta_s <= D_bi
+    requires_calibration: [shaft_radius_ratio, shaft_clearance_m]
+  - id: turbine_to_nozzle
+    stage: post_geometry_feasibility
+    expression: abs(D_n_in-D_t)/D_t <= epsilon_D_tn
+    requires_calibration: [nozzle_inlet_ratio, epsilon_D_tn]
+
+sampling_policy:
+  continuous: lhs_or_sobol
+  integer: balanced_discrete
+  apply_pre_solver_hard_constraints_before_physics: true
+  retain_hard_failure_records: true
+  retain_soft_infeasible_records: true
+
+quality_fields:
+  - converged
+  - feasible
+  - failure_code
+  - failure_class
+  - flow_residual
+  - physics_model_version
+  - calibration_pack_hash

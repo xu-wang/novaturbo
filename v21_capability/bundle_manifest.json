@@ -1,0 +1,24 @@
+{
+  "assets": [
+    "config/physics/geometry19_schema_v1.yaml",
+    "config/physics/geometry19_calibration_bootstrap_v1.yaml",
+    "config/physics/geometry19_calibration_schema_v1.yaml",
+    "config/physics/geometry19_constraint_profile_pipeline_debug_v1.yaml",
+    "config/physics/geometry19_operating_point_policy_reference_continuation_v1.yaml",
+    "config/physics/geometry19_conservation_tolerances_v1.yaml",
+    "config/physics/geometry19_acceptance_policy_v1.yaml",
+    "config/physics/geometry19_visualization_calibration_v1.yaml",
+    "config/physics/geometry19_mesh_profiles_v1.yaml",
+    "config/physics/geometry19_constraint_dominance_v1.yaml",
+    "config/physics/geometry19_component_maps_v1.yaml",
+    "config/physics/geometry19_thermo_variable_property_shadow_v1.yaml",
+    "config/physics/wp19_23_inverse_closure_v1.yaml"
+  ],
+  "bundle": "novaturbo_v21",
+  "generator_weights": "data\\generator_models\\geometry19\\wp19_23_cfm4_bounded_sigmoid_seed43_v1\\baseline",
+  "mesh_enabled": true,
+  "modules_vendored": 54,
+  "protocol": "config\\physics\\wp19_23_inverse_closure_v1.yaml",
+  "source_repository": "D:\\work\\novaturbo",
+  "surrogate_weights": "data\\inverse_design\\wp19_22_performance_surrogate_v2_ablation\\formal\\models\\performance3_log\\seed_43"
+}

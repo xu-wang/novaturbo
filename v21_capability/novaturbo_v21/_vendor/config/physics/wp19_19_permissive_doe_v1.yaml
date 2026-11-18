@@ -1,0 +1,28 @@
+protocol_version: wp19_19_permissive_doe_v1
+work_package: WP19-19
+physics_spec_version: geometry19_closed_v2_1
+design_schema: config/physics/geometry19_schema_v1.yaml
+calibration_pack: config/physics/geometry19_calibration_bootstrap_v1.yaml
+constraint_profile: config/physics/geometry19_constraint_profile_pipeline_debug_v1.yaml
+operating_point_policy: config/physics/geometry19_operating_point_policy_reference_continuation_v1.yaml
+visualization_calibration: config/physics/geometry19_visualization_calibration_v1.yaml
+mesh_profiles: config/physics/geometry19_mesh_profiles_v1.yaml
+sample_count: 4096
+seed: 20260825
+sampler: latin_hypercube
+environment: {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 0.0}
+
+conservation_tolerances: config/physics/geometry19_conservation_tolerances_v1.yaml
+
+mesh_budget:
+  preview_mesh: 200
+  export_mesh: 40
+  workers: 4
+  selection: deterministic_status_stratified
+  force_geometry_mapping_failures_into_audit: true
+
+artifacts:
+  runtime_root: data/generated/wp19_19_permissive_doe_v1
+  mesh_storage_root: exports/geometry19
+  summary_json: results/physics/wp19_19_permissive_doe_v1.json
+  report_markdown: docs/physics/WP19_19_PERMISSIVE_DOE_20260825.md

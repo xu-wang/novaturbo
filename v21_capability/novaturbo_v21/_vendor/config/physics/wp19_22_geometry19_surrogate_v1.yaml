@@ -1,0 +1,55 @@
+protocol_version: wp19_22_geometry19_surrogate_v1
+work_package: WP19-22
+dataset_tier: development_bootstrap
+formal_use_allowed: false
+design_schema: config/physics/geometry19_schema_v1.yaml
+calibration_pack: config/physics/geometry19_calibration_bootstrap_v1.yaml
+constraint_profile: config/physics/geometry19_constraint_profile_pipeline_debug_v1.yaml
+dataset_manifest: data/generated/wp19_21_development_dataset_98304_v1/manifest.json
+regression_dataset: data/generated/wp19_21_development_dataset_98304_v1/regression_converged.jsonl
+feasibility_dataset: data/generated/wp19_21_development_dataset_98304_v1/feasibility_all.jsonl
+campaign_split:
+  train: [seed_20260826, seed_20260827, seed_20260828, seed_20260829]
+  validation: [seed_20260830]
+  test: [seed_20260831]
+architecture:
+  architecture_tag: legacy_surrogate_mlp_geometry19_v1
+  hidden_layers: [128, 256, 256, 128, 64]
+  activation: relu
+  dropout: 0.1
+  batch_norm: true
+forward:
+  model_tag: novaturbo_geometry19_forward_mlp_48d_v1
+  performance_loss_weight: 0.5
+  constraint_loss_weight: 0.5
+feasibility:
+  model_tag: novaturbo_geometry19_feasibility_mlp_5class_v1
+  classes:
+    - CONVERGED_UNIQUE
+    - CONVERGED_SELECTED_MULTIPLE
+    - NO_FLOW_MATCH
+    - GEOMETRY_INVALID
+    - FLOW_RESIDUAL_DISCONTINUITY
+training:
+  seed: 42
+  device: cpu
+  batch_size: 1024
+  learning_rate: 0.001
+  weight_decay: 0.00001
+  epochs: 80
+  patience: 12
+  min_delta: 0.000001
+  num_workers: 0
+smoke:
+  epochs: 2
+  patience: 2
+  maximum_rows_per_split: 512
+validation:
+  mesh_quality: preview_mesh
+  selection_kinds: [best_prediction, worst_prediction, boundary, random]
+artifacts:
+  weights_root: data/trained_models/geometry19
+  mesh_storage_root: exports/geometry19
+  runtime_root: data/inverse_design/wp19_22_geometry19_surrogate_v1
+  summary_json: results/physics/wp19_22_geometry19_surrogate_v1.json
+  report_markdown: docs/physics/WP19_22_GEOMETRY19_SURROGATE_20260826.md

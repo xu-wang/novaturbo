@@ -1,0 +1,10 @@
+numpy>=1.24
+scipy>=1.10
+torch>=2.0
+PyYAML>=6.0
+# conditional flow-matching generator (CFM-4) at inference time
+torchcfm>=1.0.7
+torchdiffeq>=0.2.5
+# only needed for the --mesh build (STL export)
+# trimesh>=3.21
+# scikit-image>=0.21

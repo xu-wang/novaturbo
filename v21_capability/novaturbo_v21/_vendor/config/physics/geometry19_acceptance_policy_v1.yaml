@@ -1,0 +1,41 @@
+policy_version: geometry19_acceptance_policy_v1
+physics_model_version: geometry19_closed_v2_1
+status: rule_frozen_thresholds_pending
+formal_hit_rate_ready: false
+description: >-
+  Hybrid absolute-floor plus relative target-neighbourhood rule for formal
+  Geometry19 inverse-design acceptance. Numerical thresholds are intentionally
+  deferred until conservation validation and the small 19D DOE are complete.
+
+formal_hit_gate:
+  require_exactly_one_operating_point: true
+  require_solver_converged: true
+  require_all_constraints_nonpositive: true
+  require_finite_positive_required_outputs: true
+  per_output_rule: abs(actual-target) <= max(absolute_tolerance, relative_tolerance*abs(target))
+  aggregate_error_may_compensate_failed_output: false
+
+outputs:
+  - name: thrust_N
+    absolute_tolerance_parameter: thrust_absolute_tolerance_N
+    relative_tolerance_parameter: thrust_relative_tolerance
+    threshold_status: pending_single_point_and_small_doe
+  - name: tsfc_kg_N_s
+    absolute_tolerance_parameter: tsfc_absolute_tolerance_kg_N_s
+    relative_tolerance_parameter: tsfc_relative_tolerance
+    threshold_status: pending_single_point_and_small_doe
+  - name: mass_kg
+    absolute_tolerance_parameter: mass_absolute_tolerance_kg
+    relative_tolerance_parameter: mass_relative_tolerance
+    threshold_status: pending_single_point_and_small_doe
+
+capability_diagnostic:
+  report_separately_from_formal_hit_rate: true
+  may_inform_threshold_freeze: true
+  may_silently_widen_engineering_acceptance: false
+
+threshold_freeze_gates:
+  - single_point_conservation_noise_floor
+  - small_doe_local_target_spacing
+  - engineering_acceptance_requirements
+  - ordinary_boundary_near_zero_infeasible_target_audit

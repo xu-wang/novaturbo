@@ -1,0 +1,70 @@
+suite_version: geometry19_v2_1_golden_cases_v1
+pipeline_profile: v2_1
+expected_physics_model_version: geometry19_closed_v2_1
+expected_operating_point_policy: reference_continuation_high_flow_v1
+tolerances:
+  solver: {relative: 0.0, absolute: 0.0}
+  operating_point: {relative: 1.0e-9, absolute: 1.0e-12}
+  stations: {relative: 1.0e-10, absolute: 1.0e-8}
+  components: {relative: 1.0e-10, absolute: 1.0e-10}
+  performance: {relative: 1.0e-10, absolute: 1.0e-12}
+  constraints: {relative: 1.0e-10, absolute: 1.0e-10}
+  mass: {relative: 1.0e-10, absolute: 1.0e-12}
+  diagnostics: {relative: 1.0e-10, absolute: 1.0e-10}
+  conservation: {relative: 1.0e-9, absolute: 1.0e-6}
+cases:
+  - case_id: nominal_reference
+    description: Frozen Geometry19 schema reference design at standard sea-level static conditions.
+    design_overrides: {}
+    environment: {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 0.0}
+    expected_solver: {converged: true, failure_code: null, root_count: 1, selected_root_index: 0}
+  - case_id: shaft_speed_085
+    description: Low corrected-speed branch at 85 percent reference shaft speed.
+    design_overrides: {shaft_speed_rpm: 85000.0}
+    environment: {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 0.0}
+    expected_solver: {converged: true, failure_code: null, root_count: 1, selected_root_index: 0}
+  - case_id: shaft_speed_105
+    description: High-speed case that freezes two-root high-flow continuation behavior.
+    design_overrides: {shaft_speed_rpm: 105000.0}
+    environment: {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 0.0}
+    expected_solver: {converged: true, failure_code: null, root_count: 2, selected_root_index: 1}
+  - case_id: compressor_exit_width_two_root
+    description: Explicit two-root geometry used by the operating-point policy regression.
+    design_overrides: {compressor_impeller_exit_width_m: 0.012}
+    environment: {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 0.0}
+    expected_solver: {converged: true, failure_code: null, root_count: 2, selected_root_index: 1}
+  - case_id: compressor_large_no_flow
+    description: Explicit no-flow-match failure path used by the operating-point policy regression.
+    design_overrides: {compressor_impeller_exit_diameter_m: 0.150}
+    environment: {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 0.0}
+    expected_solver: {converged: false, failure_code: NO_FLOW_MATCH, root_count: 0, selected_root_index: null}
+  - case_id: compressor_diameter_low
+    description: Five-percent reduction of compressor impeller exit diameter.
+    design_overrides: {compressor_impeller_exit_diameter_m: 0.076}
+    environment: {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 0.0}
+    expected_solver: {converged: true, failure_code: null, root_count: 1, selected_root_index: 0}
+  - case_id: compressor_diameter_high
+    description: Five-percent increase of compressor impeller exit diameter with two roots.
+    design_overrides: {compressor_impeller_exit_diameter_m: 0.084}
+    environment: {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 0.0}
+    expected_solver: {converged: true, failure_code: null, root_count: 2, selected_root_index: 1}
+  - case_id: turbine_tip_low
+    description: Five-percent reduction of turbine tip diameter with two roots.
+    design_overrides: {turbine_tip_diameter_m: 0.08075}
+    environment: {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 0.0}
+    expected_solver: {converged: true, failure_code: null, root_count: 2, selected_root_index: 1}
+  - case_id: turbine_tip_high
+    description: Five-percent increase of turbine tip diameter.
+    design_overrides: {turbine_tip_diameter_m: 0.08925}
+    environment: {temperature_K: 288.15, pressure_Pa: 101325.0, mach: 0.0}
+    expected_solver: {converged: true, failure_code: null, root_count: 1, selected_root_index: 0}
+  - case_id: cruise_environment
+    description: Lower-pressure, lower-temperature subsonic operating environment.
+    design_overrides: {}
+    environment: {temperature_K: 250.0, pressure_Pa: 50000.0, mach: 0.4}
+    expected_solver: {converged: true, failure_code: null, root_count: 1, selected_root_index: 0}
+  - case_id: hot_altitude_environment
+    description: Hot, reduced-pressure subsonic operating environment.
+    design_overrides: {}
+    environment: {temperature_K: 320.0, pressure_Pa: 70000.0, mach: 0.2}
+    expected_solver: {converged: true, failure_code: null, root_count: 1, selected_root_index: 0}

@@ -1,0 +1,31 @@
+registry_version: geometry19_pipeline_profiles_v1
+default_profile: v2_1
+
+profiles:
+  v2_1:
+    protocol: config/physics/wp19_23_inverse_closure_v1.yaml
+    mode: production_development
+  v2_2_shadow:
+    protocol: config/physics/wp19_23_inverse_closure_map_v2_2_shadow.yaml
+    mode: paired_physics_shadow
+  v2_2_hecc_shadow:
+    protocol: config/physics/wp19_23_inverse_closure_map_v2_2_hecc_shadow.yaml
+    mode: paired_physics_shadow
+  v2_2_comp_turb_shadow:
+    protocol: config/physics/wp19_23_inverse_closure_map_v2_2_comp_turb_shadow.yaml
+    mode: paired_physics_shadow
+  v2_2_comp_turb_inlet_shadow:
+    protocol: config/physics/wp19_23_inverse_closure_map_v2_2_comp_turb_inlet_shadow.yaml
+    mode: paired_physics_shadow
+  v2_2_comp_turb_inlet_comb_shadow:
+    protocol: config/physics/wp19_23_inverse_closure_map_v2_2_comp_turb_inlet_comb_shadow.yaml
+    mode: paired_physics_shadow
+  v2_2_full_component_shadow:
+    protocol: config/physics/wp19_23_inverse_closure_map_v2_2_full_component_shadow.yaml
+    mode: paired_physics_shadow
+  v2_2_full_variable_thermo_shadow:
+    protocol: config/physics/wp19_23_inverse_closure_map_v2_2_full_variable_thermo_shadow.yaml
+    mode: paired_physics_shadow
+  v2_2_development:
+    protocol: config/physics/wp19_23_inverse_closure_v2_2_software_development.yaml
+    mode: production_development

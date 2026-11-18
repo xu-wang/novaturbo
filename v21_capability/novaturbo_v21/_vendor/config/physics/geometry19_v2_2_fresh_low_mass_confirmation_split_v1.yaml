@@ -1,0 +1,35 @@
+dataset_version: geometry19_v2_2_fresh_low_mass_confirmation_split_v1
+status: frozen_low_mass_corrective_split
+formal_use_allowed: false
+grouping_key: root_seed_id
+
+source_dataset:
+  path: data/validation/v2_2_independent_root_expansion_v1/combined_accepted_dataset.jsonl
+  sha256: 617f405977038e782567f961d260fe693a1cdfeb6c1c9877c0533c9bca8627fe
+prior_exposed_dataset:
+  path: data/validation/v2_2_directed_segment_recovery_v1/combined_accepted_dataset.jsonl
+  sha256: dca809406829dad1614523737c26ea539542f1c1585fe13ef6bca07e5ff22f1d
+
+target_segments: [low_mass_low_to_mid, low_mass_mid_to_high]
+roles:
+  # Both confirmation roots are globally absent from the prior exposed dataset.
+  confirmation_roots_by_segment:
+    low_mass_low_to_mid: 93ccdd2e1af5ba5faaae96d2efd35755e110535cca77fdf750522f71a2c3c9de
+    low_mass_mid_to_high: 59ac0e74cfddea2cb72e18ba43f00dc4c09e9ef11d7d41c448b7b31a2b43d282
+  # These roots jointly cover both weak segments; all their rows are held out globally.
+  validation_roots:
+    - a2f40fb0a908bd8af184bb8c34ffde252c42b57e247dde3313b84092f51bcedc
+    - 4cb10f6935baf51117f3cdbabf4ec2840ea23713994e76b3d8140538fd5d05f4
+
+split_gate:
+  minimum_train_rows: 1500
+  minimum_validation_rows_per_target_segment: 24
+  minimum_validation_roots_per_target_segment: 2
+  minimum_confirmation_rows_per_target_segment: 24
+  minimum_confirmation_roots_per_target_segment: 1
+
+limitations:
+  - previous_1298_row_test_is_development_data_after_exposure
+  - confirmation_covers_only_two_low_mass_segments
+  - one_fresh_confirmation_root_per_target_segment
+  - no_full_domain_promotion_claim

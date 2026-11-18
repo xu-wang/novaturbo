@@ -1,0 +1,42 @@
+contract_version: wp19_23_target_v1
+work_package: WP19-23
+description: Frozen target-document contract for Geometry19 inverse design.
+
+required_fields:
+  - target_contract_version
+  - target_id
+  - target_type
+  - expected_status
+  - thrust_N
+  - tsfc_kg_N_s
+  - mass_kg
+  - acceptance_profile
+
+additional_fields_allowed: false
+
+fields:
+  target_contract_version:
+    type: string
+    const: wp19_23_target_v1
+  target_id:
+    type: string
+    pattern: "^[0-9a-f]{64}$"
+    derivation: >-
+      SHA256 of canonical compact JSON containing target_contract_version,
+      target_type, expected_status, thrust_N, tsfc_kg_N_s, mass_kg, and
+      acceptance_profile in lexicographically sorted key order.
+  target_type:
+    type: string
+    enum: [ID, INTERPOLATION, BOUNDARY_SPARSE, OUT_OF_EMPIRICAL_SUPPORT]
+  expected_status:
+    type: string
+    enum: [KNOWN_FEASIBLE, UNKNOWN, EXPECTED_INFEASIBLE]
+  thrust_N: {type: number, exclusive_minimum: 0.0, unit: N}
+  tsfc_kg_N_s: {type: number, exclusive_minimum: 0.0, unit: kg/(N*s)}
+  mass_kg: {type: number, exclusive_minimum: 0.0, unit: kg}
+  acceptance_profile:
+    type: string
+    const: wp19_23_development_diagnostic_v1
+
+canonical_output_order: [thrust_N, tsfc_kg_N_s, mass_kg]
+
